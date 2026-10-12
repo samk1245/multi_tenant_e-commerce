@@ -1,0 +1,22 @@
+﻿# Dependencies
+node_modules/
+*/node_modules/
+
+# Production builds
+dist/
+*/dist/
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# Cache & Vite temp
+.vite-temp/
+*/node_modules/.vite-temp/
+*.log
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/
