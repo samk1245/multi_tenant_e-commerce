@@ -1,0 +1,74 @@
+﻿import { Link } from "react-router-dom";
+
+const categories = [
+  { icon: "💻", title: "Electronics", detail: "Laptops, gadgets & more" },
+  { icon: "👕", title: "Fashion", detail: "Everyday styles" },
+  { icon: "🏠", title: "Home & Living", detail: "Make home better" },
+  { icon: "🎧", title: "Accessories", detail: "Essentials you will love" }
+];
+
+export default function Home() {
+  return (
+    <main className="store-home">
+      <section className="store-hero">
+        <div className="hero-copy">
+          <span className="eyebrow">YOUR EVERYDAY MARKETPLACE</span>
+          <h1>Everything you love.<br /><span>All in one place.</span></h1>
+          <p>Discover great products, explore new arrivals and enjoy a simpler way to shop.</p>
+          <div className="hero-actions">
+            <Link className="btn-primary" to="/products">Explore products <span>→</span></Link>
+            <Link className="btn-secondary" to="/register">Create account</Link>
+          </div>
+          <div className="hero-trust">
+            <span>✓ Easy shopping</span>
+            <span>✓ Great selection</span>
+            <span>✓ Secure account</span>
+          </div>
+        </div>
+        <div className="hero-art" aria-label="Shopping collection">
+          <div className="hero-orbit orbit-one"></div>
+          <div className="hero-orbit orbit-two"></div>
+          <div className="hero-product product-main">🛍️</div>
+          <div className="hero-product product-small">🎧</div>
+          <div className="hero-product product-side">💻</div>
+          <div className="hero-floating">Your next favourite<br /><strong>is waiting.</strong></div>
+        </div>
+      </section>
+
+      <section className="store-benefits">
+        <div><span>📦</span><div><strong>Products in one place</strong><p>Explore the collection</p></div></div>
+        <div><span>🔎</span><div><strong>Find what you need</strong><p>Browse and discover</p></div></div>
+        <div><span>🛒</span><div><strong>Simple checkout</strong><p>Keep shopping organised</p></div></div>
+        <div><span>👤</span><div><strong>Your account</strong><p>Manage your shopping</p></div></div>
+      </section>
+
+      <section className="store-section">
+        <div className="section-heading">
+          <div><span className="eyebrow">EXPLORE THE STORE</span><h2>Shop by category</h2><p>A good place to start your next find.</p></div>
+          <Link to="/products" className="text-link">View all products →</Link>
+        </div>
+        <div className="category-grid">
+          {categories.map((category, index) => (
+            <Link to="/products" className={`category-card category-${index + 1}`} key={category.title}>
+              <span className="category-icon">{category.icon}</span>
+              <strong>{category.title}</strong>
+              <span className="category-detail">{category.detail}</span>
+              <span className="category-arrow">↗</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="store-feature">
+        <div><span className="eyebrow">MADE FOR EASY SHOPPING</span><h2>Find it. Love it.<br />Make it yours.</h2><p>Browse available products, add your favourites to the cart and manage your orders from one place.</p><Link className="btn-primary" to="/products">Start shopping <span>→</span></Link></div>
+        <div className="feature-symbol">✦</div>
+      </section>
+
+      <footer className="store-footer">
+        <strong>Multi-Tenant E-Commerce</strong>
+        <span>A better way to discover your next favourite.</span>
+        <Link to="/products">Explore products →</Link>
+      </footer>
+    </main>
+  );
+}
