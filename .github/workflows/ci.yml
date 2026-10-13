@@ -53,8 +53,15 @@ jobs:
       - name: Install backend dependencies
         run: npm ci
 
+      - name: Run backend tests
+
+        run: npm test
+
+      
+
       - name: Check server syntax
         run: node --check src/server.js
 
       - name: Check product route syntax
         run: node --check src/routes/product.js
+
