@@ -126,9 +126,10 @@ export default function App() {
         p.brand?.toLowerCase().includes(search.toLowerCase());
 
       let matchesPrice = true;
-      if (priceRange === 'under50') matchesPrice = p.price < 50;
-      else if (priceRange === '50to150') matchesPrice = p.price >= 50 && p.price <= 150;
-      else if (priceRange === 'above150') matchesPrice = p.price > 150;
+      if (priceRange === 'under1000') matchesPrice = p.price < 1000;
+      else if (priceRange === '1000to5000') matchesPrice = p.price >= 1000 && p.price <= 5000;
+      else if (priceRange === '5000to15000') matchesPrice = p.price > 5000 && p.price <= 15000;
+      else if (priceRange === 'above15000') matchesPrice = p.price > 15000;
 
       return matchesCategory && matchesSearch && matchesPrice;
     })
@@ -324,7 +325,7 @@ export default function App() {
                               <span className="text-[10px] text-neutral-400">({item.category})</span>
                             </div>
                             <span className="font-mono font-bold text-emerald-400">
-                              ${item.price.toFixed(2)}
+                              ₹{item.price ? item.price.toLocaleString('en-IN') : '0'}
                             </span>
                           </div>
                         ))}
@@ -359,9 +360,10 @@ export default function App() {
                     className="border border-neutral-800 bg-neutral-900 rounded-xl px-3 py-2 text-xs text-neutral-300 font-bold focus:outline-none cursor-pointer"
                   >
                     <option value="all">All Prices</option>
-                    <option value="under50">Under $50</option>
-                    <option value="50to150">$50 to $150</option>
-                    <option value="above150">Above $150</option>
+                    <option value="under1000">Under ₹1,000</option>
+                    <option value="1000to5000">₹1,000 to ₹5,000</option>
+                    <option value="5000to15000">₹5,000 to ₹15,000</option>
+                    <option value="above15000">Above ₹15,000</option>
                   </select>
 
                   {/* Sort selector */}
