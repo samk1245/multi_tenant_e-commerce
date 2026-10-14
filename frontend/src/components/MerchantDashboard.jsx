@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   DollarSign,
   ShoppingBag,
@@ -173,7 +173,7 @@ export default function MerchantDashboard({ tenant, onTenantUpdated }) {
             <DollarSign className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-2xl font-black text-white">
-            ${analytics?.totalRevenue?.toFixed(2) || '0.00'}
+            ₹{analytics?.totalRevenue ? Math.round(analytics.totalRevenue).toLocaleString('en-IN') : '0'}
           </div>
           <p className="text-[11px] text-emerald-400 mt-1 font-semibold">+22.5% vs previous period</p>
         </div>
@@ -202,7 +202,7 @@ export default function MerchantDashboard({ tenant, onTenantUpdated }) {
             <TrendingUp className="w-4 h-4 text-rose-400" />
           </div>
           <div className="text-2xl font-black text-white">
-            ${analytics?.avgOrderValue?.toFixed(2) || '0.00'}
+            ₹{analytics?.avgOrderValue ? Math.round(analytics.avgOrderValue).toLocaleString('en-IN') : '0'}
           </div>
           <p className="text-[11px] text-neutral-400 mt-1">Per transaction</p>
         </div>
@@ -248,7 +248,7 @@ export default function MerchantDashboard({ tenant, onTenantUpdated }) {
                     </div>
                   </td>
                   <td className="py-3.5 px-4 text-neutral-300 font-medium">{p.category}</td>
-                  <td className="py-3.5 px-4 font-bold text-white">${p.price.toFixed(2)}</td>
+                  <td className="py-3.5 px-4 font-bold text-white">₹{p.price ? p.price.toLocaleString('en-IN') : '0'}</td>
                   <td className="py-3.5 px-4">
                     <span
                       className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${

@@ -85,16 +85,16 @@ export default function ProductCard({
           </p>
         </div>
 
-        {/* Price & Action */}
+        {/* Price in INR & Action */}
         <div className="mt-5 pt-4 border-t border-neutral-800/80 flex items-center justify-between">
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-black text-white">
-                ${product.price.toFixed(2)}
+                ₹{product.price ? product.price.toLocaleString('en-IN') : '0'}
               </span>
               {product.compareAtPrice && (
                 <span className="text-xs text-neutral-500 line-through">
-                  ${product.compareAtPrice.toFixed(2)}
+                  ₹{product.compareAtPrice.toLocaleString('en-IN')}
                 </span>
               )}
             </div>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Search,
   SlidersHorizontal,
@@ -444,6 +444,7 @@ export default function App() {
         cartData={checkoutData}
         onPlaceOrder={handlePlaceOrder}
         orderSuccess={orderSuccess}
+        currentUser={currentUser}
       />
 
       {/* Quick View Product Modal */}
@@ -470,6 +471,7 @@ export default function App() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onAuthSuccess={(user) => setCurrentUser(user)}
+        currentUser={currentUser}
       />
 
       {/* Order Tracking Modal */}

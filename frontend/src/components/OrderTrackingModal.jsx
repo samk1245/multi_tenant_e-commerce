@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Package, Clock, Truck, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
 import { api } from '../api';
 
@@ -98,7 +98,7 @@ export default function OrderTrackingModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-neutral-400">
                     <span>{new Date(o.createdAt).toLocaleDateString()}</span>
-                    <span className="font-bold text-emerald-400">${o.totalAmount.toFixed(2)}</span>
+                    <span className="font-bold text-emerald-400">₹{o.totalAmount ? Math.round(o.totalAmount).toLocaleString('en-IN') : '0'}</span>
                   </div>
                 </div>
               ))
@@ -171,7 +171,7 @@ export default function OrderTrackingModal({ isOpen, onClose }) {
                           )}
                           <span className="font-semibold text-white truncate max-w-xs">{it.title}</span>
                         </div>
-                        <span className="text-neutral-400 font-mono">Qty: {it.quantity} &bull; ${it.price.toFixed(2)}</span>
+                        <span className="text-neutral-400 font-mono">Qty: {it.quantity} &bull; ₹{it.price ? it.price.toLocaleString('en-IN') : '0'}</span>
                       </div>
                     ))}
                   </div>

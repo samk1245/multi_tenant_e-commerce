@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { X, Heart, ShoppingCart, Trash2 } from 'lucide-react';
 
 export default function WishlistModal({ isOpen, onClose, wishlist, onAddToCart, onRemoveWishlist }) {
@@ -49,7 +49,7 @@ export default function WishlistModal({ isOpen, onClose, wishlist, onAddToCart, 
                   />
                   <div>
                     <h4 className="font-bold text-sm text-white line-clamp-1">{item.title}</h4>
-                    <span className="text-xs font-black text-emerald-400">${item.price.toFixed(2)}</span>
+                    <span className="text-xs font-black text-emerald-400">₹{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
                     <span className="text-[11px] text-neutral-500 block">{item.category}</span>
                   </div>
                 </div>

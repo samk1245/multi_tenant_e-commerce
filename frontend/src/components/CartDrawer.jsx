@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
 
 export default function CartDrawer({
@@ -17,8 +17,9 @@ export default function CartDrawer({
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discountAmount = (subtotal * discountPercent) / 100;
-  const shipping = subtotal > 150 || subtotal === 0 ? 0 : 15;
-  const tax = (subtotal - discountAmount) * 0.08;
+  // Free delivery above ₹999
+  const shipping = subtotal >= 999 || subtotal === 0 ? 0 : 99;
+  const tax = Math.round((subtotal - discountAmount) * 0.18 * 100) / 100; // 18% GST
   const total = Math.max(0, subtotal - discountAmount + shipping + tax);
 
   const applyCoupon = (e) => {
@@ -36,7 +37,7 @@ export default function CartDrawer({
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/75 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
@@ -46,34 +47,34 @@ export default function CartDrawer({
           {/* Header */}
           <div className="p-6 border-b border-neutral-800 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-extrabold text-white">Your Shopping Cart</h2>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-300 font-bold">
+              <h2 className="text-lg font-black text-white">Your Shopping Cart</h2>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-neutral-800 text-neutral-300 font-black">
                 {items.reduce((c, i) => c + i.quantity, 0)} items
               </span>
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition"
+              className="p-1.5 rounded-xl text-neutral-400 hover:text-white hover:bg-neutral-800 transition"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Shipping Progress */}
-          <div className="px-6 py-3 bg-neutral-950/60 border-b border-neutral-800/80 text-xs">
-            {subtotal >= 150 ? (
+          {/* Shipping Progress in INR */}
+          <div className="px-6 py-3 bg-neutral-950/70 border-b border-neutral-800/80 text-xs">
+            {subtotal >= 999 ? (
               <p className="text-emerald-400 font-bold flex items-center gap-1.5">
-                🎉 Congratulations! You unlocked FREE Standard Shipping!
+                🎉 FREE Standard Delivery Unlocked across India!
               </p>
             ) : (
               <div>
                 <p className="text-neutral-400 mb-1.5">
-                  Add <span className="text-white font-bold">${(150 - subtotal).toFixed(2)}</span> more to unlock <span className="text-emerald-400 font-bold">FREE Shipping</span>
+                  Add <span className="text-white font-bold">₹{(999 - subtotal).toLocaleString('en-IN')}</span> more to unlock <span className="text-emerald-400 font-bold">FREE Delivery</span>
                 </p>
                 <div className="w-full h-1.5 bg-neutral-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min(100, (subtotal / 150) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (subtotal / 999) * 100)}%` }}
                   />
                 </div>
               </div>
@@ -85,28 +86,28 @@ export default function CartDrawer({
             {items.length === 0 ? (
               <div className="text-center py-16 text-neutral-400">
                 <p className="text-4xl mb-3">🛒</p>
-                <p className="text-base font-semibold text-neutral-300">Your cart is empty</p>
-                <p className="text-xs mt-1">Explore our products and find something you love!</p>
+                <p className="text-base font-bold text-neutral-300">Your cart is empty</p>
+                <p className="text-xs mt-1">Explore our catalog and find something you love!</p>
               </div>
             ) : (
               items.map((item) => (
                 <div
                   key={item._id}
-                  className="flex gap-4 p-3.5 rounded-xl bg-neutral-950/50 border border-neutral-800/80"
+                  className="flex gap-4 p-3.5 rounded-2xl bg-neutral-950/50 border border-neutral-800/80"
                 >
                   <img
-                    src={item.thumbnail || item.images?.[0]}
+                    src={item.thumbnail || (item.images && item.images[0])}
                     alt={item.title}
-                    className="w-18 h-18 object-cover rounded-lg bg-neutral-900 flex-shrink-0"
+                    className="w-18 h-18 object-cover rounded-xl bg-neutral-900 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-bold text-white truncate">{item.title}</h4>
-                    <p className="text-xs text-emerald-400 font-bold mt-0.5">
-                      ${item.price.toFixed(2)}
+                    <p className="text-xs text-emerald-400 font-black mt-0.5">
+                      ₹{item.price.toLocaleString('en-IN')}
                     </p>
 
                     <div className="flex items-center justify-between mt-3">
-                      <div className="flex items-center gap-2 border border-neutral-700 bg-neutral-900 rounded-lg p-0.5">
+                      <div className="flex items-center gap-2 border border-neutral-700 bg-neutral-900 rounded-xl p-0.5">
                         <button
                           onClick={() => onUpdateQuantity(item._id, item.quantity - 1)}
                           className="p-1 hover:text-white text-neutral-400"
@@ -135,9 +136,9 @@ export default function CartDrawer({
             )}
           </div>
 
-          {/* Footer Checkout */}
+          {/* Footer Checkout in INR */}
           {items.length > 0 && (
-            <div className="p-6 border-t border-neutral-800 bg-neutral-950/80 space-y-3">
+            <div className="p-6 border-t border-neutral-800 bg-neutral-950/90 space-y-3">
               {/* Promo code */}
               <form onSubmit={applyCoupon} className="flex gap-2">
                 <div className="relative flex-1">
@@ -146,20 +147,20 @@ export default function CartDrawer({
                     type="text"
                     value={coupon}
                     onChange={(e) => setCoupon(e.target.value)}
-                    placeholder="Promo code (try VIP15)"
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-neutral-900 border border-neutral-700 text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 uppercase"
+                    placeholder="Coupon (try VIP15)"
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-900 border border-neutral-700 text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 uppercase"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-3 py-2 text-xs font-bold rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition"
+                  className="px-3.5 py-2 text-xs font-bold rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition"
                 >
                   Apply
                 </button>
               </form>
 
               {couponApplied && (
-                <p className="text-[11px] text-emerald-400 font-semibold">
+                <p className="text-[11px] text-emerald-400 font-bold">
                   ✓ Promo applied: {discountPercent}% discount!
                 </p>
               )}
@@ -168,41 +169,41 @@ export default function CartDrawer({
               <div className="space-y-1.5 text-xs text-neutral-400 pt-2 border-t border-neutral-800/80">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="text-neutral-200 font-semibold">${subtotal.toFixed(2)}</span>
+                  <span className="text-neutral-200 font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-400">
+                  <div className="flex justify-between text-emerald-400 font-bold">
                     <span>Discount</span>
-                    <span>-${discountAmount.toFixed(2)}</span>
+                    <span>-₹{Math.round(discountAmount).toLocaleString('en-IN')}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span>Estimated Shipping</span>
-                  <span className="text-neutral-200 font-semibold">
-                    {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+                  <span>Shipping & Handling</span>
+                  <span className="text-neutral-200 font-bold">
+                    {shipping === 0 ? 'FREE' : `₹${shipping}`}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Estimated Tax (8%)</span>
-                  <span className="text-neutral-200 font-semibold">${tax.toFixed(2)}</span>
+                  <span>Applicable GST (18%)</span>
+                  <span className="text-neutral-200 font-bold">₹{Math.round(tax).toLocaleString('en-IN')}</span>
                 </div>
-                <div className="flex justify-between text-sm font-extrabold text-white pt-2 border-t border-neutral-800">
+                <div className="flex justify-between text-sm font-black text-white pt-2 border-t border-neutral-800">
                   <span>Total Amount</span>
-                  <span className="text-emerald-400 text-base">${total.toFixed(2)}</span>
+                  <span className="text-emerald-400 text-base">₹{Math.round(total).toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
               <button
-                onClick={() => onCheckout({ items, subtotal, shipping, tax, total })}
-                className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-black text-sm flex items-center justify-center gap-2 transition duration-200 shadow-xl active:scale-[0.98]"
+                onClick={() => onCheckout({ items, subtotal, shipping, tax, total, appliedCoupon: couponApplied ? coupon : '' })}
+                className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-black text-sm flex items-center justify-center gap-2 transition duration-200 shadow-xl active:scale-[0.98]"
               >
                 <span>Proceed to Checkout</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center justify-center gap-1.5 text-[11px] text-neutral-400 pt-1">
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-neutral-500 pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>256-Bit Encrypted Secure Checkout</span>
+                <span>100% Secure Checkout & Buyer Protection</span>
               </div>
             </div>
           )}

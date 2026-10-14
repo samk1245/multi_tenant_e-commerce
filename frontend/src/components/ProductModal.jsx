@@ -116,12 +116,12 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart, on
                     <span className="text-white font-medium">{product.brand || 'Authentic Marketplace Goods'}</span>
                   </div>
                   <div className="flex justify-between text-neutral-400">
-                    <span>Standard Shipping:</span>
-                    <span className="text-emerald-400 font-medium">Free on orders above $150</span>
+                    <span>Delivery Eligibility:</span>
+                    <span className="text-emerald-400 font-medium">Free Delivery across India on orders above ₹999</span>
                   </div>
                   <div className="flex justify-between text-neutral-400">
                     <span>Authenticity:</span>
-                    <span className="text-white font-medium">100% Guaranteed</span>
+                    <span className="text-white font-medium">100% Genuine with Warranty</span>
                   </div>
                 </div>
               </div>
@@ -176,10 +176,12 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart, on
             )}
 
             <div className="mt-6 flex items-baseline gap-3">
-              <span className="text-3xl font-black text-white">${product.price.toFixed(2)}</span>
+              <span className="text-3xl font-black text-white">
+                ₹{product.price ? product.price.toLocaleString('en-IN') : '0'}
+              </span>
               {product.compareAtPrice && (
                 <span className="text-sm text-neutral-500 line-through">
-                  ${product.compareAtPrice.toFixed(2)}
+                  ₹{product.compareAtPrice.toLocaleString('en-IN')}
                 </span>
               )}
             </div>
