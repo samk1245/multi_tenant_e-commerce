@@ -15,6 +15,9 @@ const tenantRoutes = require("./routes/tenantRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const authRoutes = require("./routes/authRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const couponRoutes = require("./routes/couponRoutes");
+const shippingRoutes = require("./routes/shippingRoutes");
 
 const app = express();
 
@@ -80,6 +83,9 @@ app.use("/api/tenants", tenantRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/coupons", couponRoutes);
+app.use("/api/shipping", shippingRoutes);
 
 // 404 Handler
 app.use((req, res) => {

@@ -33,6 +33,12 @@ const orderSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+      index: true,
+    },
     orderNumber: {
       type: String,
       required: true,
@@ -55,6 +61,14 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    discount: {
+      type: Number,
+      default: 0,
+    },
+    couponCode: {
+      type: String,
+      default: "",
+    },
     shipping: {
       type: Number,
       default: 0,
@@ -73,16 +87,36 @@ const orderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["paid", "pending", "failed"],
+      enum: ["paid", "pending", "failed", "refunded"],
       default: "paid",
+    },
+    paymentDetails: {
+      provider: { type: String, default: "test_gateway" },
+      transactionId: { type: String, default: "" },
+      signature: { type: String, default: "" },
+    },
+    shippingDetails: {
+      carrier: { type: String, default: "Express Direct" },
+      trackingNumber: { type: String, default: "" },
+      estimatedDelivery: { type: String, default: "3-5 Business Days" },
     },
     orderStatus: {
       type: String,
-      enum: ["processing", "shipped", "delivered", "cancelled"],
+      enum: ["pending", "processing", "confirmed", "shipped", "out_for_delivery", "delivered", "cancelled"],
       default: "processing",
     },
+    statusHistory: [
+      {
+        status: { type: String, required: true },
+        timestamp: { type: Date, default: Date.now },
+        note: { type: String, default: "" },
+      },
+    ],
   },
   { timestamps: true }
 );
+
+orderSchema.index({ tenantId: 1, createdAt: -1 });
+orderSchema.index({ userId: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Order", orderSchema);

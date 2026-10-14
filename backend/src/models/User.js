@@ -31,6 +31,31 @@ const userSchema = new mongoose.Schema(
       ref: "Tenant",
       default: null,
     },
+    phone: {
+      type: String,
+      default: "",
+    },
+    avatar: {
+      type: String,
+      default: "",
+    },
+    addresses: [
+      {
+        label: { type: String, default: "Home" },
+        street: { type: String, default: "" },
+        city: { type: String, default: "" },
+        state: { type: String, default: "" },
+        zip: { type: String, default: "" },
+        country: { type: String, default: "USA" },
+        isDefault: { type: Boolean, default: false },
+      },
+    ],
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
   },
   { timestamps: true }
 );
