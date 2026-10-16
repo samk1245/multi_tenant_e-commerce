@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import {
   Search,
   SlidersHorizontal,
@@ -8,6 +8,10 @@ import {
   X,
   Layers,
   Check,
+  Zap,
+  Shield,
+  Truck,
+  RotateCcw,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from './api';
@@ -39,7 +43,7 @@ export default function App() {
     }
   });
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [deliveryLocation, setDeliveryLocation] = useState('New York, 10001');
+  const [deliveryLocation, setDeliveryLocation] = useState('Mumbai, 400001');
 
   // Filters, Autocomplete & Search
   const [search, setSearch] = useState('');
@@ -47,8 +51,7 @@ export default function App() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
-  const [priceRange, setPriceRange] = useState('all'); // 'all', 'under50', '50to150', 'above150'
-  const searchContainerRef = useRef(null);
+  const [priceRange, setPriceRange] = useState('all');
 
   // Cart & Wishlist
   const [cart, setCart] = useState([]);
@@ -60,7 +63,7 @@ export default function App() {
   const [orderSuccess, setOrderSuccess] = useState(null);
   const [viewProduct, setViewProduct] = useState(null);
   const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('store'); // 'store' | 'admin'
+  const [activeTab, setActiveTab] = useState('store');
 
   // Load Tenants on mount
   useEffect(() => {
@@ -137,7 +140,7 @@ export default function App() {
       if (sortBy === 'price-low') return a.price - b.price;
       if (sortBy === 'price-high') return b.price - a.price;
       if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-      return 0; // default featured
+      return 0;
     });
 
   // Cart operations
@@ -207,7 +210,7 @@ export default function App() {
           quantity: i.quantity,
           thumbnail: i.thumbnail || (i.images && i.images[0]),
         })),
-        paymentMethod: customerData.paymentMethod || 'card',
+        paymentMethod: customerData.paymentMethod || 'online',
         subtotal: checkoutData.subtotal,
         shipping: checkoutData.shipping,
         tax: checkoutData.tax,
@@ -217,7 +220,7 @@ export default function App() {
       const res = await api.createOrder(activeTenant._id, orderPayload);
       if (res.success) {
         setOrderSuccess(res.data);
-        setCart([]); // Clear cart
+        setCart([]);
       } else {
         alert(res.message || 'Failed to place order');
       }
@@ -238,8 +241,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-100 selection:bg-emerald-500 selection:text-black">
-      {/* Top Main Navigation */}
+    <div className="min-h-screen flex flex-col bg-slate-100 text-slate-900 selection:bg-cyan-400 selection:text-slate-950">
+      {/* Top Amazon-style Navbar */}
       <Navbar
         tenants={tenants}
         activeTenant={activeTenant}
@@ -257,154 +260,121 @@ export default function App() {
         onLogout={handleLogout}
         deliveryLocation={deliveryLocation}
         onSelectLocation={setDeliveryLocation}
+        search={search}
+        setSearch={setSearch}
+        suggestions={suggestions}
+        showSuggestions={showSuggestions}
+        setShowSuggestions={setShowSuggestions}
+        onSelectSuggestion={(item) => {
+          setViewProduct(item);
+          setShowSuggestions(false);
+        }}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
       />
 
       {/* Main Content View */}
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-16">
         {activeTab === 'store' ? (
           <div>
-            {/* Store Hero Banner */}
+            {/* Amazon-style Promotional Banner */}
             <Hero tenant={activeTenant} />
 
-            {/* Filter & Catalog Controls (Amazon/Flipkart inspired) */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-neutral-800">
-                
-                {/* Search Bar with Autocomplete Suggestions */}
-                <div ref={searchContainerRef} className="relative flex-1 max-w-lg">
-                  <div className="relative">
-                    <Search className="w-4 h-4 text-neutral-500 absolute left-4 top-3.5" />
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                      placeholder={`Search in ${activeTenant?.name || 'store'} (e.g. shoes, coffee, ceramics)...`}
-                      className="w-full pl-11 pr-10 py-3 rounded-2xl bg-neutral-900 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 transition shadow-inner"
-                    />
-                    {search && (
-                      <button
-                        onClick={() => setSearch('')}
-                        className="absolute right-3.5 top-3.5 text-neutral-500 hover:text-white"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
+            {/* Marketplace Body Container */}
+            <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+              
+              {/* Category Quick Shortcut Strip (Flipkart/Amazon circle style) */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm mb-6 flex items-center justify-between gap-4 overflow-x-auto">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`flex flex-col items-center gap-1.5 min-w-[70px] py-1 px-2 rounded-xl transition ${
+                      selectedCategory === cat
+                        ? 'text-cyan-700 font-extrabold'
+                        : 'text-slate-600 hover:text-slate-900 font-semibold'
+                    }`}
+                  >
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-lg border transition ${
+                        selectedCategory === cat
+                          ? 'bg-cyan-50 border-cyan-500 shadow-sm'
+                          : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {cat === 'All' ? '⚡' : cat.includes('Coffee') ? '☕' : cat.includes('Tops') || cat.includes('Runners') ? '👟' : '🛋️'}
+                    </div>
+                    <span className="text-[11px] whitespace-nowrap">{cat}</span>
+                  </button>
+                ))}
+              </div>
 
-                  {/* Autocomplete Dropdown */}
-                  <AnimatePresence>
-                    {showSuggestions && suggestions.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        className="absolute left-0 right-0 mt-2 bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl py-2 z-30"
-                      >
-                        <div className="px-4 py-1 text-[10px] font-black uppercase text-neutral-500 tracking-wider">
-                          Suggested Matching Products
-                        </div>
-                        {suggestions.map((item) => (
-                          <div
-                            key={item._id}
-                            onClick={() => {
-                              setViewProduct(item);
-                              setShowSuggestions(false);
-                            }}
-                            className="flex items-center justify-between px-4 py-2 hover:bg-neutral-800 cursor-pointer transition text-xs"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              {item.thumbnail && (
-                                <img
-                                  src={item.thumbnail}
-                                  alt=""
-                                  className="w-7 h-7 rounded-lg object-cover"
-                                />
-                              )}
-                              <span className="font-bold text-white">{item.title}</span>
-                              <span className="text-[10px] text-neutral-400">({item.category})</span>
-                            </div>
-                            <span className="font-mono font-bold text-emerald-400">
-                              ₹{item.price ? item.price.toLocaleString('en-IN') : '0'}
-                            </span>
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+              {/* Filter & Sorting Controls Strip */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div className="text-xs text-slate-600">
+                  Showing <strong className="text-slate-900">{filteredProducts.length}</strong> items in{' '}
+                  <span className="text-cyan-700 font-bold">{selectedCategory}</span>
                 </div>
 
-                {/* Filter Chips & Sorting */}
                 <div className="flex flex-wrap items-center gap-3">
-                  {/* Category Pills */}
-                  <div className="flex items-center gap-1.5 overflow-x-auto py-1 max-w-md">
-                    {categories.map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-black transition whitespace-nowrap ${
-                          selectedCategory === cat
-                            ? 'bg-emerald-500 text-neutral-950 shadow-md'
-                            : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-
                   {/* Price Filter Selector */}
-                  <select
-                    value={priceRange}
-                    onChange={(e) => setPriceRange(e.target.value)}
-                    className="border border-neutral-800 bg-neutral-900 rounded-xl px-3 py-2 text-xs text-neutral-300 font-bold focus:outline-none cursor-pointer"
-                  >
-                    <option value="all">All Prices</option>
-                    <option value="under1000">Under ₹1,000</option>
-                    <option value="1000to5000">₹1,000 to ₹5,000</option>
-                    <option value="5000to15000">₹5,000 to ₹15,000</option>
-                    <option value="above15000">Above ₹15,000</option>
-                  </select>
-
-                  {/* Sort selector */}
-                  <div className="flex items-center gap-2 border border-neutral-800 bg-neutral-900 rounded-xl px-3 py-2 text-xs">
-                    <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-slate-500 font-semibold">Price:</span>
                     <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="bg-transparent text-neutral-300 font-bold focus:outline-none cursor-pointer"
+                      value={priceRange}
+                      onChange={(e) => setPriceRange(e.target.value)}
+                      className="border border-slate-200 bg-slate-50 rounded-xl px-3 py-2 text-xs text-slate-800 font-bold focus:outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer"
                     >
-                      <option value="featured" className="bg-neutral-900">Featured</option>
-                      <option value="price-low" className="bg-neutral-900">Price: Low to High</option>
-                      <option value="price-high" className="bg-neutral-900">Price: High to Low</option>
-                      <option value="rating" className="bg-neutral-900">Highest Rated</option>
+                      <option value="all">All Prices</option>
+                      <option value="under1000">Under ₹1,000</option>
+                      <option value="1000to5000">₹1,000 to ₹5,000</option>
+                      <option value="5000to15000">₹5,000 to ₹15,000</option>
+                      <option value="above15000">Above ₹15,000</option>
                     </select>
                   </div>
-                </div>
 
+                  {/* Sort selector */}
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-slate-500 font-semibold">Sort:</span>
+                    <div className="flex items-center gap-1.5 border border-slate-200 bg-slate-50 rounded-xl px-3 py-2">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="bg-transparent text-slate-800 font-bold focus:outline-none cursor-pointer"
+                      >
+                        <option value="featured">Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Avg. Customer Review</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Products Catalog Grid */}
-              <div className="mt-8">
+              <div>
                 {loading ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     {[1, 2, 3, 4].map((n) => (
                       <div
                         key={n}
-                        className="h-96 rounded-3xl bg-neutral-900/50 animate-pulse border border-neutral-800"
+                        className="h-96 rounded-2xl bg-white border border-slate-200 animate-pulse"
                       />
                     ))}
                   </div>
                 ) : filteredProducts.length === 0 ? (
-                  <div className="text-center py-20 bg-neutral-900/40 rounded-3xl border border-neutral-800/80">
-                    <p className="text-4xl mb-2">🔍</p>
-                    <h3 className="text-lg font-bold text-white">No products match your criteria</h3>
-                    <p className="text-xs text-neutral-400 mt-1">
-                      Try resetting your price filter or search query.
+                  <div className="text-center py-24 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                    <p className="text-5xl mb-3">🔍</p>
+                    <h3 className="text-lg font-bold text-slate-900">No matching products found</h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Try clearing your search terms or selecting "All Prices".
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     {filteredProducts.map((product) => (
                       <ProductCard
                         key={product._id}
@@ -418,6 +388,7 @@ export default function App() {
                   </div>
                 )}
               </div>
+
             </div>
           </div>
         ) : (
@@ -491,20 +462,67 @@ export default function App() {
         onRemoveWishlist={(id) => setWishlist((prev) => prev.filter((w) => w._id !== id))}
       />
 
-      {/* Footer */}
-      <footer className="border-t border-neutral-800/80 bg-neutral-950 py-10 text-center text-xs text-neutral-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Amazon-style Structured Footer */}
+      <footer className="bg-[#0f172a] text-slate-300 text-xs">
+        {/* Back to top button */}
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="w-full py-3.5 bg-[#1e293b] hover:bg-slate-700 text-center font-bold text-white transition text-xs"
+        >
+          Back to top
+        </button>
+
+        <div className="max-w-[1500px] mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-slate-800">
+          <div>
+            <h5 className="font-black text-white text-sm mb-3">Get to Know Us</h5>
+            <ul className="space-y-2 text-slate-400">
+              <li className="hover:text-white cursor-pointer">About Multi-Tenant Market</li>
+              <li className="hover:text-white cursor-pointer">Careers & Leadership</li>
+              <li className="hover:text-white cursor-pointer">Press Releases</li>
+              <li className="hover:text-white cursor-pointer">Omni Science</li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="font-black text-white text-sm mb-3">Connect with Us</h5>
+            <ul className="space-y-2 text-slate-400">
+              <li className="hover:text-white cursor-pointer">Facebook</li>
+              <li className="hover:text-white cursor-pointer">Twitter / X</li>
+              <li className="hover:text-white cursor-pointer">Instagram</li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="font-black text-white text-sm mb-3">Make Money with Us</h5>
+            <ul className="space-y-2 text-slate-400">
+              <li className="hover:text-white cursor-pointer" onClick={() => setIsCreateStoreOpen(true)}>
+                Sell on OmniMarket
+              </li>
+              <li className="hover:text-white cursor-pointer">Protect and Build Your Brand</li>
+              <li className="hover:text-white cursor-pointer">Supply to OmniMarket</li>
+              <li className="hover:text-white cursor-pointer">Fulfillment by Omni</li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="font-black text-white text-sm mb-3">Let Us Help You</h5>
+            <ul className="space-y-2 text-slate-400">
+              <li className="hover:text-white cursor-pointer" onClick={() => setIsAuthOpen(true)}>Your Account</li>
+              <li className="hover:text-white cursor-pointer" onClick={() => setIsTrackingOpen(true)}>Returns Centre & Tracking</li>
+              <li className="hover:text-white cursor-pointer">100% Purchase Protection</li>
+              <li className="hover:text-white cursor-pointer">Help & FAQs</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="max-w-[1500px] mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
           <div className="flex items-center gap-2">
             <span className="text-xl">🛍️</span>
-            <span className="font-black text-white text-sm">OmniStore Next-Gen Marketplace</span>
+            <span className="font-black text-white text-sm">OmniMarket Prime</span>
           </div>
-          <div className="flex gap-6 text-[11px] text-neutral-400 font-semibold">
-            <span>Multi-Tenant Architecture</span>
-            <span>Verified Adapters</span>
-            <span>Live Carrier Tracking</span>
-            <span>Real-Time Catalog Sync</span>
+          <div className="flex gap-4">
+            <span className="hover:text-white cursor-pointer">Conditions of Use & Sale</span>
+            <span className="hover:text-white cursor-pointer">Privacy Notice</span>
+            <span className="hover:text-white cursor-pointer">Interest-Based Ads</span>
           </div>
-          <p className="text-[11px] text-neutral-600">&copy; {new Date().getFullYear()} OmniStore Platform.</p>
+          <p>© {new Date().getFullYear()}, OmniMarket.in, Inc. or its affiliates</p>
         </div>
       </footer>
     </div>
