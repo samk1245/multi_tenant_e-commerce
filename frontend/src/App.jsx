@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Search, SlidersHorizontal, ArrowUpDown, Star, RotateCcw, Filter, Tag, Check, IndianRupee } from 'lucide-react';
 import { api } from './api';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,6 +9,22 @@ import CartDrawer from './components/CartDrawer';
 import CheckoutModal from './components/CheckoutModal';
 import MerchantDashboard from './components/MerchantDashboard';
 import CreateStoreModal from './components/CreateStoreModal';
+import { formatCurrency } from './utils/formatters';
+
+const PRICE_PRESETS = [
+  { id: 'all', label: 'All Prices', min: 0, max: Infinity },
+  { id: 'under-1k', label: 'Under ₹1,000', min: 0, max: 1000 },
+  { id: '1k-5k', label: '₹1,000 - ₹5,000', min: 1000, max: 5000 },
+  { id: '5k-15k', label: '₹5,000 - ₹15,000', min: 5000, max: 15000 },
+  { id: 'above-15k', label: 'Above ₹15,000', min: 15000, max: Infinity },
+];
+
+const RATING_PRESETS = [
+  { id: 'all', label: 'All Ratings', min: 0 },
+  { id: '4.5', label: '4.5★ & above', min: 4.5 },
+  { id: '4.0', label: '4.0★ & above', min: 4.0 },
+  { id: '3.5', label: '3.5★ & above', min: 3.5 },
+];
 
 export default function App() {
   const [tenants, setTenants] = useState([]);
@@ -19,7 +35,12 @@ export default function App() {
   // Filters & Search
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedPricePreset, setSelectedPricePreset] = useState('all');
+  const [minPriceInput, setMinPriceInput] = useState('');
+  const [maxPriceInput, setMaxPriceInput] = useState('');
+  const [selectedRating, setSelectedRating] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
+  const [showFiltersMobile, setShowFiltersMobile] = useState(false);
 
   // Cart & UI Modals
   const [cart, setCart] = useState([]);
@@ -54,7 +75,12 @@ export default function App() {
       try {
         const productList = await api.getProducts(activeTenant.slug);
         setProducts(productList);
+        // Reset category and search on store change
         setSelectedCategory('All');
+        setSelectedPricePreset('all');
+        setMinPriceInput('');
+        setMaxPriceInput('');
+        setSelectedRating('all');
         setSearch('');
       } catch (err) {
         console.error("Failed to load products:", err);
@@ -66,22 +92,91 @@ export default function App() {
   }, [activeTenant?._id]);
 
   // Derived categories for the active store
-  const categories = ['All', ...new Set(products.map((p) => p.category))];
+  const categories = useMemo(() => {
+    return ['All', ...new Set(products.map((p) => p.category))];
+  }, [products]);
+
+  // Active filters count
+  const isFiltered = useMemo(() => {
+    return (
+      selectedCategory !== 'All' ||
+      selectedPricePreset !== 'all' ||
+      minPriceInput !== '' ||
+      maxPriceInput !== '' ||
+      selectedRating !== 'all' ||
+      search.trim() !== ''
+    );
+  }, [selectedCategory, selectedPricePreset, minPriceInput, maxPriceInput, selectedRating, search]);
+
+  const handleResetFilters = () => {
+    setSelectedCategory('All');
+    setSelectedPricePreset('all');
+    setMinPriceInput('');
+    setMaxPriceInput('');
+    setSelectedRating('all');
+    setSearch('');
+    setSortBy('featured');
+  };
 
   // Filtered & Sorted products
-  const filteredProducts = products
-    .filter((p) => {
-      const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
-      const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
-        p.description?.toLowerCase().includes(search.toLowerCase());
-      return matchesCategory && matchesSearch;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'price-low') return a.price - b.price;
-      if (sortBy === 'price-high') return b.price - a.price;
-      if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-      return 0; // default featured
-    });
+  const filteredProducts = useMemo(() => {
+    return products
+      .filter((p) => {
+        // Category filter
+        if (selectedCategory !== 'All' && p.category !== selectedCategory) {
+          return false;
+        }
+
+        // Search filter
+        if (search.trim()) {
+          const q = search.toLowerCase();
+          const matchTitle = p.title.toLowerCase().includes(q);
+          const matchDesc = p.description?.toLowerCase().includes(q);
+          const matchCat = p.category?.toLowerCase().includes(q);
+          const matchBrand = p.brand?.toLowerCase().includes(q);
+          if (!matchTitle && !matchDesc && !matchCat && !matchBrand) return false;
+        }
+
+        // Price range filter
+        let minP = 0;
+        let maxP = Infinity;
+
+        if (minPriceInput !== '' && !isNaN(Number(minPriceInput))) {
+          minP = Number(minPriceInput);
+        }
+        if (maxPriceInput !== '' && !isNaN(Number(maxPriceInput))) {
+          maxP = Number(maxPriceInput);
+        }
+
+        if (selectedPricePreset !== 'all' && minPriceInput === '' && maxPriceInput === '') {
+          const preset = PRICE_PRESETS.find((pr) => pr.id === selectedPricePreset);
+          if (preset) {
+            minP = preset.min;
+            maxP = preset.max;
+          }
+        }
+
+        if (p.price < minP || p.price > maxP) {
+          return false;
+        }
+
+        // Rating filter
+        if (selectedRating !== 'all') {
+          const minRating = Number(selectedRating);
+          if ((p.rating || 0) < minRating) return false;
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'price-low') return a.price - b.price;
+        if (sortBy === 'price-high') return b.price - a.price;
+        if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+        if (sortBy === 'reviews') return (b.reviewsCount || b.reviews?.length || 0) - (a.reviewsCount || a.reviews?.length || 0);
+        if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+        return 0; // default featured
+      });
+  }, [products, selectedCategory, search, selectedPricePreset, minPriceInput, maxPriceInput, selectedRating, sortBy]);
 
   // Cart operations
   const handleAddToCart = (product) => {
@@ -135,6 +230,7 @@ export default function App() {
         shipping: checkoutData.shipping,
         tax: checkoutData.tax,
         totalAmount: checkoutData.total,
+        currency: 'INR',
       };
 
       const res = await api.createOrder(activeTenant._id, orderPayload);
@@ -156,7 +252,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-100">
-      {/* Top Navbar */}
+      {/* Top Navbar with Multi-Tenant Switcher */}
       <Navbar
         tenants={tenants}
         activeTenant={activeTenant}
@@ -165,7 +261,7 @@ export default function App() {
         onOpenCart={() => setIsCartOpen(true)}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        onOpenCreateStore={() => setIsCreateStoreOpen(true)}
+        onOpenCreateStore={() => setIsCreateStoreOpen(false)}
       />
 
       {/* Main Content Area */}
@@ -177,53 +273,187 @@ export default function App() {
 
             {/* Filter & Catalog Controls */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-neutral-800">
-                
-                {/* Search */}
-                <div className="relative flex-1 max-w-md">
-                  <Search className="w-4 h-4 text-neutral-500 absolute left-3.5 top-3" />
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder={`Search ${activeTenant?.name || 'catalog'}...`}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 transition shadow-inner"
-                  />
+              
+              {/* Search, Categories & Quick Sort Bar */}
+              <div className="flex flex-col gap-4 pb-6 border-b border-neutral-800">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  {/* Search */}
+                  <div className="relative flex-1 max-w-md">
+                    <Search className="w-4 h-4 text-neutral-500 absolute left-3.5 top-3" />
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder={`Search ${activeTenant?.name || 'catalog'} by title, brand, tag...`}
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 transition shadow-inner"
+                    />
+                    {search && (
+                      <button
+                        onClick={() => setSearch('')}
+                        className="absolute right-3 top-2.5 text-xs text-neutral-500 hover:text-white"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Mobile Filters Toggle & Sort */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setShowFiltersMobile(!showFiltersMobile)}
+                      className={`md:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                        isFiltered
+                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                          : 'bg-neutral-900 text-neutral-300 border-neutral-800'
+                      }`}
+                    >
+                      <Filter className="w-3.5 h-3.5" />
+                      <span>Filters {isFiltered && '•'}</span>
+                    </button>
+
+                    {/* Sort selector */}
+                    <div className="flex items-center gap-2 border border-neutral-800 bg-neutral-900 rounded-xl px-3 py-2 text-xs">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="bg-transparent text-neutral-300 font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="featured" className="bg-neutral-900">Featured Collections</option>
+                        <option value="price-low" className="bg-neutral-900">Price: Low to High</option>
+                        <option value="price-high" className="bg-neutral-900">Price: High to Low</option>
+                        <option value="rating" className="bg-neutral-900">Customer Rating (Highest)</option>
+                        <option value="reviews" className="bg-neutral-900">Most Customer Reviews</option>
+                        <option value="newest" className="bg-neutral-900">Newest Arrivals</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Categories & Sorting */}
-                <div className="flex flex-wrap items-center gap-3">
-                  {/* Category Pills */}
-                  <div className="flex items-center gap-1.5 overflow-x-auto py-1">
-                    {categories.map((cat) => (
+                {/* Category Pills Slider */}
+                <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 flex items-center gap-1 mr-1">
+                    <Tag className="w-3 h-3" /> Categories:
+                  </span>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 ${
+                        selectedCategory === cat
+                          ? 'bg-emerald-500 text-neutral-950 shadow-md font-extrabold'
+                          : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                      }`}
+                    >
+                      {cat}
+                      {cat !== 'All' && (
+                        <span className={`text-[10px] px-1 rounded ${
+                          selectedCategory === cat ? 'bg-neutral-950/30 text-neutral-950' : 'bg-neutral-800 text-neutral-500'
+                        }`}>
+                          {products.filter((p) => p.category === cat).length}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Comprehensive Secondary Filter Bar (Price Ranges & Rating Filters) */}
+                <div className={`pt-3 border-t border-neutral-800/80 flex flex-wrap items-center justify-between gap-4 ${showFiltersMobile ? 'block' : 'hidden md:flex'}`}>
+                  
+                  {/* Left: Price Range Preset Chips */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mr-1 flex items-center gap-1">
+                      <IndianRupee className="w-3 h-3" /> Price:
+                    </span>
+                    {PRICE_PRESETS.map((preset) => (
                       <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-                          selectedCategory === cat
-                            ? 'bg-emerald-500 text-neutral-950 shadow-md'
+                        key={preset.id}
+                        onClick={() => {
+                          setSelectedPricePreset(preset.id);
+                          setMinPriceInput('');
+                          setMaxPriceInput('');
+                        }}
+                        className={`px-2.5 py-1 rounded-md text-xs transition ${
+                          selectedPricePreset === preset.id && minPriceInput === '' && maxPriceInput === ''
+                            ? 'bg-neutral-100 text-neutral-950 font-bold'
                             : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
                         }`}
                       >
-                        {cat}
+                        {preset.label}
                       </button>
                     ))}
+
+                    {/* Custom Min / Max Price Inputs */}
+                    <div className="flex items-center gap-1.5 ml-2">
+                      <input
+                        type="number"
+                        placeholder="Min ₹"
+                        value={minPriceInput}
+                        onChange={(e) => {
+                          setMinPriceInput(e.target.value);
+                          setSelectedPricePreset('custom');
+                        }}
+                        className="w-18 px-2 py-1 rounded bg-neutral-900 border border-neutral-800 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                      />
+                      <span className="text-neutral-500 text-xs">-</span>
+                      <input
+                        type="number"
+                        placeholder="Max ₹"
+                        value={maxPriceInput}
+                        onChange={(e) => {
+                          setMaxPriceInput(e.target.value);
+                          setSelectedPricePreset('custom');
+                        }}
+                        className="w-18 px-2 py-1 rounded bg-neutral-900 border border-neutral-800 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
                   </div>
 
-                  {/* Sort selector */}
-                  <div className="flex items-center gap-2 border border-neutral-800 bg-neutral-900 rounded-lg px-3 py-1.5 text-xs">
-                    <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="bg-transparent text-neutral-300 font-semibold focus:outline-none cursor-pointer"
-                    >
-                      <option value="featured" className="bg-neutral-900">Featured</option>
-                      <option value="price-low" className="bg-neutral-900">Price: Low to High</option>
-                      <option value="price-high" className="bg-neutral-900">Price: High to Low</option>
-                      <option value="rating" className="bg-neutral-900">Highest Rated</option>
-                    </select>
+                  {/* Right: Minimum Rating Filter */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mr-1 flex items-center gap-1">
+                      <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> Rating:
+                    </span>
+                    {RATING_PRESETS.map((rp) => (
+                      <button
+                        key={rp.id}
+                        onClick={() => setSelectedRating(rp.id)}
+                        className={`px-2.5 py-1 rounded-md text-xs transition flex items-center gap-1 ${
+                          selectedRating === rp.id
+                            ? 'bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40'
+                            : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                        }`}
+                      >
+                        {rp.label}
+                      </button>
+                    ))}
+
+                    {/* Reset Filters Button */}
+                    {isFiltered && (
+                      <button
+                        onClick={handleResetFilters}
+                        className="ml-2 flex items-center gap-1 px-2.5 py-1 rounded-md bg-neutral-800 hover:bg-neutral-700 text-rose-400 text-xs font-semibold transition"
+                        title="Clear all active filters"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Reset</span>
+                      </button>
+                    )}
                   </div>
+
+                </div>
+
+                {/* Filter Summary */}
+                <div className="flex items-center justify-between text-xs text-neutral-400 pt-1">
+                  <div>
+                    Showing <span className="font-bold text-white">{filteredProducts.length}</span> of {products.length} products
+                    {selectedCategory !== 'All' && <span> in <span className="text-emerald-400 font-semibold">{selectedCategory}</span></span>}
+                  </div>
+                  {isFiltered && (
+                    <span className="text-emerald-400 text-[11px] font-semibold">
+                      Filters applied
+                    </span>
+                  )}
                 </div>
 
               </div>
@@ -232,15 +462,23 @@ export default function App() {
               <div className="mt-8">
                 {loading ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {[1, 2, 3, 4].map((n) => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                       <div key={n} className="h-96 rounded-2xl bg-neutral-900/50 animate-pulse border border-neutral-800" />
                     ))}
                   </div>
                 ) : filteredProducts.length === 0 ? (
                   <div className="text-center py-20 bg-neutral-900/40 rounded-3xl border border-neutral-800/80">
-                    <p className="text-4xl mb-2">🔍</p>
-                    <h3 className="text-lg font-bold text-white">No products found</h3>
-                    <p className="text-xs text-neutral-400 mt-1">Try relaxing your search terms or category filter.</p>
+                    <p className="text-5xl mb-3">🔍</p>
+                    <h3 className="text-lg font-bold text-white">No products found matching filters</h3>
+                    <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
+                      Try adjusting or resetting your price range, star rating, or category selection.
+                    </p>
+                    <button
+                      onClick={handleResetFilters}
+                      className="mt-5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition"
+                    >
+                      Clear All Filters
+                    </button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -285,7 +523,7 @@ export default function App() {
         orderSuccess={orderSuccess}
       />
 
-      {/* Quick View Product Modal */}
+      {/* Quick View Product Modal with Reviews */}
       <ProductModal
         product={viewProduct}
         isOpen={!!viewProduct}
@@ -301,9 +539,19 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="border-t border-neutral-800/80 bg-neutral-950 py-8 text-center text-xs text-neutral-500">
-        <p className="font-semibold text-neutral-400">OmniStore &bull; Enterprise Multi-Tenant E-Commerce Platform</p>
-        <p className="mt-1">Isolated Databases &bull; Subdomain Multi-tenancy &bull; Merchant Dashboards</p>
+      <footer className="border-t border-neutral-800/80 bg-neutral-950 py-10 text-center text-xs text-neutral-500">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="font-semibold text-neutral-400">
+            OmniStore &bull; Enterprise Multi-Tenant E-Commerce Platform
+          </p>
+          <div className="flex items-center gap-4 text-[11px] text-neutral-400">
+            <span>₹ INR Verified Pricing</span>
+            <span>&bull;</span>
+            <span>Instant Ratings & Reviews</span>
+            <span>&bull;</span>
+            <span>Customer Cart & Checkout</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

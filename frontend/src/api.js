@@ -57,6 +57,20 @@ export const api = {
     return await res.json();
   },
 
+  async getProduct(productId) {
+    const res = await fetch(`${BASE_URL}/products/${productId}`);
+    return await res.json();
+  },
+
+  async addProductReview(productId, reviewData) {
+    const res = await fetch(`${BASE_URL}/products/${productId}/reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reviewData),
+    });
+    return await res.json();
+  },
+
   async getTenantAnalytics(tenantId) {
     const res = await fetch(`${BASE_URL}/tenants/${tenantId}/analytics`);
     const data = await res.json();

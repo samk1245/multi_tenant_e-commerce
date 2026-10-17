@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
+import { formatCurrency } from '../utils/formatters';
 
 export default function CartDrawer({
   isOpen,
@@ -17,8 +18,9 @@ export default function CartDrawer({
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discountAmount = (subtotal * discountPercent) / 100;
-  const shipping = subtotal > 150 || subtotal === 0 ? 0 : 15;
-  const tax = (subtotal - discountAmount) * 0.08;
+  const shippingThreshold = 999;
+  const shipping = subtotal >= shippingThreshold || subtotal === 0 ? 0 : 99;
+  const tax = Math.round((subtotal - discountAmount) * 0.05); // 5% GST
   const total = Math.max(0, subtotal - discountAmount + shipping + tax);
 
   const applyCoupon = (e) => {
@@ -61,19 +63,19 @@ export default function CartDrawer({
 
           {/* Shipping Progress */}
           <div className="px-6 py-3 bg-neutral-950/60 border-b border-neutral-800/80 text-xs">
-            {subtotal >= 150 ? (
+            {subtotal >= shippingThreshold ? (
               <p className="text-emerald-400 font-bold flex items-center gap-1.5">
-                🎉 Congratulations! You unlocked FREE Standard Shipping!
+                🎉 Congratulations! You unlocked FREE Express Delivery!
               </p>
             ) : (
               <div>
                 <p className="text-neutral-400 mb-1.5">
-                  Add <span className="text-white font-bold">${(150 - subtotal).toFixed(2)}</span> more to unlock <span className="text-emerald-400 font-bold">FREE Shipping</span>
+                  Add <span className="text-white font-bold">{formatCurrency(shippingThreshold - subtotal)}</span> more to unlock <span className="text-emerald-400 font-bold">FREE Delivery</span>
                 </p>
                 <div className="w-full h-1.5 bg-neutral-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min(100, (subtotal / 150) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (subtotal / shippingThreshold) * 100)}%` }}
                   />
                 </div>
               </div>
@@ -86,7 +88,7 @@ export default function CartDrawer({
               <div className="text-center py-16 text-neutral-400">
                 <p className="text-4xl mb-3">🛒</p>
                 <p className="text-base font-semibold text-neutral-300">Your cart is empty</p>
-                <p className="text-xs mt-1">Explore our products and find something you love!</p>
+                <p className="text-xs mt-1">Explore our catalog and discover premier curated products!</p>
               </div>
             ) : (
               items.map((item) => (
@@ -102,7 +104,7 @@ export default function CartDrawer({
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-bold text-white truncate">{item.title}</h4>
                     <p className="text-xs text-emerald-400 font-bold mt-0.5">
-                      ${item.price.toFixed(2)}
+                      {formatCurrency(item.price)}
                     </p>
 
                     <div className="flex items-center justify-between mt-3">
@@ -168,27 +170,27 @@ export default function CartDrawer({
               <div className="space-y-1.5 text-xs text-neutral-400 pt-2 border-t border-neutral-800/80">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="text-neutral-200 font-semibold">${subtotal.toFixed(2)}</span>
+                  <span className="text-neutral-200 font-semibold">{formatCurrency(subtotal)}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-emerald-400">
                     <span>Discount</span>
-                    <span>-${discountAmount.toFixed(2)}</span>
+                    <span>-{formatCurrency(discountAmount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span>Estimated Shipping</span>
+                  <span>Estimated Delivery</span>
                   <span className="text-neutral-200 font-semibold">
-                    {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? 'FREE' : formatCurrency(shipping)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Estimated Tax (8%)</span>
-                  <span className="text-neutral-200 font-semibold">${tax.toFixed(2)}</span>
+                  <span>Estimated GST (5%)</span>
+                  <span className="text-neutral-200 font-semibold">{formatCurrency(tax)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-extrabold text-white pt-2 border-t border-neutral-800">
                   <span>Total Amount</span>
-                  <span className="text-emerald-400 text-base">${total.toFixed(2)}</span>
+                  <span className="text-emerald-400 text-base">{formatCurrency(total)}</span>
                 </div>
               </div>
 

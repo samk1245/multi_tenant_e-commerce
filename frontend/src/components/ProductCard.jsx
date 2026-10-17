@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, ShoppingCart, Eye } from 'lucide-react';
+import { formatCurrency } from '../utils/formatters';
 
 export default function ProductCard({ product, onAddToCart, onQuickView }) {
   return (
@@ -7,7 +8,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView }) {
       {/* Product Image */}
       <div className="relative aspect-square overflow-hidden bg-neutral-950">
         <img
-          src={product.thumbnail || product.images[0] || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80'}
+          src={product.thumbnail || product.images?.[0] || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80'}
           alt={product.title}
           className="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
           loading="lazy"
@@ -24,7 +25,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView }) {
         <button
           onClick={() => onQuickView(product)}
           className="absolute top-3 right-3 p-2 rounded-full bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-neutral-700/60 opacity-0 group-hover:opacity-100 transition duration-200 backdrop-blur-md"
-          title="Quick View"
+          title="Quick View & Reviews"
         >
           <Eye className="w-4 h-4" />
         </button>
@@ -39,8 +40,8 @@ export default function ProductCard({ product, onAddToCart, onQuickView }) {
             </span>
             <div className="flex items-center gap-1">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-neutral-200">{product.rating || '4.9'}</span>
-              <span>({product.reviewsCount || 12})</span>
+              <span className="font-bold text-neutral-200">{(product.rating || 4.8).toFixed(1)}</span>
+              <span className="text-[11px] text-neutral-500">({product.reviewsCount || product.reviews?.length || 12})</span>
             </div>
           </div>
 
@@ -48,7 +49,7 @@ export default function ProductCard({ product, onAddToCart, onQuickView }) {
             {product.title}
           </h3>
 
-          <p className="mt-1 text-xs text-neutral-400 line-clamp-2">
+          <p className="mt-1 text-xs text-neutral-400 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
         </div>
@@ -58,15 +59,15 @@ export default function ProductCard({ product, onAddToCart, onQuickView }) {
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-black text-white">
-                ${product.price.toFixed(2)}
+                {formatCurrency(product.price)}
               </span>
               {product.compareAtPrice && (
                 <span className="text-xs text-neutral-500 line-through">
-                  ${product.compareAtPrice.toFixed(2)}
+                  {formatCurrency(product.compareAtPrice)}
                 </span>
               )}
             </div>
-            <div className="text-[11px] text-neutral-400">
+            <div className="text-[11px] text-neutral-400 mt-0.5">
               {product.stock > 0 ? (
                 <span className="text-emerald-400 font-medium">&bull; {product.stock} in stock</span>
               ) : (

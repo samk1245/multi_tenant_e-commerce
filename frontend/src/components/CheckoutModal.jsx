@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, ShieldCheck } from 'lucide-react';
+import { X, CheckCircle, ShieldCheck, CreditCard, Banknote, Smartphone } from 'lucide-react';
+import { formatCurrency } from '../utils/formatters';
 
 export default function CheckoutModal({
   isOpen,
@@ -9,13 +10,14 @@ export default function CheckoutModal({
   orderSuccess,
 }) {
   const [formData, setFormData] = useState({
-    name: 'Alex Rivera',
-    email: 'alex.rivera@example.com',
-    phone: '+1 (555) 987-6543',
-    street: '725 5th Avenue, Suite 400',
-    city: 'New York',
-    state: 'NY',
-    zip: '10022',
+    name: 'Rahul Verma',
+    email: 'rahul.verma@example.com',
+    phone: '+91 98765 43210',
+    street: 'Flat 402, Sea View Apartments, Bandra West',
+    city: 'Mumbai',
+    state: 'Maharashtra',
+    zip: '400050',
+    paymentMethod: 'upi', // 'upi' | 'card' | 'cod'
   });
   const [loading, setLoading] = useState(false);
 
@@ -55,8 +57,14 @@ export default function CheckoutModal({
                 <span className="font-mono font-bold text-emerald-400">{orderSuccess.orderNumber}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-neutral-400">Total Paid:</span>
-                <span className="font-bold text-white">${orderSuccess.totalAmount.toFixed(2)}</span>
+                <span className="text-neutral-400">Total Paid / Payable:</span>
+                <span className="font-bold text-white">{formatCurrency(orderSuccess.totalAmount)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-400">Payment Option:</span>
+                <span className="font-bold text-emerald-400 uppercase">
+                  {formData.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Online Payment (Verified)'}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-400">Customer:</span>
@@ -82,7 +90,7 @@ export default function CheckoutModal({
             <div className="mb-6">
               <h3 className="text-xl font-black text-white">Complete Your Order</h3>
               <p className="text-xs text-neutral-400 mt-1">
-                Enter your shipping address to finalize your multi-tenant purchase.
+                Enter your delivery address and choose your preferred payment method.
               </p>
             </div>
 
@@ -113,6 +121,7 @@ export default function CheckoutModal({
                   <label className="block text-xs font-semibold text-neutral-300 mb-1">Phone Number</label>
                   <input
                     type="tel"
+                    required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg bg-neutral-950 border border-neutral-700 text-sm text-white focus:outline-none focus:border-emerald-500"
@@ -121,7 +130,7 @@ export default function CheckoutModal({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1">Street Address</label>
+                <label className="block text-xs font-semibold text-neutral-300 mb-1">Delivery Street Address</label>
                 <input
                   type="text"
                   required
@@ -153,7 +162,7 @@ export default function CheckoutModal({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1">ZIP Code</label>
+                  <label className="block text-xs font-semibold text-neutral-300 mb-1">PIN Code</label>
                   <input
                     type="text"
                     required
@@ -164,10 +173,57 @@ export default function CheckoutModal({
                 </div>
               </div>
 
+              {/* Payment Methods */}
+              <div className="pt-2">
+                <label className="block text-xs font-semibold text-neutral-300 mb-2">Select Payment Method</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, paymentMethod: 'upi' })}
+                    className={`p-2.5 rounded-xl border text-left flex flex-col items-center gap-1 transition ${
+                      formData.paymentMethod === 'upi'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                        : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    <Smartphone className="w-4 h-4" />
+                    <span className="text-[11px] font-bold">UPI / GPay</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, paymentMethod: 'card' })}
+                    className={`p-2.5 rounded-xl border text-left flex flex-col items-center gap-1 transition ${
+                      formData.paymentMethod === 'card'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                        : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span className="text-[11px] font-bold">Cards / NetBank</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, paymentMethod: 'cod' })}
+                    className={`p-2.5 rounded-xl border text-left flex flex-col items-center gap-1 transition ${
+                      formData.paymentMethod === 'cod'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                        : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                    }`}
+                  >
+                    <Banknote className="w-4 h-4" />
+                    <span className="text-[11px] font-bold">Cash On Delivery</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="pt-4 border-t border-neutral-800 flex items-center justify-between">
                 <div>
                   <span className="text-xs text-neutral-400">Total to charge:</span>
-                  <div className="text-xl font-black text-emerald-400">${cartData?.total.toFixed(2)}</div>
+                  <div className="text-xl font-black text-emerald-400">
+                    {formatCurrency(cartData?.total || 0)}
+                  </div>
                 </div>
 
                 <button
@@ -175,7 +231,7 @@ export default function CheckoutModal({
                   disabled={loading}
                   className="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-neutral-950 font-bold text-sm transition"
                 >
-                  {loading ? 'Processing...' : 'Pay & Place Order'}
+                  {loading ? 'Processing...' : 'Place Order'}
                 </button>
               </div>
             </form>
