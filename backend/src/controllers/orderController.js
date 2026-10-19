@@ -172,6 +172,10 @@ exports.getOrders = async (req, res, next) => {
       filter.userId = req.user._id;
     }
 
+    if (req.query.email) {
+      filter["customer.email"] = new RegExp(`^${req.query.email.trim()}$`, "i");
+    }
+
     const orders = await Order.find(filter).sort({ createdAt: -1 });
     res.json({ success: true, count: orders.length, data: orders });
   } catch (error) {

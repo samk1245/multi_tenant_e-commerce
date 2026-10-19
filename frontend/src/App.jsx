@@ -9,6 +9,7 @@ import CartDrawer from './components/CartDrawer';
 import CheckoutModal from './components/CheckoutModal';
 import MerchantDashboard from './components/MerchantDashboard';
 import CreateStoreModal from './components/CreateStoreModal';
+import ProfileModal from './components/ProfileModal';
 import { formatCurrency } from './utils/formatters';
 
 const PRICE_PRESETS = [
@@ -49,6 +50,7 @@ export default function App() {
   const [orderSuccess, setOrderSuccess] = useState(null);
   const [viewProduct, setViewProduct] = useState(null);
   const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('store'); // 'store' | 'admin'
 
   // Load Tenants on mount
@@ -227,9 +229,12 @@ export default function App() {
           thumbnail: i.thumbnail || i.images?.[0],
         })),
         subtotal: checkoutData.subtotal,
+        discount: checkoutData.discount || 0,
+        couponCode: checkoutData.couponCode || '',
         shipping: checkoutData.shipping,
         tax: checkoutData.tax,
         totalAmount: checkoutData.total,
+        paymentMethod: customerData.paymentMethod || 'upi',
         currency: 'INR',
       };
 
@@ -261,7 +266,8 @@ export default function App() {
         onOpenCart={() => setIsCartOpen(true)}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        onOpenCreateStore={() => setIsCreateStoreOpen(false)}
+        onOpenCreateStore={() => setIsCreateStoreOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -536,6 +542,15 @@ export default function App() {
         isOpen={isCreateStoreOpen}
         onClose={() => setIsCreateStoreOpen(false)}
         onStoreCreated={handleStoreCreated}
+      />
+
+      {/* User Profile, Orders & Rewards Modal */}
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        onApplyCoupon={(code) => {
+          setIsCartOpen(true);
+        }}
       />
 
       {/* Footer */}

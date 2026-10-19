@@ -94,4 +94,15 @@ export const api = {
     });
     return await res.json();
   },
+
+  async getUserOrders(email) {
+    const res = await fetch(`${BASE_URL}/orders?email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+    return data.data || [];
+  },
+
+  async getOrderTracking(orderId) {
+    const res = await fetch(`${BASE_URL}/orders/${orderId}/tracking`);
+    return await res.json();
+  },
 };

@@ -92,10 +92,27 @@ const seedDatabase = async () => {
       currency: "INR",
     });
 
-    console.log("Created 4 tenant stores with INR currency!");
+    const tenantFashion = await Tenant.create({
+      name: "Maison Luxe & Thread",
+      slug: "maison-luxe",
+      tagline: "Runway Silhouettes, Tailored Elegance & Contemporary Luxury",
+      description: "Curated luxury couture, hand-finished cashmere coats, sculpted silk gowns, and artisanal leather accessories.",
+      category: "Haute Couture & Designer Fashion",
+      logo: "👗",
+      bannerImage: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=80",
+      theme: {
+        primaryColor: "#ec4899",
+        accentColor: "#f472b6",
+        heroGradient: "from-fuchsia-950 via-rose-950 to-neutral-950",
+      },
+      contactEmail: "concierge@maisonluxe.in",
+      currency: "INR",
+    });
+
+    console.log("Created 5 tenant stores with INR currency!");
 
     // 2. Sneaker Vault Products
-    await Product.create([
+    const sneakerProducts = await Product.create([
       {
         tenantId: tenantSneakers._id,
         title: "Air Apex Retro '88 High",
@@ -725,9 +742,257 @@ const seedDatabase = async () => {
       }
     ]);
 
-    console.log("Created INR products across 4 stores with rich categories and reviews!");
+    // 6. Maison Luxe & Thread Fashion Products
+    const fashionProducts = await Product.create([
+      {
+        tenantId: tenantFashion._id,
+        title: "Cashmere Double-Breasted Trench Coat",
+        description: "Hand-finished Mongolian cashmere blend with storm flap, tortoiseshell horn buttons, and belted waist.",
+        price: 24999,
+        compareAtPrice: 32000,
+        category: "Jackets & Coats",
+        brand: "Maison Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80"],
+        stock: 10,
+        rating: 4.9,
+        reviewsCount: 42,
+        isFeatured: true,
+        badge: "RUNWAY EXCLUSIVE",
+        reviews: [
+          { userName: "Natasha Poonawalla", rating: 5, comment: "Drapes like a dream. The cashmere is ultra soft and luxurious.", createdAt: new Date("2026-09-12") },
+          { userName: "Tara Sutaria", rating: 5, comment: "Timeless silhouette. Best investment trench coat in India.", createdAt: new Date("2026-09-29") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Sculpted Italian Silk Slip Evening Dress",
+        description: "Pure mulberry silk charmeuse cut on the bias with delicate rouleau straps and open back drape in emerald noir.",
+        price: 14499,
+        compareAtPrice: 18999,
+        category: "Evening Dresses",
+        brand: "Luxe Couture",
+        thumbnail: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80"],
+        stock: 14,
+        rating: 5.0,
+        reviewsCount: 36,
+        isFeatured: true,
+        badge: "HOT DROP",
+        reviews: [
+          { userName: "Ananya Panday", rating: 5, comment: "Felt like royalty at the gala. Flawless silk quality.", createdAt: new Date("2026-09-18") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Tailored Oversized Wool Blazer in Noir",
+        description: "Structured shoulder pads, peaked lapels, and double-vented back tailored from 100% fine Italian merino wool.",
+        price: 12999,
+        compareAtPrice: 16500,
+        category: "Blazers & Suiting",
+        brand: "Maison Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80"],
+        stock: 22,
+        rating: 4.8,
+        reviewsCount: 58,
+        isFeatured: true,
+        badge: "BESTSELLER",
+        reviews: [
+          { userName: "Rhea Kapoor", rating: 5, comment: "The structure is sharp and masculine-feminine balance is spot on.", createdAt: new Date("2026-09-04") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Handcrafted Saffiano Leather Tote Bag",
+        description: "Scratch-resistant cross-grain Saffiano leather with gold-tone hardware, protective metal feet, and padded laptop sleeve.",
+        price: 18499,
+        compareAtPrice: 23000,
+        category: "Luxury Handbags",
+        brand: "L'Artisan Paris",
+        thumbnail: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80"],
+        stock: 12,
+        rating: 4.9,
+        reviewsCount: 29,
+        isFeatured: true,
+        badge: "ARTISANAL",
+        reviews: [
+          { userName: "Kareena Sengupta", rating: 5, comment: "Spacious enough for a MacBook Pro and looks so chic for meetings.", createdAt: new Date("2026-09-22") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Relaxed Pleated Wide-Leg Trousers",
+        description: "High-waisted fluid drape trousers with front knife pleats, slant pockets, and breathable tropical wool fabric.",
+        price: 5999,
+        compareAtPrice: 7999,
+        category: "Trousers & Bottoms",
+        brand: "Maison Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80"],
+        stock: 35,
+        rating: 4.7,
+        reviewsCount: 48,
+        isFeatured: false,
+        badge: "TRENDING",
+        reviews: [
+          { userName: "Pooja Hegde", rating: 5, comment: "Very flattering high-waist fit. Moves effortlessly with every step.", createdAt: new Date("2026-09-14") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Organic Pima Cotton Structured Shirt",
+        description: "Crisp long-staple organic Pima cotton button-down featuring mother-of-pearl buttons and exaggerated French cuffs.",
+        price: 4499,
+        compareAtPrice: 5999,
+        category: "Shirts & Tops",
+        brand: "Thread Studio",
+        thumbnail: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80"],
+        stock: 40,
+        rating: 4.8,
+        reviewsCount: 33,
+        isFeatured: false,
+        badge: "ESSENTIAL",
+        reviews: [
+          { userName: "Mira Rajput", rating: 5, comment: "Crispest white shirt in my closet. Washes well without losing sheen.", createdAt: new Date("2026-09-25") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Monogram Silk Twill Neck Scarf (70x70cm)",
+        description: "Hand-rolled edges on 100% heavyweight silk twill with geometric art-deco motif and lustrous finish.",
+        price: 2999,
+        compareAtPrice: 3999,
+        category: "Accessories",
+        brand: "Luxe Couture",
+        thumbnail: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=800&q=80"],
+        stock: 60,
+        rating: 4.9,
+        reviewsCount: 65,
+        isFeatured: false,
+        badge: "GIFT PICK",
+        reviews: [
+          { userName: "Dia Mirza", rating: 5, comment: "Versatile styling accessory. Tie it around tote bags or wear it as a neck scarf.", createdAt: new Date("2026-08-30") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Minimalist Gold-Plated Sculptural Choker",
+        description: "18K thick gold vermeil over recycled sterling silver with ergonomic open-collar contour and mirror finish.",
+        price: 3799,
+        compareAtPrice: 4999,
+        category: "Jewelry",
+        brand: "L'Artisan Paris",
+        thumbnail: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80"],
+        stock: 25,
+        rating: 4.8,
+        reviewsCount: 52,
+        isFeatured: false,
+        badge: "POPULAR",
+        reviews: [
+          { userName: "Sobhita Dhulipala", rating: 5, comment: "Architectural and minimalist. Pairs perfectly with evening blazers.", createdAt: new Date("2026-09-17") }
+        ]
+      }
+    ]);
 
-    // 6. Demo Users with Indian Addresses
+    console.log("Created INR products across 5 stores with rich categories and reviews!");
+
+    // 7. Seed Demo Orders for Customer (Profile Tab)
+    await Order.create([
+      {
+        tenantId: tenantFashion._id,
+        orderNumber: "ORD-94821-IN",
+        customer: {
+          name: "Rahul Verma",
+          email: "customer@example.com",
+          phone: "+91 91234 56789",
+          address: {
+            street: "Flat 402, Sea View Apartments, Bandra West",
+            city: "Mumbai",
+            state: "Maharashtra",
+            zip: "400050",
+            country: "India",
+          },
+        },
+        items: [
+          {
+            productId: fashionProducts[0]._id,
+            title: "Cashmere Double-Breasted Trench Coat",
+            price: 24999,
+            quantity: 1,
+            thumbnail: "https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80",
+          },
+          {
+            productId: fashionProducts[6]._id,
+            title: "Monogram Silk Twill Neck Scarf",
+            price: 2999,
+            quantity: 1,
+            thumbnail: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=800&q=80",
+          }
+        ],
+        subtotal: 27998,
+        discount: 5599,
+        couponCode: "FESTIVE20",
+        shipping: 0,
+        tax: 1120,
+        totalAmount: 23519,
+        paymentMethod: "upi",
+        paymentStatus: "paid",
+        shippingDetails: {
+          carrier: "BlueDart Express Air",
+          trackingNumber: "BD98472910IN",
+          estimatedDelivery: "Tomorrow by 2:00 PM",
+        },
+        orderStatus: "shipped",
+      },
+      {
+        tenantId: tenantSneakers._id,
+        orderNumber: "ORD-83910-IN",
+        customer: {
+          name: "Rahul Verma",
+          email: "customer@example.com",
+          phone: "+91 91234 56789",
+          address: {
+            street: "12/A Green Glen Layout, Bellandur",
+            city: "Bengaluru",
+            state: "Karnataka",
+            zip: "560103",
+            country: "India",
+          },
+        },
+        items: [
+          {
+            productId: sneakerProducts[0]._id,
+            title: "Air Apex Retro '88 High",
+            price: 14999,
+            quantity: 1,
+            thumbnail: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80",
+          }
+        ],
+        subtotal: 14999,
+        discount: 2250,
+        couponCode: "VIP15",
+        shipping: 0,
+        tax: 637,
+        totalAmount: 13386,
+        paymentMethod: "card",
+        paymentStatus: "paid",
+        shippingDetails: {
+          carrier: "Delhivery Surface Prime",
+          trackingNumber: "DLV8391038IN",
+          estimatedDelivery: "Delivered",
+        },
+        orderStatus: "delivered",
+      }
+    ]);
+
+    console.log("Created demo order records for Profile tracking!");
+
+    // 8. Demo Users with Indian Addresses
     await User.create([
       {
         name: "Samir Khan",

@@ -11,7 +11,7 @@ export default function CheckoutModal({
 }) {
   const [formData, setFormData] = useState({
     name: 'Rahul Verma',
-    email: 'rahul.verma@example.com',
+    email: 'customer@example.com',
     phone: '+91 98765 43210',
     street: 'Flat 402, Sea View Apartments, Bandra West',
     city: 'Mumbai',
