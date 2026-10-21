@@ -268,6 +268,63 @@ const seedDatabase = async () => {
         reviews: [
           { userName: "Ananya Roy", rating: 5, comment: "Brought my white sneakers back to life. High quality brush.", createdAt: new Date("2026-09-05") }
         ]
+      },
+      {
+        tenantId: tenantSneakers._id,
+        title: "Carbon Bearing High-Speed Pro Jump Rope",
+        description: "Aircraft-grade aluminum handles with dual ball-bearing system and 360-degree rotation for double-unders and boxing drills.",
+        price: 1499,
+        compareAtPrice: 1999,
+        category: "Fitness & Training Gear",
+        brand: "PulseLab",
+        thumbnail: "https://images.unsplash.com/photo-1544033527-b192daee1f5b?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1544033527-b192daee1f5b?auto=format&fit=crop&w=800&q=80"],
+        stock: 45,
+        rating: 4.8,
+        reviewsCount: 64,
+        isFeatured: false,
+        badge: "PRO FITNESS",
+        reviews: [
+          { userName: "Varun Verma", rating: 5, comment: "Fast and ultra-smooth. Best jump rope for CrossFit workouts.", createdAt: new Date("2026-09-12") }
+        ]
+      },
+      {
+        tenantId: tenantSneakers._id,
+        title: "Insulated Stainless Steel Gym Shaker (750ml)",
+        description: "Double-wall vacuum insulated stainless steel with leak-proof flip cap, measurement marks, and silent blending whisk.",
+        price: 1299,
+        compareAtPrice: 1699,
+        category: "Fitness & Training Gear",
+        brand: "PulseLab",
+        thumbnail: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80"],
+        stock: 55,
+        rating: 4.9,
+        reviewsCount: 82,
+        isFeatured: false,
+        badge: "BPA FREE",
+        reviews: [
+          { userName: "Karan Johar", rating: 5, comment: "Keeps protein shake freezing cold for hours in gym bag. Zero odor.", createdAt: new Date("2026-09-19") }
+        ]
+      },
+      {
+        tenantId: tenantSneakers._id,
+        title: "Heavy-Duty Fabric Resistance Bands Set (3-Pack)",
+        description: "Anti-slip elastic woven cotton bands in Light, Medium, and Heavy resistance levels with portable mesh carry pouch.",
+        price: 999,
+        compareAtPrice: 1499,
+        category: "Fitness & Training Gear",
+        brand: "PulseLab",
+        thumbnail: "https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?auto=format&fit=crop&w=800&q=80"],
+        stock: 60,
+        rating: 4.7,
+        reviewsCount: 47,
+        isFeatured: false,
+        badge: "UNDER 1K",
+        reviews: [
+          { userName: "Priya Nair", rating: 5, comment: "They don't roll up like cheap latex bands. High resistance.", createdAt: new Date("2026-09-24") }
+        ]
       }
     ]);
 
@@ -424,6 +481,44 @@ const seedDatabase = async () => {
         badge: "BESTSELLER",
         reviews: [
           { userName: "Kavita Das", rating: 5, comment: "Dine like in a fine restaurant every day. Feels substantial in hand.", createdAt: new Date("2026-09-25") }
+        ]
+      },
+      {
+        tenantId: tenantNordic._id,
+        title: "Ultrasonic Ceramic Aroma Mist Diffuser",
+        description: "Matte ceramic cover with whisper-quiet ultrasonic atomization, warm ambient LED glow, and auto shut-off.",
+        price: 3299,
+        compareAtPrice: 4199,
+        category: "Aromatherapy & Wellness",
+        brand: "Nordic Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80"],
+        stock: 30,
+        rating: 4.9,
+        reviewsCount: 52,
+        isFeatured: true,
+        badge: "SPA CALM",
+        reviews: [
+          { userName: "Sunita Rao", rating: 5, comment: "Fills my bedroom with gentle calming mist every night. Beautiful ceramic build.", createdAt: new Date("2026-09-28") }
+        ]
+      },
+      {
+        tenantId: tenantNordic._id,
+        title: "Organic Himalayan Cedarwood Essential Oil (15ml)",
+        description: "100% steam-distilled pure Himalayan cedarwood essential oil with warm grounding woody aroma.",
+        price: 699,
+        compareAtPrice: 899,
+        category: "Aromatherapy & Wellness",
+        brand: "Stoneware Studio",
+        thumbnail: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80"],
+        stock: 75,
+        rating: 4.8,
+        reviewsCount: 68,
+        isFeatured: false,
+        badge: "PURE ORGANIC",
+        reviews: [
+          { userName: "Arjun Verma", rating: 5, comment: "Natural and potent aroma. Just 3 drops in diffuser are enough.", createdAt: new Date("2026-10-02") }
         ]
       }
     ]);
@@ -582,6 +677,44 @@ const seedDatabase = async () => {
         reviews: [
           { userName: "Divya Nambiar", rating: 5, comment: "Pours clean cups with excellent clarity. Very easy to clean.", createdAt: new Date("2026-09-17") }
         ]
+      },
+      {
+        tenantId: tenantCoffee._id,
+        title: "Bourbon Barrel Aged Vanilla Bean Syrup (350ml)",
+        description: "Small-batch organic cane syrup infused with real Madagascar vanilla beans and aged in oak barrels for lattes and affogato.",
+        price: 799,
+        compareAtPrice: 999,
+        category: "Gourmet Syrups & Treats",
+        brand: "Artisan Roastery",
+        thumbnail: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80"],
+        stock: 45,
+        rating: 4.9,
+        reviewsCount: 39,
+        isFeatured: false,
+        badge: "ARTISANAL",
+        reviews: [
+          { userName: "Ankita Sen", rating: 5, comment: "Takes home-brewed vanilla iced lattes to cafe-level perfection.", createdAt: new Date("2026-09-22") }
+        ]
+      },
+      {
+        tenantId: tenantCoffee._id,
+        title: "Single-Origin 72% Dark Chocolate Espresso Bark (200g)",
+        description: "Stone-ground bean-to-bar dark chocolate infused with crushed Chikmagalur roasted espresso beans and sea salt flakes.",
+        price: 499,
+        compareAtPrice: 650,
+        category: "Gourmet Syrups & Treats",
+        brand: "Artisan Roastery",
+        thumbnail: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=800&q=80"],
+        stock: 70,
+        rating: 4.8,
+        reviewsCount: 55,
+        isFeatured: false,
+        badge: "UNDER 500",
+        reviews: [
+          { userName: "Karan Johar", rating: 5, comment: "The crunchy espresso beans inside rich dark chocolate are heavenly.", createdAt: new Date("2026-10-01") }
+        ]
       }
     ]);
 
@@ -739,6 +872,63 @@ const seedDatabase = async () => {
         reviews: [
           { userName: "Harsh Vardhan", rating: 5, comment: "Folds flat into backpack. Eliminates all cord clutter on my nightstand.", createdAt: new Date("2026-10-01") }
         ]
+      },
+      {
+        tenantId: tenantTech._id,
+        title: "Titanium Horizon Ultra GPS Smartwatch",
+        description: "Grade 5 titanium casing, sapphire crystal display, offline topomaps, ECG health sensor, and 100m water resistance.",
+        price: 12499,
+        compareAtPrice: 16999,
+        category: "Smart Wearables & Timepieces",
+        brand: "Apex Tech",
+        thumbnail: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"],
+        stock: 15,
+        rating: 4.9,
+        reviewsCount: 88,
+        isFeatured: true,
+        badge: "TITANIUM",
+        reviews: [
+          { userName: "Rahul Dravid", rating: 5, comment: "Battery lasts a full 10 days. The titanium finish looks and feels elite.", createdAt: new Date("2026-09-14") }
+        ]
+      },
+      {
+        tenantId: tenantTech._id,
+        title: "Solid American Walnut Monitor Stand & Desk Shelf",
+        description: "Ergonomic dual-monitor wooden riser crafted from solid kiln-dried American walnut with matte aluminum feet.",
+        price: 4499,
+        compareAtPrice: 5999,
+        category: "Home Office & Ergonomics",
+        brand: "Apex Tech",
+        thumbnail: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80"],
+        stock: 28,
+        rating: 4.9,
+        reviewsCount: 61,
+        isFeatured: false,
+        badge: "SOLID WOOD",
+        reviews: [
+          { userName: "Tanmay Singhal", rating: 5, comment: "Elevates my dual 4K monitors to eye level and stores keyboard underneath.", createdAt: new Date("2026-09-18") }
+        ]
+      },
+      {
+        tenantId: tenantTech._id,
+        title: "Full-Grain Leather Desk Mat & Organizer (90x40cm)",
+        description: "Waterproof vegetable-tanned genuine leather desk pad with non-slip suede base and integrated pen rail.",
+        price: 1999,
+        compareAtPrice: 2799,
+        category: "Home Office & Ergonomics",
+        brand: "Apex Tech",
+        thumbnail: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80"],
+        stock: 50,
+        rating: 4.8,
+        reviewsCount: 42,
+        isFeatured: false,
+        badge: "GENUINE LEATHER",
+        reviews: [
+          { userName: "Abhinav Bindra", rating: 5, comment: "Smooth mouse glide and premium leather smell. Upgraded my WFH desk immediately.", createdAt: new Date("2026-09-29") }
+        ]
       }
     ]);
 
@@ -895,6 +1085,63 @@ const seedDatabase = async () => {
         badge: "POPULAR",
         reviews: [
           { userName: "Sobhita Dhulipala", rating: 5, comment: "Architectural and minimalist. Pairs perfectly with evening blazers.", createdAt: new Date("2026-09-17") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Oud Royal Extrait de Parfum (50ml)",
+        description: "Intense artisanal parfum extrait blending pure Assam agarwood oud, Bulgarian damask rose, and velvety amber resin.",
+        price: 8999,
+        compareAtPrice: 11999,
+        category: "Luxury Skincare & Fragrance",
+        brand: "L'Artisan Paris",
+        thumbnail: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80"],
+        stock: 20,
+        rating: 5.0,
+        reviewsCount: 38,
+        isFeatured: true,
+        badge: "PURE PARFUM",
+        reviews: [
+          { userName: "Saif Ali Khan", rating: 5, comment: "Regal sillage and longevity. Lasts over 14 hours on fabric.", createdAt: new Date("2026-09-25") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Botanical Squalane & Rosehip Facial Elixir (30ml)",
+        description: "Cold-pressed virgin Chilean rosehip seed oil combined with olive-derived squalane and Vitamin C for radiant moisture.",
+        price: 2499,
+        compareAtPrice: 3299,
+        category: "Luxury Skincare & Fragrance",
+        brand: "Maison Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1608248597359-0091ff629394?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1608248597359-0091ff629394?auto=format&fit=crop&w=800&q=80"],
+        stock: 45,
+        rating: 4.9,
+        reviewsCount: 71,
+        isFeatured: false,
+        badge: "CLEAN BEAUTY",
+        reviews: [
+          { userName: "Kiara Advani", rating: 5, comment: "Non-greasy glow. Heals dry patches and restores skin barrier overnight.", createdAt: new Date("2026-09-30") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Acetate Hexagonal Polarized Sunglasses",
+        description: "Italian handcrafted Mazzucchelli bio-acetate frame with Category 3 polarized UV400 green tinted mineral lenses.",
+        price: 5499,
+        compareAtPrice: 6999,
+        category: "Designer Eyewear",
+        brand: "Luxe Couture",
+        thumbnail: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80"],
+        stock: 32,
+        rating: 4.8,
+        reviewsCount: 46,
+        isFeatured: false,
+        badge: "UV400 POLARIZED",
+        reviews: [
+          { userName: "Ishaan Khatter", rating: 5, comment: "Subtle geometric frame that stands out. High clarity polarized optics.", createdAt: new Date("2026-10-04") }
         ]
       }
     ]);

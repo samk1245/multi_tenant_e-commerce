@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Store, Shield, Sparkles, ChevronDown, Plus, LayoutDashboard, ShoppingCart, User, Flame } from 'lucide-react';
+import { ShoppingBag, Store, Shield, Sparkles, ChevronDown, Plus, LayoutDashboard, ShoppingCart, User, Flame, Heart } from 'lucide-react';
 
 export default function Navbar({
   tenants,
@@ -7,6 +7,8 @@ export default function Navbar({
   onSelectTenant,
   cartCount,
   onOpenCart,
+  wishlistCount,
+  onOpenWishlist,
   activeTab,
   onTabChange,
   onOpenCreateStore,
@@ -96,7 +98,7 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Right: Tabs, Profile & Cart */}
+          {/* Right: Tabs, Wishlist, Profile & Cart */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* View Mode Switcher */}
             <div className="flex p-1 rounded-xl bg-neutral-800/90 border border-neutral-700/80">
@@ -123,6 +125,23 @@ export default function Navbar({
                 <span className="hidden sm:inline">Merchant</span>
               </button>
             </div>
+
+            {/* Wishlist Button */}
+            {activeTab === 'store' && (
+              <button
+                onClick={onOpenWishlist}
+                className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl bg-neutral-800/90 hover:bg-neutral-700/90 text-neutral-300 hover:text-rose-400 border border-neutral-700/80 transition text-xs font-bold cursor-pointer"
+                title="Saved Wishlist"
+              >
+                <Heart className="w-3.5 h-3.5 text-rose-400" />
+                <span className="hidden md:inline">Saved</span>
+                {wishlistCount > 0 && (
+                  <span className="flex items-center justify-center w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-black">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+            )}
 
             {/* Profile Button */}
             <button

@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { X, Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, ThumbsUp, MessageSquare, CheckCircle } from 'lucide-react';
+import { X, Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, ThumbsUp, MessageSquare, CheckCircle, Heart, Share2, Check } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 import { api } from '../api';
 
-export default function ProductModal({ product, isOpen, onClose, onAddToCart }) {
+export default function ProductModal({
+  product,
+  isOpen,
+  onClose,
+  onAddToCart,
+  onToggleWishlist,
+  isWishlisted,
+}) {
   const [activeTab, setActiveTab] = useState('details'); // 'details' | 'reviews'
   const [currentProduct, setCurrentProduct] = useState(product);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // Review form state
   const [rating, setRating] = useState(5);
@@ -26,6 +34,12 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
   const reviews = currentProduct.reviews || [];
   const avgRating = currentProduct.rating || 4.8;
   const reviewsCount = currentProduct.reviewsCount || reviews.length || 0;
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -64,7 +78,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-neutral-950/80 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700 transition"
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-neutral-950/80 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700 transition cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -73,7 +87,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
         <div className="flex border-b border-neutral-800 bg-neutral-950/90 px-6 pt-4">
           <button
             onClick={() => setActiveTab('details')}
-            className={`pb-3.5 px-4 text-xs font-bold transition border-b-2 ${
+            className={`pb-3.5 px-4 text-xs font-bold transition border-b-2 cursor-pointer ${
               activeTab === 'details'
                 ? 'border-emerald-500 text-emerald-400'
                 : 'border-transparent text-neutral-400 hover:text-white'
@@ -83,7 +97,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
           </button>
           <button
             onClick={() => setActiveTab('reviews')}
-            className={`pb-3.5 px-4 text-xs font-bold transition border-b-2 flex items-center gap-2 ${
+            className={`pb-3.5 px-4 text-xs font-bold transition border-b-2 flex items-center gap-2 cursor-pointer ${
               activeTab === 'reviews'
                 ? 'border-emerald-500 text-emerald-400'
                 : 'border-transparent text-neutral-400 hover:text-white'
@@ -99,12 +113,18 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
           {activeTab === 'details' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               {/* Media */}
-              <div className="bg-neutral-950 rounded-2xl p-4 flex items-center justify-center border border-neutral-800/80 aspect-square overflow-hidden">
+              <div className="bg-neutral-950 rounded-2xl p-4 flex items-center justify-center border border-neutral-800/80 aspect-square overflow-hidden relative">
                 <img
                   src={currentProduct.thumbnail || currentProduct.images?.[0]}
                   alt={currentProduct.title}
                   className="w-full h-full object-cover rounded-xl"
                 />
+
+                {currentProduct.stock <= 5 && currentProduct.stock > 0 && (
+                  <span className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-bold backdrop-blur-md">
+                    ⚡ Hurry! Only {currentProduct.stock} left in stock
+                  </span>
+                )}
               </div>
 
               {/* Info */}
@@ -171,17 +191,41 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
                 </div>
 
                 <div className="mt-8 space-y-4">
-                  <button
-                    onClick={() => {
-                      onAddToCart(currentProduct);
-                      onClose();
-                    }}
-                    disabled={currentProduct.stock <= 0}
-                    className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:bg-neutral-800 disabled:text-neutral-500 text-neutral-950 font-black text-sm flex items-center justify-center gap-2 transition shadow-lg active:scale-95"
-                  >
-                    <ShoppingCart className="w-4 h-4" />
-                    <span>Add to Cart &bull; {formatCurrency(currentProduct.price)}</span>
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => {
+                        onAddToCart(currentProduct);
+                        onClose();
+                      }}
+                      disabled={currentProduct.stock <= 0}
+                      className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 disabled:from-neutral-800 disabled:to-neutral-800 disabled:text-neutral-500 text-neutral-950 font-black text-sm flex items-center justify-center gap-2 transition shadow-lg active:scale-95 cursor-pointer"
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      <span>Add to Cart &bull; {formatCurrency(currentProduct.price)}</span>
+                    </button>
+
+                    {/* Wishlist Button */}
+                    <button
+                      onClick={() => onToggleWishlist && onToggleWishlist(currentProduct)}
+                      className={`p-3.5 rounded-xl border transition cursor-pointer ${
+                        isWishlisted
+                          ? 'bg-rose-500 text-white border-rose-400 shadow-md shadow-rose-500/20'
+                          : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-rose-400 border-neutral-700'
+                      }`}
+                      title={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
+                    >
+                      <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-white' : ''}`} />
+                    </button>
+
+                    {/* Share Button */}
+                    <button
+                      onClick={handleShare}
+                      className="p-3.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white border border-neutral-700 transition cursor-pointer"
+                      title="Share link"
+                    >
+                      {copiedLink ? <Check className="w-5 h-5 text-emerald-400" /> : <Share2 className="w-5 h-5" />}
+                    </button>
+                  </div>
 
                   <div className="grid grid-cols-3 gap-2 text-[11px] text-neutral-400 pt-4 border-t border-neutral-800 text-center">
                     <div className="flex flex-col items-center gap-1">
@@ -267,7 +311,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
                           onClick={() => setRating(s)}
                           onMouseEnter={() => setHoverRating(s)}
                           onMouseLeave={() => setHoverRating(0)}
-                          className="p-1 focus:outline-none transition"
+                          className="p-1 focus:outline-none transition cursor-pointer"
                         >
                           <Star
                             className={`w-6 h-6 ${
@@ -317,7 +361,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition duration-200 disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition duration-200 disabled:opacity-50 cursor-pointer"
                   >
                     {isSubmitting ? 'Posting Review...' : 'Submit Verified Review'}
                   </button>

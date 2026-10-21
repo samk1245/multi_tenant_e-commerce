@@ -1,8 +1,14 @@
 import React, { useState, useRef } from 'react';
-import { Star, ShoppingCart, Eye, Sparkles, Flame } from 'lucide-react';
+import { Star, ShoppingCart, Eye, Sparkles, Flame, Heart } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
-export default function ProductCard({ product, onAddToCart, onQuickView }) {
+export default function ProductCard({
+  product,
+  onAddToCart,
+  onQuickView,
+  onToggleWishlist,
+  isWishlisted,
+}) {
   const cardRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0, glareX: 50, glareY: 50, active: false });
 
@@ -82,15 +88,35 @@ export default function ProductCard({ product, onAddToCart, onQuickView }) {
           )}
         </div>
 
-        {/* Quick View Button with 3D Pop (Top Right) */}
-        <button
-          onClick={() => onQuickView(product)}
-          style={{ transform: 'translateZ(30px)' }}
-          className="absolute top-3 right-3 p-2.5 rounded-xl bg-neutral-900/90 hover:bg-emerald-500 text-neutral-300 hover:text-neutral-950 border border-neutral-700/60 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-md shadow-xl active:scale-90"
-          title="Quick View & Reviews"
-        >
-          <Eye className="w-4 h-4" />
-        </button>
+        {/* Top Right Floating Action Buttons */}
+        <div className="absolute top-3 right-3 flex flex-col gap-2 z-20">
+          {/* Wishlist Heart Toggle */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onToggleWishlist) onToggleWishlist(product);
+            }}
+            style={{ transform: 'translateZ(30px)' }}
+            className={`p-2 rounded-xl backdrop-blur-md border transition-all duration-300 shadow-xl cursor-pointer ${
+              isWishlisted
+                ? 'bg-rose-500 text-white border-rose-400 shadow-rose-500/40 scale-105'
+                : 'bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 hover:text-rose-400 border-neutral-700/60'
+            }`}
+            title={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
+          >
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-white' : ''}`} />
+          </button>
+
+          {/* Quick View Button */}
+          <button
+            onClick={() => onQuickView(product)}
+            style={{ transform: 'translateZ(30px)' }}
+            className="p-2 rounded-xl bg-neutral-900/90 hover:bg-emerald-500 text-neutral-300 hover:text-neutral-950 border border-neutral-700/60 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-md shadow-xl active:scale-90 cursor-pointer"
+            title="Quick View & Reviews"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+        </div>
 
         {/* Ambient Dark Bottom Gradient for visual depth */}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent pointer-events-none" />
@@ -141,10 +167,15 @@ export default function ProductCard({ product, onAddToCart, onQuickView }) {
               )}
             </div>
             <div className="text-[11px] mt-0.5">
-              {product.stock > 0 ? (
+              {product.stock > 5 ? (
                 <span className="text-emerald-400 font-medium flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   {product.stock} in stock
+                </span>
+              ) : product.stock > 0 ? (
+                <span className="text-amber-400 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  Only {product.stock} left!
                 </span>
               ) : (
                 <span className="text-rose-400 font-medium flex items-center gap-1">

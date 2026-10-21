@@ -105,4 +105,19 @@ export const api = {
     const res = await fetch(`${BASE_URL}/orders/${orderId}/tracking`);
     return await res.json();
   },
+
+  async createTicket(ticketData) {
+    const res = await fetch(`${BASE_URL}/tickets`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(ticketData),
+    });
+    return await res.json();
+  },
+
+  async getUserTickets(email) {
+    const res = await fetch(`${BASE_URL}/tickets?email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+    return data.data || [];
+  },
 };

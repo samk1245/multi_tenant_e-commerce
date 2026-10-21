@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, SlidersHorizontal, ArrowUpDown, Star, RotateCcw, Filter, Tag, Check, IndianRupee } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowUpDown, Star, RotateCcw, Filter, Tag, Check, IndianRupee, Clock, Heart } from 'lucide-react';
 import { api } from './api';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -10,6 +10,8 @@ import CheckoutModal from './components/CheckoutModal';
 import MerchantDashboard from './components/MerchantDashboard';
 import CreateStoreModal from './components/CreateStoreModal';
 import ProfileModal from './components/ProfileModal';
+import WishlistDrawer from './components/WishlistDrawer';
+import SupportWidget from './components/SupportWidget';
 import { formatCurrency } from './utils/formatters';
 
 const PRICE_PRESETS = [
@@ -52,6 +54,11 @@ export default function App() {
   const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('store'); // 'store' | 'admin'
+
+  // Wishlist & Recently Viewed
+  const [wishlist, setWishlist] = useState([]);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
 
   // Load Tenants on mount
   useEffect(() => {
@@ -255,15 +262,45 @@ export default function App() {
     setActiveTenant(newStore);
   };
 
+  // Wishlist Handlers
+  const handleToggleWishlist = (product) => {
+    setWishlist((prev) => {
+      const exists = prev.some((item) => item._id === product._id);
+      if (exists) {
+        return prev.filter((item) => item._id !== product._id);
+      }
+      return [product, ...prev];
+    });
+  };
+
+  const handleRemoveFromWishlist = (productId) => {
+    setWishlist((prev) => prev.filter((item) => item._id !== productId));
+  };
+
+  const handleClearWishlist = () => {
+    setWishlist([]);
+  };
+
+  // Quick View + Recently Viewed tracking
+  const handleQuickView = (product) => {
+    setViewProduct(product);
+    setRecentlyViewed((prev) => {
+      const filtered = prev.filter((p) => p._id !== product._id);
+      return [product, ...filtered].slice(0, 6);
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-100">
-      {/* Top Navbar with Multi-Tenant Switcher */}
+      {/* Top Navbar with Multi-Tenant Switcher, Wishlist, Profile & Cart */}
       <Navbar
         tenants={tenants}
         activeTenant={activeTenant}
         onSelectTenant={setActiveTenant}
         cartCount={cart.reduce((c, i) => c + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
+        wishlistCount={wishlist.length}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onOpenCreateStore={() => setIsCreateStoreOpen(true)}
@@ -296,7 +333,7 @@ export default function App() {
                     {search && (
                       <button
                         onClick={() => setSearch('')}
-                        className="absolute right-3 top-2.5 text-xs text-neutral-500 hover:text-white"
+                        className="absolute right-3 top-2.5 text-xs text-neutral-500 hover:text-white cursor-pointer"
                       >
                         ✕
                       </button>
@@ -345,7 +382,7 @@ export default function App() {
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                         selectedCategory === cat
                           ? 'bg-emerald-500 text-neutral-950 shadow-md font-extrabold'
                           : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
@@ -379,7 +416,7 @@ export default function App() {
                           setMinPriceInput('');
                           setMaxPriceInput('');
                         }}
-                        className={`px-2.5 py-1 rounded-md text-xs transition ${
+                        className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
                           selectedPricePreset === preset.id && minPriceInput === '' && maxPriceInput === ''
                             ? 'bg-neutral-100 text-neutral-950 font-bold'
                             : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
@@ -424,7 +461,7 @@ export default function App() {
                       <button
                         key={rp.id}
                         onClick={() => setSelectedRating(rp.id)}
-                        className={`px-2.5 py-1 rounded-md text-xs transition flex items-center gap-1 ${
+                        className={`px-2.5 py-1 rounded-md text-xs transition flex items-center gap-1 cursor-pointer ${
                           selectedRating === rp.id
                             ? 'bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40'
                             : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
@@ -438,7 +475,7 @@ export default function App() {
                     {isFiltered && (
                       <button
                         onClick={handleResetFilters}
-                        className="ml-2 flex items-center gap-1 px-2.5 py-1 rounded-md bg-neutral-800 hover:bg-neutral-700 text-rose-400 text-xs font-semibold transition"
+                        className="ml-2 flex items-center gap-1 px-2.5 py-1 rounded-md bg-neutral-800 hover:bg-neutral-700 text-rose-400 text-xs font-semibold transition cursor-pointer"
                         title="Clear all active filters"
                       >
                         <RotateCcw className="w-3 h-3" />
@@ -481,7 +518,7 @@ export default function App() {
                     </p>
                     <button
                       onClick={handleResetFilters}
-                      className="mt-5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition"
+                      className="mt-5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition cursor-pointer"
                     >
                       Clear All Filters
                     </button>
@@ -493,12 +530,52 @@ export default function App() {
                         key={product._id}
                         product={product}
                         onAddToCart={handleAddToCart}
-                        onQuickView={setViewProduct}
+                        onQuickView={handleQuickView}
+                        onToggleWishlist={handleToggleWishlist}
+                        isWishlisted={wishlist.some((w) => w._id === product._id)}
                       />
                     ))}
                   </div>
                 )}
               </div>
+
+              {/* Recently Viewed Shelf (if any) */}
+              {recentlyViewed.length > 0 && (
+                <div className="mt-16 pt-8 border-t border-neutral-800/80">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-emerald-400" />
+                      <h3 className="text-base font-bold text-white">Recently Viewed Products</h3>
+                    </div>
+                    <span className="text-xs text-neutral-500">{recentlyViewed.length} items</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                    {recentlyViewed.map((item) => (
+                      <div
+                        key={item._id}
+                        onClick={() => handleQuickView(item)}
+                        className="p-3 rounded-2xl bg-neutral-900/70 border border-neutral-800/80 hover:border-emerald-500/40 transition cursor-pointer flex flex-col justify-between"
+                      >
+                        <div className="aspect-square rounded-xl overflow-hidden bg-neutral-950 mb-2">
+                          <img
+                            src={item.thumbnail || item.images?.[0]}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white truncate">{item.title}</h4>
+                          <span className="text-xs text-emerald-400 font-extrabold mt-0.5 block">
+                            {formatCurrency(item.price)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         ) : (
@@ -520,6 +597,16 @@ export default function App() {
         onCheckout={handleStartCheckout}
       />
 
+      {/* Wishlist Drawer */}
+      <WishlistDrawer
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        items={wishlist}
+        onAddToCart={handleAddToCart}
+        onRemoveFromWishlist={handleRemoveFromWishlist}
+        onClearWishlist={handleClearWishlist}
+      />
+
       {/* Checkout Modal */}
       <CheckoutModal
         isOpen={!!checkoutData}
@@ -529,12 +616,14 @@ export default function App() {
         orderSuccess={orderSuccess}
       />
 
-      {/* Quick View Product Modal with Reviews */}
+      {/* Quick View Product Modal with Reviews, Wishlist & Share */}
       <ProductModal
         product={viewProduct}
         isOpen={!!viewProduct}
         onClose={() => setViewProduct(null)}
         onAddToCart={handleAddToCart}
+        onToggleWishlist={handleToggleWishlist}
+        isWishlisted={wishlist.some((w) => w._id === viewProduct?._id)}
       />
 
       {/* Create New Store Modal */}
@@ -553,6 +642,12 @@ export default function App() {
         }}
       />
 
+      {/* 24/7 AI Customer Support & Help Center Widget */}
+      <SupportWidget
+        activeTenant={activeTenant}
+        onOpenOrders={() => setIsProfileOpen(true)}
+      />
+
       {/* Footer */}
       <footer className="border-t border-neutral-800/80 bg-neutral-950 py-10 text-center text-xs text-neutral-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -562,9 +657,11 @@ export default function App() {
           <div className="flex items-center gap-4 text-[11px] text-neutral-400">
             <span>₹ INR Verified Pricing</span>
             <span>&bull;</span>
+            <span>24/7 AI Live Support</span>
+            <span>&bull;</span>
             <span>Instant Ratings & Reviews</span>
             <span>&bull;</span>
-            <span>Customer Cart & Checkout</span>
+            <span>Customer Cart & Wishlist</span>
           </div>
         </div>
       </footer>
