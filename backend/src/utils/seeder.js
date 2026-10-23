@@ -325,6 +325,83 @@ const seedDatabase = async () => {
         reviews: [
           { userName: "Priya Nair", rating: 5, comment: "They don't roll up like cheap latex bands. High resistance.", createdAt: new Date("2026-09-24") }
         ]
+      },
+      {
+        tenantId: tenantSneakers._id,
+        title: "HyperStride Pro Carbon-Plate Marathon Shoe",
+        description: "Championship-grade road racing shoe featuring an ultra-responsive Pebax foam midsole and full-length curved carbon fiber propulsion plate.",
+        price: 18499,
+        compareAtPrice: 22999,
+        category: "Marathon & Road Running",
+        brand: "PulseLab",
+        thumbnail: "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80"],
+        stock: 16,
+        rating: 4.9,
+        reviewsCount: 63,
+        isFeatured: true,
+        badge: "CARBON PLATE",
+        reviews: [
+          { userName: "Vikram Rathore", rating: 5, comment: "Shaved 4 minutes off my half-marathon personal best. The energy return is unreal!", createdAt: new Date("2026-10-10") },
+          { userName: "Ananya Roy", rating: 5, comment: "Super light at under 200 grams. Cushioning stays bouncy for 20+ kms.", createdAt: new Date("2026-10-14") }
+        ]
+      },
+      {
+        tenantId: tenantSneakers._id,
+        title: "VaporGrip All-Weather Trail Runner",
+        description: "Rugged Vibram Megagrip lugged outsole paired with breathable waterproof membrane for torrential rains and mountain trails.",
+        price: 11999,
+        compareAtPrice: 14500,
+        category: "Marathon & Road Running",
+        brand: "PulseLab",
+        thumbnail: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=800&q=80"],
+        stock: 24,
+        rating: 4.8,
+        reviewsCount: 39,
+        isFeatured: false,
+        badge: "WATERPROOF",
+        reviews: [
+          { userName: "Harish Iyer", rating: 5, comment: "Hiked through slush in Himachal without a single drop penetrating.", createdAt: new Date("2026-09-28") }
+        ]
+      },
+      {
+        tenantId: tenantSneakers._id,
+        title: "Heavyweight French Terry Oversized Hoodie",
+        description: "Custom-milled 500 GSM 100% combed organic cotton with dropped shoulders, double-layered hood, and ribbed cuffs.",
+        price: 4499,
+        compareAtPrice: 5999,
+        category: "Streetwear Apparel & Cargoes",
+        brand: "Apex Street",
+        thumbnail: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80"],
+        stock: 40,
+        rating: 4.9,
+        reviewsCount: 52,
+        isFeatured: true,
+        badge: "500 GSM",
+        reviews: [
+          { userName: "Varun Dhawan", rating: 5, comment: "Incredible drape and heavy structure. Feels like luxury designer streetwear.", createdAt: new Date("2026-10-15") }
+        ]
+      },
+      {
+        tenantId: tenantSneakers._id,
+        title: "Tactical Multi-Pocket Ripstop Cargo Pants",
+        description: "Engineered with tear-resistant military cotton ripstop, articulated knees, 8 utility pockets, and cinch cord ankles.",
+        price: 5299,
+        compareAtPrice: 6800,
+        category: "Streetwear Apparel & Cargoes",
+        brand: "Apex Street",
+        thumbnail: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=800&q=80"],
+        stock: 30,
+        rating: 4.7,
+        reviewsCount: 34,
+        isFeatured: false,
+        badge: "RIPSTOP TECH",
+        reviews: [
+          { userName: "Sahil Khan", rating: 5, comment: "Fits boots and low sneakers perfectly. Deep pockets easily hold phone and passport.", createdAt: new Date("2026-10-08") }
+        ]
       }
     ]);
 
@@ -520,6 +597,82 @@ const seedDatabase = async () => {
         reviews: [
           { userName: "Arjun Verma", rating: 5, comment: "Natural and potent aroma. Just 3 drops in diffuser are enough.", createdAt: new Date("2026-10-02") }
         ]
+      },
+      {
+        tenantId: tenantNordic._id,
+        title: "Aura Frosted Glass Lunar Pendant Light",
+        description: "Mouth-blown opaline frosted glass sphere with brushed brass fitting, delivering soft non-glare architectural illumination.",
+        price: 7899,
+        compareAtPrice: 9999,
+        category: "Architectural Lighting & Lamps",
+        brand: "Nordic Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80"],
+        stock: 18,
+        rating: 4.9,
+        reviewsCount: 41,
+        isFeatured: true,
+        badge: "HANDBLOWN GLASS",
+        reviews: [
+          { userName: "Smita Sen", rating: 5, comment: "Completely transformed our dining corner. The warm ambient glow is mesmerizing.", createdAt: new Date("2026-10-12") }
+        ]
+      },
+      {
+        tenantId: tenantNordic._id,
+        title: "Brutalist Cast Concrete Dimmable Desk Lamp",
+        description: "Raw hand-poured concrete base paired with an integrated touch-stepless 2700K warm LED tube and braided cotton cable.",
+        price: 4999,
+        compareAtPrice: 6499,
+        category: "Architectural Lighting & Lamps",
+        brand: "Kobenhavn Studio",
+        thumbnail: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80"],
+        stock: 25,
+        rating: 4.8,
+        reviewsCount: 29,
+        isFeatured: false,
+        badge: "WARM AMBIENT",
+        reviews: [
+          { userName: "Gaurav Kapoor", rating: 5, comment: "Heavy substantial weight, will never slide off the table. Looks like museum art.", createdAt: new Date("2026-09-30") }
+        ]
+      },
+      {
+        tenantId: tenantNordic._id,
+        title: "Solid White Oak Curved Floating Nightstand",
+        description: "Precision CNC-milled solid European white oak featuring seamless finger joints, beveled edges, and invisible wall mount brackets.",
+        price: 9499,
+        compareAtPrice: 12000,
+        category: "Artisanal Wooden Furniture",
+        brand: "Nordic Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=800&q=80"],
+        stock: 12,
+        rating: 4.9,
+        reviewsCount: 33,
+        isFeatured: true,
+        badge: "SOLID OAK",
+        reviews: [
+          { userName: "Neha Dhupia", rating: 5, comment: "Real solid wood, no cheap veneer or MDF. Floating design makes vacuuming so easy.", createdAt: new Date("2026-10-05") }
+        ]
+      },
+      {
+        tenantId: tenantNordic._id,
+        title: "Scandi Minimalist Ergonomic Ash Wood Lounge Chair",
+        description: "Sculpted steam-bent solid ash frame with woven Danish paper cord seat, designed for hours of contemplative reading.",
+        price: 24999,
+        compareAtPrice: 31000,
+        category: "Artisanal Wooden Furniture",
+        brand: "Kobenhavn Studio",
+        thumbnail: "https://images.unsplash.com/photo-1580481077111-2eb2a1d29381?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1580481077111-2eb2a1d29381?auto=format&fit=crop&w=800&q=80"],
+        stock: 8,
+        rating: 5.0,
+        reviewsCount: 19,
+        isFeatured: true,
+        badge: "DESIGN CLASSIC",
+        reviews: [
+          { userName: "Devika Mehra", rating: 5, comment: "The paper cord weaving is masterful. Absolute showstopper in our living room.", createdAt: new Date("2026-10-18") }
+        ]
       }
     ]);
 
@@ -714,6 +867,82 @@ const seedDatabase = async () => {
         badge: "UNDER 500",
         reviews: [
           { userName: "Karan Johar", rating: 5, comment: "The crunchy espresso beans inside rich dark chocolate are heavenly.", createdAt: new Date("2026-10-01") }
+        ]
+      },
+      {
+        tenantId: tenantCoffee._id,
+        title: "Kono Precision 40mm Conical Burr Hand Grinder",
+        description: "Dual-bearing CNC stainless steel 40mm pentagonal burr with 30 micro-stepped click adjustments for espresso to French press.",
+        price: 6499,
+        compareAtPrice: 7999,
+        category: "Precision Grinders & Brewing Gear",
+        brand: "Artisan Gear",
+        thumbnail: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80"],
+        stock: 22,
+        rating: 4.9,
+        reviewsCount: 48,
+        isFeatured: true,
+        badge: "CNC STEEL BURR",
+        reviews: [
+          { userName: "Rishi Kapoor", rating: 5, comment: "Zero wobble in the axle. Grinds 18g of dense beans in under 30 seconds smoothly.", createdAt: new Date("2026-10-09") }
+        ]
+      },
+      {
+        tenantId: tenantCoffee._id,
+        title: "AeroPress Clear Express Portable Coffee Maker",
+        description: "Shatterproof Tritan crystal clear chamber with micro-filters, producing rich espresso-style concentrate in 60 seconds anywhere.",
+        price: 3799,
+        compareAtPrice: 4499,
+        category: "Precision Grinders & Brewing Gear",
+        brand: "AeroPress",
+        thumbnail: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=800&q=80"],
+        stock: 35,
+        rating: 4.9,
+        reviewsCount: 88,
+        isFeatured: false,
+        badge: "TRAVEL ESSENTIAL",
+        reviews: [
+          { userName: "Prateek Kuhad", rating: 5, comment: "The clear model looks gorgeous when the extraction happens. Super easy cleanup.", createdAt: new Date("2026-10-16") }
+        ]
+      },
+      {
+        tenantId: tenantCoffee._id,
+        title: "Artisan Cold Brew Nitro Steep Pouch Kit (12 Packs)",
+        description: "Coarse ground Chikmagalur AAA beans packaged in compostable porous filter pouches for overnight cold water immersion brew.",
+        price: 1499,
+        compareAtPrice: 1899,
+        category: "Artisanal Coffee Pods & Cold Brew",
+        brand: "Artisan Roastery",
+        thumbnail: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=800&q=80"],
+        stock: 45,
+        rating: 4.8,
+        reviewsCount: 31,
+        isFeatured: true,
+        badge: "12-HOUR INFUSION",
+        reviews: [
+          { userName: "Zoya Akhtar", rating: 5, comment: "Zero bitterness, sweet chocolate notes with a splash of oat milk. Highly recommended.", createdAt: new Date("2026-10-11") }
+        ]
+      },
+      {
+        tenantId: tenantCoffee._id,
+        title: "Specialty Biodegradable Nespresso Compatible Pods (40 Pack)",
+        description: "Plant-derived 100% industrially compostable pods packed with fresh roasted single-origin Arabica for original line machines.",
+        price: 2299,
+        compareAtPrice: 2800,
+        category: "Artisanal Coffee Pods & Cold Brew",
+        brand: "Artisan Roastery",
+        thumbnail: "https://images.unsplash.com/photo-1589396575653-c09c794ff6a6?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1589396575653-c09c794ff6a6?auto=format&fit=crop&w=800&q=80"],
+        stock: 50,
+        rating: 4.7,
+        reviewsCount: 44,
+        isFeatured: false,
+        badge: "COMPOSTABLE",
+        reviews: [
+          { userName: "Aditya Roy", rating: 5, comment: "Tastes 10x fresher than supermarket pods. Great crema on every shot.", createdAt: new Date("2026-10-13") }
         ]
       }
     ]);
@@ -929,6 +1158,82 @@ const seedDatabase = async () => {
         reviews: [
           { userName: "Abhinav Bindra", rating: 5, comment: "Smooth mouse glide and premium leather smell. Upgraded my WFH desk immediately.", createdAt: new Date("2026-09-29") }
         ]
+      },
+      {
+        tenantId: tenantTech._id,
+        title: "AcousticEngine A2+ Powered Desktop Studio Monitors (Pair)",
+        description: "Custom Kevlar woofers, silk dome tweeters, built-in 24-bit DAC, and aptX Bluetooth audio in handcrafted wood cabinets.",
+        price: 22999,
+        compareAtPrice: 28999,
+        category: "Audiophile Monitors & DACs",
+        brand: "SonicPulse",
+        thumbnail: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80"],
+        stock: 14,
+        rating: 4.9,
+        reviewsCount: 57,
+        isFeatured: true,
+        badge: "HIGH-RES AUDIO",
+        reviews: [
+          { userName: "Armaan Malik", rating: 5, comment: "Crystal clear highs, warm midrange, and punchy bass without needing a sub.", createdAt: new Date("2026-10-15") }
+        ]
+      },
+      {
+        tenantId: tenantTech._id,
+        title: "Audiophile 32-Bit USB-C Hi-Fi DAC & Headphone Amp",
+        description: "Dual ESS Sabre ES9219 DAC chips supporting PCM 384kHz/32bit and DSD256 with 3.5mm single-ended and 4.4mm balanced outputs.",
+        price: 8999,
+        compareAtPrice: 11500,
+        category: "Audiophile Monitors & DACs",
+        brand: "SonicPulse",
+        thumbnail: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80"],
+        stock: 28,
+        rating: 4.8,
+        reviewsCount: 36,
+        isFeatured: false,
+        badge: "MQA / DSD512",
+        reviews: [
+          { userName: "Kunal Shah", rating: 5, comment: "Drives my 300-ohm headphones effortlessly with a dead quiet noise floor.", createdAt: new Date("2026-10-14") }
+        ]
+      },
+      {
+        tenantId: tenantTech._id,
+        title: "UltraGlide Dual-Motor Electric Standing Desk Frame",
+        description: "Heavy-gauge steel columns with synchronized dual whisper-quiet motors, anti-collision sensor, and 4 programmable height memory presets.",
+        price: 19999,
+        compareAtPrice: 26000,
+        category: "Ergonomic Desk Tech",
+        brand: "Apex Tech",
+        thumbnail: "https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=800&q=80"],
+        stock: 10,
+        rating: 4.9,
+        reviewsCount: 65,
+        isFeatured: true,
+        badge: "MEMORY PRESETS",
+        reviews: [
+          { userName: "Tanmay Bhat", rating: 5, comment: "Rock solid stability even at max height with 3 monitors mounted. Smooth elevation.", createdAt: new Date("2026-10-17") }
+        ]
+      },
+      {
+        tenantId: tenantTech._id,
+        title: "Vertical Ergonomic Wireless Optical Mouse with OLED Screen",
+        description: "Natural 57-degree handshake posture reduces wrist muscle strain by 40%. Features high-precision 4000 DPI sensor and status OLED screen.",
+        price: 4199,
+        compareAtPrice: 5499,
+        category: "Ergonomic Desk Tech",
+        brand: "Apex Tech",
+        thumbnail: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80"],
+        stock: 36,
+        rating: 4.7,
+        reviewsCount: 42,
+        isFeatured: false,
+        badge: "57° ERGO ANGLE",
+        reviews: [
+          { userName: "Bhuvan Bam", rating: 5, comment: "My carpal tunnel wrist pain disappeared within 3 days. Unbelievable comfort.", createdAt: new Date("2026-10-06") }
+        ]
       }
     ]);
 
@@ -1142,6 +1447,82 @@ const seedDatabase = async () => {
         badge: "UV400 POLARIZED",
         reviews: [
           { userName: "Ishaan Khatter", rating: 5, comment: "Subtle geometric frame that stands out. High clarity polarized optics.", createdAt: new Date("2026-10-04") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Saffiano Calfskin Zip-Around Continental Travel Wallet",
+        description: "Scratch-resistant cross-grain Italian Saffiano leather featuring 12 card slots, dual passport sleeves, and gold-plated hardware.",
+        price: 12499,
+        compareAtPrice: 16000,
+        category: "Fine Italian Leather Goods",
+        brand: "Maison Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=80"],
+        stock: 20,
+        rating: 4.9,
+        reviewsCount: 38,
+        isFeatured: true,
+        badge: "ITALIAN SAFFIANO",
+        reviews: [
+          { userName: "Mira Rajput", rating: 5, comment: "Impeccable craftsmanship and sleek profile. Holds currency and boarding pass neatly.", createdAt: new Date("2026-10-19") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Hand-Burnished Vegetable-Tanned Leather Briefcase",
+        description: "Full-grain Tuscan saddle leather with solid brass buckle closures, padded 16-inch laptop compartment, and detachable shoulder strap.",
+        price: 32999,
+        compareAtPrice: 42000,
+        category: "Fine Italian Leather Goods",
+        brand: "Maison Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80"],
+        stock: 7,
+        rating: 5.0,
+        reviewsCount: 22,
+        isFeatured: true,
+        badge: "FULL GRAIN LEATHER",
+        reviews: [
+          { userName: "Ranveer Singh", rating: 5, comment: "The rich patina developing on this leather is gorgeous. Heirloom investment.", createdAt: new Date("2026-10-18") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "Maison Heritage Automatic Skeleton Chronograph 41mm",
+        description: "Exhibition caseback showcasing high-beat 28,800 vph automatic caliber with 48h power reserve, sapphire crystal, and crocodile strap.",
+        price: 48999,
+        compareAtPrice: 65000,
+        category: "Luxury Chronographs & Timepieces",
+        brand: "Maison Horology",
+        thumbnail: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80"],
+        stock: 6,
+        rating: 5.0,
+        reviewsCount: 15,
+        isFeatured: true,
+        badge: "SAPPHIRE CRYSTAL",
+        reviews: [
+          { userName: "Siddharth Malhotra", rating: 5, comment: "Mesmerizing skeleton mechanics. Gets noticed in every boardroom meeting.", createdAt: new Date("2026-10-17") }
+        ]
+      },
+      {
+        tenantId: tenantFashion._id,
+        title: "100% Pure Silk Twill Hand-Rolled Heritage Printed Scarf",
+        description: "Artisanal Italian 18 momme silk twill with hand-rolled borders and archival baroque botanical artwork illustration.",
+        price: 7999,
+        compareAtPrice: 9999,
+        category: "Luxury Scarves & Accessories",
+        brand: "Maison Atelier",
+        thumbnail: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=800&q=80"],
+        stock: 30,
+        rating: 4.9,
+        reviewsCount: 45,
+        isFeatured: false,
+        badge: "PURE SILK TWILL",
+        reviews: [
+          { userName: "Alia Bhatt", rating: 5, comment: "Sublime hand-feel and vibrant non-fading colors. Drapes with sheer elegance.", createdAt: new Date("2026-10-16") }
         ]
       }
     ]);

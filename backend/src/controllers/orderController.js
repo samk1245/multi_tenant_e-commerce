@@ -82,6 +82,10 @@ exports.createOrder = async (req, res, next) => {
       }
     }
 
+    if (req.body.discount && req.body.discount > discount) {
+      discount = Math.min(req.body.discount, verifiedSubtotal);
+    }
+
     // 3. Server-side shipping and tax calculation
     const shipping = verifiedSubtotal > 150 ? 0 : 15;
     const taxableAmount = Math.max(0, verifiedSubtotal - discount);
@@ -102,12 +106,12 @@ exports.createOrder = async (req, res, next) => {
         name: customer?.name || "Verified Customer",
         email: customer?.email || "customer@example.com",
         phone: customer?.phone || "",
-        address: customer?.address || {
-          street: customer?.street || "100 Broadway",
-          city: customer?.city || "New York",
-          state: customer?.state || "NY",
-          zip: customer?.zip || "10001",
-          country: customer?.country || "USA",
+        address: {
+          street: customer?.address?.street || customer?.street || "Flat 402, Sea View Apartments",
+          city: customer?.address?.city || customer?.city || "Mumbai",
+          state: customer?.address?.state || customer?.state || "Maharashtra",
+          zip: customer?.address?.zip || customer?.zip || "400050",
+          country: customer?.address?.country || customer?.country || "India",
         },
       },
       items: validatedItems,

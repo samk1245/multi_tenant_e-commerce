@@ -194,3 +194,162 @@ exports.getMyOrders = async (req, res, next) => {
     next(error);
   }
 };
+
+// Helper to resolve user from auth token or email query
+async function resolveUser(req) {
+  if (req.user && req.user._id) {
+    return await User.findById(req.user._id);
+  }
+  const email = (req.query?.email || req.body?.email || "customer@example.com").toLowerCase();
+  let user = await User.findOne({ email });
+  if (!user) {
+    user = await User.create({
+      name: "Rahul Verma",
+      email: email,
+      password: "password123",
+      phone: "+91 91234 56789",
+      addresses: [
+        {
+          label: "Home",
+          name: "Rahul Verma",
+          phone: "+91 91234 56789",
+          street: "Flat 402, Sea View Apartments, Bandra West",
+          city: "Mumbai",
+          state: "Maharashtra",
+          zip: "400050",
+          country: "India",
+          isDefault: true,
+        },
+      ],
+    });
+  }
+  return user;
+}
+
+// @desc    Get saved addresses
+// @route   GET /api/auth/addresses
+exports.getAddresses = async (req, res, next) => {
+  try {
+    const user = await resolveUser(req);
+    res.json({ success: true, count: user.addresses?.length || 0, data: user.addresses || [] });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Add new address
+// @route   POST /api/auth/addresses
+exports.addAddress = async (req, res, next) => {
+  try {
+    const user = await resolveUser(req);
+    const { label, name, phone, street, city, state, zip, country = "India", isDefault = false } = req.body;
+
+    if (!street || !city || !state || !zip) {
+      return res.status(400).json({ success: false, message: "Street, city, state, and zip are required" });
+    }
+
+    if (isDefault || !user.addresses || user.addresses.length === 0) {
+      user.addresses.forEach((a) => (a.isDefault = false));
+    }
+
+    user.addresses.push({
+      label: label || "Home",
+      name: name || user.name,
+      phone: phone || user.phone,
+      street,
+      city,
+      state,
+      zip,
+      country,
+      isDefault: isDefault || user.addresses.length === 0,
+    });
+
+    await user.save();
+    res.status(201).json({ success: true, message: "Address added successfully", data: user.addresses });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update existing address
+// @route   PUT /api/auth/addresses/:addressId
+exports.updateAddress = async (req, res, next) => {
+  try {
+    const user = await resolveUser(req);
+    const { addressId } = req.params;
+    const { label, name, phone, street, city, state, zip, country = "India", isDefault } = req.body;
+
+    const addr = user.addresses.id(addressId);
+    if (!addr) {
+      return res.status(404).json({ success: false, message: "Address not found" });
+    }
+
+    if (isDefault) {
+      user.addresses.forEach((a) => (a.isDefault = false));
+      addr.isDefault = true;
+    } else if (isDefault === false) {
+      addr.isDefault = false;
+    }
+
+    if (label) addr.label = label;
+    if (name) addr.name = name;
+    if (phone) addr.phone = phone;
+    if (street) addr.street = street;
+    if (city) addr.city = city;
+    if (state) addr.state = state;
+    if (zip) addr.zip = zip;
+    if (country) addr.country = country;
+
+    await user.save();
+    res.json({ success: true, message: "Address updated successfully", data: user.addresses });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete an address
+// @route   DELETE /api/auth/addresses/:addressId
+exports.deleteAddress = async (req, res, next) => {
+  try {
+    const user = await resolveUser(req);
+    const { addressId } = req.params;
+
+    const addrIndex = user.addresses.findIndex((a) => a._id.toString() === addressId);
+    if (addrIndex === -1) {
+      return res.status(404).json({ success: false, message: "Address not found" });
+    }
+
+    const wasDefault = user.addresses[addrIndex].isDefault;
+    user.addresses.splice(addrIndex, 1);
+
+    if (wasDefault && user.addresses.length > 0) {
+      user.addresses[0].isDefault = true;
+    }
+
+    await user.save();
+    res.json({ success: true, message: "Address removed", data: user.addresses });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Set default address
+// @route   PATCH /api/auth/addresses/:addressId/default
+exports.setDefaultAddress = async (req, res, next) => {
+  try {
+    const user = await resolveUser(req);
+    const { addressId } = req.params;
+
+    const addr = user.addresses.id(addressId);
+    if (!addr) {
+      return res.status(404).json({ success: false, message: "Address not found" });
+    }
+
+    user.addresses.forEach((a) => (a.isDefault = a._id.toString() === addressId));
+    await user.save();
+
+    res.json({ success: true, message: "Default address updated", data: user.addresses });
+  } catch (error) {
+    next(error);
+  }
+};

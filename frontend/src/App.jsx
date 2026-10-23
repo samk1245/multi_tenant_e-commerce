@@ -225,9 +225,23 @@ export default function App() {
     if (!activeTenant || !checkoutData) return;
 
     try {
+      const totalDiscount = (checkoutData.discount || 0) + (customerData.appliedOmniCoins || 0);
+      const computedTotal = Math.max(0, (checkoutData.total || 0) - (customerData.appliedOmniCoins || 0));
+
       const orderPayload = {
         tenantId: activeTenant._id,
-        customer: customerData,
+        customer: {
+          name: customerData.name || 'Rahul Verma',
+          email: customerData.email || 'customer@example.com',
+          phone: customerData.phone || '+91 91234 56789',
+          address: customerData.address || {
+            street: customerData.street || 'Flat 402, Sea View Apartments',
+            city: customerData.city || 'Mumbai',
+            state: customerData.state || 'Maharashtra',
+            zip: customerData.zip || '400050',
+            country: 'India',
+          },
+        },
         items: checkoutData.items.map((i) => ({
           productId: i._id,
           title: i.title,
@@ -236,12 +250,13 @@ export default function App() {
           thumbnail: i.thumbnail || i.images?.[0],
         })),
         subtotal: checkoutData.subtotal,
-        discount: checkoutData.discount || 0,
+        discount: totalDiscount,
         couponCode: checkoutData.couponCode || '',
         shipping: checkoutData.shipping,
         tax: checkoutData.tax,
-        totalAmount: checkoutData.total,
+        totalAmount: computedTotal,
         paymentMethod: customerData.paymentMethod || 'upi',
+        paymentDetails: customerData.paymentDetails || {},
         currency: 'INR',
       };
 
@@ -614,6 +629,7 @@ export default function App() {
         cartData={checkoutData}
         onPlaceOrder={handlePlaceOrder}
         orderSuccess={orderSuccess}
+        tenant={activeTenant}
       />
 
       {/* Quick View Product Modal with Reviews, Wishlist & Share */}
@@ -637,6 +653,7 @@ export default function App() {
       <ProfileModal
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
+        tenant={activeTenant}
         onApplyCoupon={(code) => {
           setIsCartOpen(true);
         }}

@@ -42,11 +42,13 @@ const userSchema = new mongoose.Schema(
     addresses: [
       {
         label: { type: String, default: "Home" },
+        name: { type: String, default: "" },
+        phone: { type: String, default: "" },
         street: { type: String, default: "" },
         city: { type: String, default: "" },
         state: { type: String, default: "" },
         zip: { type: String, default: "" },
-        country: { type: String, default: "USA" },
+        country: { type: String, default: "India" },
         isDefault: { type: Boolean, default: false },
       },
     ],

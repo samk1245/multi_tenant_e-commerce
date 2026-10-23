@@ -120,4 +120,46 @@ export const api = {
     const data = await res.json();
     return data.data || [];
   },
+
+  async getAddresses(email = 'customer@example.com') {
+    try {
+      const res = await fetch(`${BASE_URL}/auth/addresses?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      return data.data || [];
+    } catch {
+      return [];
+    }
+  },
+
+  async addAddress(email = 'customer@example.com', addressData) {
+    const res = await fetch(`${BASE_URL}/auth/addresses?email=${encodeURIComponent(email)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...addressData, email }),
+    });
+    return await res.json();
+  },
+
+  async updateAddress(email = 'customer@example.com', addressId, addressData) {
+    const res = await fetch(`${BASE_URL}/auth/addresses/${addressId}?email=${encodeURIComponent(email)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addressData),
+    });
+    return await res.json();
+  },
+
+  async deleteAddress(email = 'customer@example.com', addressId) {
+    const res = await fetch(`${BASE_URL}/auth/addresses/${addressId}?email=${encodeURIComponent(email)}`, {
+      method: 'DELETE',
+    });
+    return await res.json();
+  },
+
+  async setDefaultAddress(email = 'customer@example.com', addressId) {
+    const res = await fetch(`${BASE_URL}/auth/addresses/${addressId}/default?email=${encodeURIComponent(email)}`, {
+      method: 'PATCH',
+    });
+    return await res.json();
+  },
 };
