@@ -169,6 +169,27 @@ exports.addProductReview = async (req, res, next) => {
   }
 };
 
+// @desc    Upvote review helpfulness
+// @route   POST /api/products/:id/reviews/:reviewId/helpful
+exports.voteReviewHelpful = async (req, res, next) => {
+  try {
+    const { id, reviewId } = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    const review = product.reviews.id(reviewId);
+    if (!review) {
+      return res.status(404).json({ success: false, message: "Review not found" });
+    }
+    review.helpfulVotes = (review.helpfulVotes || 0) + 1;
+    await product.save();
+    res.json({ success: true, helpfulVotes: review.helpfulVotes, data: product });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Create new product (scoped to tenant)
 // @route   POST /api/products
 exports.createProduct = async (req, res, next) => {

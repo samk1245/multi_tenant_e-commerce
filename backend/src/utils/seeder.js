@@ -109,7 +109,24 @@ const seedDatabase = async () => {
       currency: "INR",
     });
 
-    console.log("Created 5 tenant stores with INR currency!");
+        const tenantGaming = await Tenant.create({
+      name: "Zenith Esports & Pro Gaming",
+      slug: "zenith-gaming",
+      tagline: "Tournament-Grade Hardware, Rapid-Trigger Peripherals & QD-OLED Displays",
+      description: "Equipping esports champions with 8000Hz polling rate mice, Hall-Effect analog keyboards, and calibrated 360Hz QD-OLED gaming displays.",
+      category: "Esports & Pro Gaming Gear",
+      logo: "🎮",
+      bannerImage: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80",
+      theme: {
+        primaryColor: "#8b5cf6",
+        accentColor: "#a855f7",
+        heroGradient: "from-purple-950 via-violet-950 to-neutral-950",
+      },
+      contactEmail: "arena@zenithgaming.in",
+      currency: "INR",
+    });
+
+    console.log("Created 6 tenant stores with INR currency!");
 
     // 2. Sneaker Vault Products
     const sneakerProducts = await Product.create([
@@ -1618,6 +1635,240 @@ const seedDatabase = async () => {
       }
     ]);
 
+    
+    // 7. Zenith Esports & Pro Gaming Products
+    const gamingProducts = await Product.create([
+      {
+        tenantId: tenantGaming._id,
+        title: "Apex Strike 60 HE Rapid-Trigger Analog Keyboard",
+        description: "Hall-Effect magnetic analog switches with 0.1mm to 4.0mm adjustable actuation, rapid-trigger dynamic key resetting, and PBT double-shot keycaps.",
+        price: 14999,
+        compareAtPrice: 18999,
+        category: "Rapid-Trigger Keyboards",
+        brand: "Zenith Pro",
+        thumbnail: "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80"],
+        stock: 18,
+        rating: 4.9,
+        reviewsCount: 74,
+        isFeatured: true,
+        badge: "RAPID TRIGGER 0.1mm",
+        reviews: [
+          { userName: "Jonathan Gaming", rating: 5, comment: "Counter-strafing in Valorant feels instantaneous. Best analog board on the market.", createdAt: new Date("2026-10-20") },
+          { userName: "Aman Jain", rating: 5, comment: "Build quality is rock solid. The web configuration software is so easy to use.", createdAt: new Date("2026-10-22") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "ViperX HyperLight 42g Wireless Esports Mouse (8000Hz)",
+        description: "Ultralight magnesium alloy exoskeleton weighing only 42 grams, PixArt 3395 30K optical sensor, and true 8000Hz hyper-polling wireless dongle.",
+        price: 9499,
+        compareAtPrice: 12500,
+        category: "Esports Wireless Mice",
+        brand: "Zenith Pro",
+        thumbnail: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80"],
+        stock: 25,
+        rating: 4.9,
+        reviewsCount: 56,
+        isFeatured: true,
+        badge: "8000Hz POLLING",
+        reviews: [
+          { userName: "Mortal Naman", rating: 5, comment: "Zero latency and featherlight weight. Tracking targets across screen feels like telepathy.", createdAt: new Date("2026-10-18") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "SpectraVision 27-inch 360Hz QD-OLED 0.03ms Gaming Monitor",
+        description: "Next-gen Quantum Dot OLED panel with QHD (2560x1440) resolution, 360Hz refresh rate, 0.03ms GtG response time, and VESA DisplayHDR True Black 400.",
+        price: 64999,
+        compareAtPrice: 79999,
+        category: "QD-OLED High-Refresh Monitors",
+        brand: "SpectraVision",
+        thumbnail: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80"],
+        stock: 6,
+        rating: 5.0,
+        reviewsCount: 38,
+        isFeatured: true,
+        badge: "360Hz QD-OLED",
+        reviews: [
+          { userName: "Scout Tanmay", rating: 5, comment: "Infinite contrast and zero motion blur. Competitive gaming redefined.", createdAt: new Date("2026-10-19") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "AetherStream Pro Carbon Planar Magnetic Gaming Headset",
+        description: "Audiophile-grade 90mm planar magnetic drivers with dual wireless 2.4GHz + Bluetooth 5.3, broadcast boom mic, and 60h battery.",
+        price: 19999,
+        compareAtPrice: 24999,
+        category: "Audiophile Gaming Audio",
+        brand: "AetherStream",
+        thumbnail: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80"],
+        stock: 14,
+        rating: 4.8,
+        reviewsCount: 42,
+        isFeatured: true,
+        badge: "PLANAR MAGNETIC",
+        reviews: [
+          { userName: "Rohan Cariappa", rating: 5, comment: "Pinpoint spatial audio accuracy for footsteps and grenade bounces.", createdAt: new Date("2026-10-21") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "Titanium Stealth Dynamic Lumbar Ergonomic Esports Chair",
+        description: "Cold-cure foam cushion core, aerospace-grade aluminum wheelbase, 4D magnetic armrests, and 4-way adaptive lumbar posture tracking.",
+        price: 28999,
+        compareAtPrice: 35000,
+        category: "Pro Gaming Seating & Cockpits",
+        brand: "Zenith Pro",
+        thumbnail: "https://images.unsplash.com/photo-1580481077111-2eb2a1d29381?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1580481077111-2eb2a1d29381?auto=format&fit=crop&w=800&q=80"],
+        stock: 9,
+        rating: 4.9,
+        reviewsCount: 31,
+        isFeatured: false,
+        badge: "LUMBAR MATRIX",
+        reviews: [
+          { userName: "Karan Anand", rating: 5, comment: "Zero back fatigue after 10-hour tournament sessions. Worth every penny.", createdAt: new Date("2026-10-14") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "BroadcastPro Dual-Diaphragm XLR/USB Broadcast Mic",
+        description: "Broadcast-quality cardioid dynamic capsule with built-in DSP touch controls, headphone zero-latency monitoring, and internal pop filter.",
+        price: 11499,
+        compareAtPrice: 14500,
+        category: "Audiophile Gaming Audio",
+        brand: "AetherStream",
+        thumbnail: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=800&q=80"],
+        stock: 22,
+        rating: 4.9,
+        reviewsCount: 65,
+        isFeatured: false,
+        badge: "BROADCAST QUALITY",
+        reviews: [
+          { userName: "Gaurav Taneja", rating: 5, comment: "Warm radio voice tone without needing external audio interfaces.", createdAt: new Date("2026-10-12") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "HyperGlide Ceramic & Cordura Speed Gaming Surface XXL",
+        description: "Water-repellent Cordura fabric with ultra-low dynamic friction, micro-stitched anti-fray edges, and textured natural rubber base (900x400x4mm).",
+        price: 2999,
+        compareAtPrice: 3999,
+        category: "Esports Accessories & Surfaces",
+        brand: "Zenith Pro",
+        thumbnail: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80"],
+        stock: 65,
+        rating: 4.8,
+        reviewsCount: 88,
+        isFeatured: false,
+        badge: "SPEED CORDURA",
+        reviews: [
+          { userName: "Deepak S", rating: 5, comment: "Spilled water on it and wiped clean instantly. Glide is buttery smooth.", createdAt: new Date("2026-10-15") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "FrostCore 360mm LCD Liquid AIO CPU Cooler",
+        description: "Triple 120mm fluid dynamic bearing fans with 2.8-inch customizable 480x480 IPS LCD screen showing real-time CPU/GPU thermals.",
+        price: 17999,
+        compareAtPrice: 22999,
+        category: "PC Hardware & Thermal Cooling",
+        brand: "Vortex Lab",
+        thumbnail: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80"],
+        stock: 12,
+        rating: 4.9,
+        reviewsCount: 39,
+        isFeatured: true,
+        badge: "IPS LCD DISPLAY",
+        reviews: [
+          { userName: "Rahul M", rating: 5, comment: "Cools my Core i9 effortlessly under full stress test. The screen looks incredible inside the glass case.", createdAt: new Date("2026-10-23") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "CyberDeck 15-Key Programmable Macro Pad with OLED Screens",
+        description: "15 tactile keys featuring integrated color OLED displays for one-touch scene switching, audio mixing, and gaming macros.",
+        price: 8499,
+        compareAtPrice: 10999,
+        category: "Rapid-Trigger Keyboards",
+        brand: "Zenith Pro",
+        thumbnail: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80"],
+        stock: 28,
+        rating: 4.8,
+        reviewsCount: 52,
+        isFeatured: false,
+        badge: "OLED MACRO KEYS",
+        reviews: [
+          { userName: "Pooja V", rating: 5, comment: "Essential tool for any streamer or power gamer. Plugins work seamlessly.", createdAt: new Date("2026-10-17") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "ZeroLag 4K60 HDR HDMI 2.1 Pass-Through Capture Card",
+        description: "PCIe Gen 2 capture card supporting uncompressed 4K60 HDR10 pass-through and ultra-low latency sub-frame preview.",
+        price: 15499,
+        compareAtPrice: 19999,
+        category: "Esports Accessories & Surfaces",
+        brand: "SpectraVision",
+        thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"],
+        stock: 16,
+        rating: 4.7,
+        reviewsCount: 24,
+        isFeatured: false,
+        badge: "4K60 HDR",
+        reviews: [
+          { userName: "Varun K", rating: 5, comment: "Flawless capture for PS5 and PC dual-system setups with zero audio desync.", createdAt: new Date("2026-10-11") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "Vortex Magnetic Daisy-Chain 120mm ARGB Fans (3-Pack)",
+        description: "Modular magnetic interlocking fans with zero visible wiring, fluid dynamic bearing, 2000 RPM PWM control, and infinity mirror lighting.",
+        price: 5499,
+        compareAtPrice: 7200,
+        category: "PC Hardware & Thermal Cooling",
+        brand: "Vortex Lab",
+        thumbnail: "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80"],
+        stock: 35,
+        rating: 4.8,
+        reviewsCount: 47,
+        isFeatured: false,
+        badge: "MAGNETIC INTERLOCK",
+        reviews: [
+          { userName: "Sanjay G", rating: 5, comment: "Cable management took 5 minutes instead of 45. Silent even at 1500 RPM.", createdAt: new Date("2026-10-16") }
+        ]
+      },
+      {
+        tenantId: tenantGaming._id,
+        title: "SpeedFreak Ghost Edition Ultra-Wireless Symmetrical Mouse",
+        description: "Semi-translucent frosted shell with 4000Hz polling rate receiver, PTFE virgin grade skates, and TTC Gold mechanical switches.",
+        price: 10999,
+        compareAtPrice: 13999,
+        category: "Esports Wireless Mice",
+        brand: "Zenith Pro",
+        thumbnail: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=800&q=80"],
+        stock: 8,
+        rating: 5.0,
+        reviewsCount: 35,
+        isFeatured: true,
+        badge: "GHOST LIMITED DROP",
+        reviews: [
+          { userName: "Akshay R", rating: 5, comment: "The frosted semi-transparent shell looks insane with the internal RGB accents.", createdAt: new Date("2026-10-24") }
+        ]
+      }
+    ]);
+
     console.log("Created demo order records for Profile tracking!");
 
     // 8. Demo Users with Indian Addresses
@@ -1661,7 +1912,7 @@ const seedDatabase = async () => {
       },
     ]);
 
-    console.log("Seeding finished successfully with 4 stores, 32+ products, categories, reviews, and INR currency!");
+    console.log("Seeding finished successfully with 6 stores, 85+ products, categories, reviews, and INR currency!");
     process.exit(0);
   } catch (error) {
     console.error("Seeding failed:", error);

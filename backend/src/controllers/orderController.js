@@ -187,11 +187,28 @@ exports.getOrders = async (req, res, next) => {
   }
 };
 
+// Helper to find order by ID, orderNumber, or trackingNumber
+async function findOrderFlexible(identifier) {
+  const mongoose = require("mongoose");
+  if (mongoose.Types.ObjectId.isValid(identifier)) {
+    const byId = await Order.findById(identifier);
+    if (byId) return byId;
+  }
+  return await Order.findOne({
+    $or: [
+      { orderNumber: identifier },
+      { "shippingDetails.trackingNumber": identifier },
+      { orderNumber: identifier.toUpperCase() },
+      { "shippingDetails.trackingNumber": identifier.toUpperCase() },
+    ],
+  });
+}
+
 // @desc    Get single order details
 // @route   GET /api/orders/:id
 exports.getOrder = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await findOrderFlexible(req.params.id);
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
@@ -205,13 +222,13 @@ exports.getOrder = async (req, res, next) => {
 // @route   GET /api/orders/:id/tracking
 exports.getOrderTracking = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await findOrderFlexible(req.params.id);
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
     const tracking = shippingAdapter.getOrderTracking(order);
-    res.json({ success: true, data: tracking });
+    res.json({ success: true, data: { ...tracking, order } });
   } catch (error) {
     next(error);
   }

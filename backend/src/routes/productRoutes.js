@@ -5,6 +5,7 @@ const {
   getProduct,
   getSearchSuggestions,
   addProductReview,
+  voteReviewHelpful,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -20,6 +21,7 @@ router.get("/suggestions", getSearchSuggestions);
 router.post("/sync", syncCatalog);
 router.get("/:id", getProduct);
 router.post("/:id/reviews", addProductReview);
+router.post("/:id/reviews/:reviewId/helpful", voteReviewHelpful);
 router.post("/", createProduct);
 router.put("/:id", updateProduct);
 router.delete("/:id", deleteProduct);

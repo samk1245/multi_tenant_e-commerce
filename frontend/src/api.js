@@ -71,6 +71,19 @@ export const api = {
     return await res.json();
   },
 
+  async voteReviewHelpful(productId, reviewId) {
+    const res = await fetch(`${BASE_URL}/products/${productId}/reviews/${reviewId}/helpful`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    return await res.json();
+  },
+
+  async trackOrder(orderOrTrackingNumber) {
+    const res = await fetch(`${BASE_URL}/orders/${encodeURIComponent(orderOrTrackingNumber)}/tracking`);
+    return await res.json();
+  },
+
   async getTenantAnalytics(tenantId) {
     const res = await fetch(`${BASE_URL}/tenants/${tenantId}/analytics`);
     const data = await res.json();

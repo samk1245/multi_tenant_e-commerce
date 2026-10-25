@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Store, Shield, Sparkles, ChevronDown, Plus, LayoutDashboard, ShoppingCart, User, Flame, Heart } from 'lucide-react';
+import { ShoppingBag, Store, Shield, Sparkles, ChevronDown, Plus, LayoutDashboard, ShoppingCart, User, Flame, Heart, Truck, Scale } from 'lucide-react';
 
 export default function Navbar({
   tenants,
@@ -9,6 +9,9 @@ export default function Navbar({
   onOpenCart,
   wishlistCount,
   onOpenWishlist,
+  compareCount,
+  onOpenCompare,
+  onOpenTracker,
   activeTab,
   onTabChange,
   onOpenCreateStore,
@@ -125,6 +128,31 @@ export default function Navbar({
                 <span className="hidden sm:inline">Merchant</span>
               </button>
             </div>
+
+            {/* Live Track Shipment Button */}
+            <button
+              onClick={onOpenTracker}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-neutral-800/90 hover:bg-neutral-700/90 text-neutral-300 hover:text-emerald-400 border border-neutral-700/80 transition text-xs font-bold cursor-pointer"
+              title="Track any parcel by Order # or AWB"
+            >
+              <Truck className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden lg:inline">Track Order</span>
+            </button>
+
+            {/* Compare Drawer Button */}
+            {activeTab === 'store' && compareCount > 0 && (
+              <button
+                onClick={onOpenCompare}
+                className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 transition text-xs font-bold cursor-pointer animate-pulse"
+                title="View Product Comparison"
+              >
+                <Scale className="w-3.5 h-3.5 text-purple-400" />
+                <span className="hidden md:inline">Compare</span>
+                <span className="flex items-center justify-center w-4 h-4 rounded-full bg-purple-500 text-white text-[10px] font-black">
+                  {compareCount}
+                </span>
+              </button>
+            )}
 
             {/* Wishlist Button */}
             {activeTab === 'store' && (

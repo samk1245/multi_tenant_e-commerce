@@ -12,6 +12,8 @@ import CreateStoreModal from './components/CreateStoreModal';
 import ProfileModal from './components/ProfileModal';
 import WishlistDrawer from './components/WishlistDrawer';
 import SupportWidget from './components/SupportWidget';
+import ComparisonModal from './components/ComparisonModal';
+import OrderTrackerModal from './components/OrderTrackerModal';
 import { formatCurrency } from './utils/formatters';
 
 const PRICE_PRESETS = [
@@ -59,6 +61,11 @@ export default function App() {
   const [wishlist, setWishlist] = useState([]);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+  // Product Comparison & Order Tracking States
+  const [comparedProducts, setComparedProducts] = useState([]);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isTrackerOpen, setIsTrackerOpen] = useState(false);
 
   // Load Tenants on mount
   useEffect(() => {
@@ -296,6 +303,29 @@ export default function App() {
     setWishlist([]);
   };
 
+  // Comparison Handlers
+  const handleToggleCompare = (product) => {
+    setComparedProducts((prev) => {
+      const exists = prev.some((p) => p._id === product._id);
+      if (exists) {
+        return prev.filter((p) => p._id !== product._id);
+      }
+      if (prev.length >= 4) {
+        alert("You can compare up to 4 products simultaneously.");
+        return prev;
+      }
+      return [...prev, product];
+    });
+  };
+
+  const handleRemoveCompare = (productId) => {
+    setComparedProducts((prev) => prev.filter((p) => p._id !== productId));
+  };
+
+  const handleClearCompare = () => {
+    setComparedProducts([]);
+  };
+
   // Quick View + Recently Viewed tracking
   const handleQuickView = (product) => {
     setViewProduct(product);
@@ -316,6 +346,9 @@ export default function App() {
         onOpenCart={() => setIsCartOpen(true)}
         wishlistCount={wishlist.length}
         onOpenWishlist={() => setIsWishlistOpen(true)}
+        compareCount={comparedProducts.length}
+        onOpenCompare={() => setIsCompareOpen(true)}
+        onOpenTracker={() => setIsTrackerOpen(true)}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onOpenCreateStore={() => setIsCreateStoreOpen(true)}
@@ -548,6 +581,8 @@ export default function App() {
                         onQuickView={handleQuickView}
                         onToggleWishlist={handleToggleWishlist}
                         isWishlisted={wishlist.some((w) => w._id === product._id)}
+                        onToggleCompare={handleToggleCompare}
+                        isCompared={comparedProducts.some((c) => c._id === product._id)}
                       />
                     ))}
                   </div>
@@ -640,6 +675,65 @@ export default function App() {
         onAddToCart={handleAddToCart}
         onToggleWishlist={handleToggleWishlist}
         isWishlisted={wishlist.some((w) => w._id === viewProduct?._id)}
+        onToggleCompare={handleToggleCompare}
+        isCompared={comparedProducts.some((c) => c._id === viewProduct?._id)}
+      />
+
+      {/* Floating Bottom Comparison Dock */}
+      {comparedProducts.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-neutral-900/95 backdrop-blur-xl border border-purple-500/40 shadow-2xl rounded-2xl p-3 px-5 flex items-center gap-4 animate-in slide-in-from-bottom duration-300">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black uppercase text-purple-300 flex items-center gap-1.5">
+              <span>Compare:</span>
+            </span>
+            <div className="flex -space-x-2">
+              {comparedProducts.map((p) => (
+                <img
+                  key={p._id}
+                  src={p.thumbnail || p.images?.[0]}
+                  alt={p.title}
+                  className="w-8 h-8 rounded-full border-2 border-neutral-900 object-cover bg-neutral-950 shadow-md"
+                  title={p.title}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-neutral-300 font-bold ml-1">
+              ({comparedProducts.length}/4)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsCompareOpen(true)}
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition shadow-lg shadow-purple-600/30 cursor-pointer"
+            >
+              Compare Now
+            </button>
+            <button
+              onClick={handleClearCompare}
+              className="px-2.5 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white text-xs font-semibold transition cursor-pointer"
+              title="Clear comparison list"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Product Comparison Modal Matrix */}
+      <ComparisonModal
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+        products={comparedProducts}
+        onRemoveProduct={handleRemoveCompare}
+        onAddToCart={handleAddToCart}
+        onClearAll={handleClearCompare}
+      />
+
+      {/* Real-time Order Shipment Tracker Modal */}
+      <OrderTrackerModal
+        isOpen={isTrackerOpen}
+        onClose={() => setIsTrackerOpen(false)}
       />
 
       {/* Create New Store Modal */}

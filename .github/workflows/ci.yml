@@ -63,5 +63,5 @@ jobs:
         run: node --check src/server.js
 
       - name: Check product route syntax
-        run: node --check src/routes/product.js
+        run: node --check src/routes/productRoutes.js
 

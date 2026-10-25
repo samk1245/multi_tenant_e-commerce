@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Star, ShoppingCart, Eye, Sparkles, Flame, Heart } from 'lucide-react';
+import { Star, ShoppingCart, Eye, Sparkles, Flame, Heart, Scale } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
 export default function ProductCard({
@@ -8,6 +8,8 @@ export default function ProductCard({
   onQuickView,
   onToggleWishlist,
   isWishlisted,
+  onToggleCompare,
+  isCompared,
 }) {
   const cardRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0, glareX: 50, glareY: 50, active: false });
@@ -105,6 +107,23 @@ export default function ProductCard({
             title={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
           >
             <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-white' : ''}`} />
+          </button>
+
+          {/* Compare Toggle Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onToggleCompare) onToggleCompare(product);
+            }}
+            style={{ transform: 'translateZ(30px)' }}
+            className={`p-2 rounded-xl backdrop-blur-md border transition-all duration-300 shadow-xl cursor-pointer ${
+              isCompared
+                ? 'bg-purple-600 text-white border-purple-400 shadow-purple-500/40 scale-105'
+                : 'bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 hover:text-purple-400 border-neutral-700/60'
+            }`}
+            title={isCompared ? "Remove from Compare" : "Add to Compare"}
+          >
+            <Scale className="w-4 h-4" />
           </button>
 
           {/* Quick View Button */}
