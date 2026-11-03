@@ -14,6 +14,11 @@ import WishlistDrawer from './components/WishlistDrawer';
 import SupportWidget from './components/SupportWidget';
 import ComparisonModal from './components/ComparisonModal';
 import OrderTrackerModal from './components/OrderTrackerModal';
+import StoreShowcase from './components/StoreShowcase';
+import FlashDeals from './components/FlashDeals';
+import Testimonials from './components/Testimonials';
+import Footer from './components/Footer';
+import AdminDashboard from './components/AdminDashboard';
 import { formatCurrency } from './utils/formatters';
 
 const PRICE_PRESETS = [
@@ -55,7 +60,14 @@ export default function App() {
   const [viewProduct, setViewProduct] = useState(null);
   const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('store'); // 'store' | 'admin'
+  const [activeTab, setActiveTab] = useState('store'); // 'store' | 'admin' | 'superadmin'
+  const [themeMode, setThemeMode] = useState(() => localStorage.getItem('themeMode') || 'dark');
+
+  const handleToggleTheme = () => {
+    const nextTheme = themeMode === 'dark' ? 'light' : 'dark';
+    setThemeMode(nextTheme);
+    localStorage.setItem('themeMode', nextTheme);
+  };
 
   // Wishlist & Recently Viewed
   const [wishlist, setWishlist] = useState([]);
@@ -228,6 +240,32 @@ export default function App() {
     setOrderSuccess(null);
   };
 
+  const handleBuyNow = (product) => {
+    const qty = product.quantity || 1;
+    const itemSubtotal = product.price * qty;
+    const shipping = itemSubtotal >= 999 ? 0 : 99;
+    const tax = Math.round(itemSubtotal * 0.05);
+    const total = itemSubtotal + shipping + tax;
+
+    setCart((prev) => {
+      const existing = prev.find((item) => item._id === product._id);
+      if (existing) {
+        return prev.map((item) => (item._id === product._id ? { ...item, quantity: item.quantity + qty } : item));
+      }
+      return [...prev, { ...product, quantity: qty }];
+    });
+
+    setCheckoutData({
+      items: [{ ...product, quantity: qty }],
+      subtotal: itemSubtotal,
+      discount: 0,
+      shipping,
+      tax,
+      total,
+    });
+    setOrderSuccess(null);
+  };
+
   const handlePlaceOrder = async (customerData) => {
     if (!activeTenant || !checkoutData) return;
 
@@ -336,8 +374,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-100">
-      {/* Top Navbar with Multi-Tenant Switcher, Wishlist, Profile & Cart */}
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${themeMode === 'light' ? 'bg-neutral-100 text-neutral-900 light' : 'bg-neutral-950 text-neutral-100 dark'}`}>
+      {/* Top Navbar with Multi-Tenant Switcher, Autocomplete & Telemetry */}
       <Navbar
         tenants={tenants}
         activeTenant={activeTenant}
@@ -353,17 +391,34 @@ export default function App() {
         onTabChange={setActiveTab}
         onOpenCreateStore={() => setIsCreateStoreOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
+        onSelectProduct={handleQuickView}
+        themeMode={themeMode}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
         {activeTab === 'store' ? (
           <div>
-            {/* Store Hero Banner */}
-            <Hero tenant={activeTenant} />
+            {/* Store Hero Banner with 3D Three.js Scene */}
+            <Hero tenant={activeTenant} onTenantUpdated={setActiveTenant} />
+
+            {/* Lightning Flash Deals with Ticking Countdown Timer */}
+            <FlashDeals
+              products={products}
+              onAddToCart={handleAddToCart}
+              onQuickView={handleQuickView}
+            />
+
+            {/* 14 Curated Flagship Brand Destinations */}
+            <StoreShowcase
+              tenants={tenants}
+              activeTenant={activeTenant}
+              onSelectTenant={setActiveTenant}
+            />
 
             {/* Filter & Catalog Controls */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
               
               {/* Search, Categories & Quick Sort Bar */}
               <div className="flex flex-col gap-4 pb-6 border-b border-neutral-800">
@@ -626,13 +681,24 @@ export default function App() {
                 </div>
               )}
 
+              {/* Verified Customer Community Testimonials */}
+              <Testimonials />
+
             </div>
           </div>
-        ) : (
-          /* Merchant Dashboard View */
+        ) : activeTab === 'admin' ? (
+          /* Merchant Seller Dashboard View */
           <MerchantDashboard
             tenant={activeTenant}
             onTenantUpdated={setActiveTenant}
+          />
+        ) : (
+          /* Super-Admin Platform Governance Dashboard */
+          <AdminDashboard
+            onSelectStore={(store) => {
+              setActiveTenant(store);
+              setActiveTab('store');
+            }}
           />
         )}
       </main>
@@ -677,6 +743,7 @@ export default function App() {
         isWishlisted={wishlist.some((w) => w._id === viewProduct?._id)}
         onToggleCompare={handleToggleCompare}
         isCompared={comparedProducts.some((c) => c._id === viewProduct?._id)}
+        onBuyNow={handleBuyNow}
       />
 
       {/* Floating Bottom Comparison Dock */}
@@ -759,23 +826,8 @@ export default function App() {
         onOpenOrders={() => setIsProfileOpen(true)}
       />
 
-      {/* Footer */}
-      <footer className="border-t border-neutral-800/80 bg-neutral-950 py-10 text-center text-xs text-neutral-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="font-semibold text-neutral-400">
-            OmniStore &bull; Enterprise Multi-Tenant E-Commerce Platform
-          </p>
-          <div className="flex items-center gap-4 text-[11px] text-neutral-400">
-            <span>₹ INR Verified Pricing</span>
-            <span>&bull;</span>
-            <span>24/7 AI Live Support</span>
-            <span>&bull;</span>
-            <span>Instant Ratings & Reviews</span>
-            <span>&bull;</span>
-            <span>Customer Cart & Wishlist</span>
-          </div>
-        </div>
-      </footer>
+      {/* Comprehensive Multi-Tenant Marketplace Footer */}
+      <Footer tenants={tenants} onSelectTenant={setActiveTenant} />
     </div>
   );
 }

@@ -1,8 +1,27 @@
 import React, { useState } from 'react';
-import { Sparkles, ShieldCheck, Truck, RefreshCw, Flame, Tag, Check, ArrowRight } from 'lucide-react';
+import {
+  Sparkles,
+  ShieldCheck,
+  Truck,
+  RefreshCw,
+  Flame,
+  Tag,
+  Check,
+  ArrowRight,
+  Heart,
+  Star,
+  Users,
+  Store,
+  BadgeCheck,
+} from 'lucide-react';
+import ThreeHeroCanvas from './ThreeHeroCanvas';
+import { api } from '../api';
 
-export default function Hero({ tenant }) {
+export default function Hero({ tenant, onTenantUpdated }) {
   const [copiedCoupon, setCopiedCoupon] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followCount, setFollowCount] = useState(tenant?.followersCount || 1840);
+  const [followLoading, setFollowLoading] = useState(false);
 
   if (!tenant) return null;
 
@@ -12,33 +31,69 @@ export default function Hero({ tenant }) {
     setTimeout(() => setCopiedCoupon(false), 2500);
   };
 
+  const handleToggleFollow = async () => {
+    if (!tenant?._id || followLoading) return;
+    setFollowLoading(true);
+    try {
+      const res = await api.toggleFollowTenant(tenant._id, isFollowing);
+      if (res.success) {
+        setIsFollowing(res.following);
+        setFollowCount(res.followersCount);
+        if (onTenantUpdated) onTenantUpdated(res.data);
+      }
+    } catch (err) {
+      console.warn("Follow store error:", err);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
   return (
     <div className="relative overflow-hidden rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-6 border border-neutral-800/80 bg-neutral-900/95 shadow-2xl perspective-1000">
-      
+      {/* 3D Interactive Three.js Canvas Scene */}
+      <ThreeHeroCanvas tenantTheme={tenant.theme} />
+
       {/* 3D Ambient Background Graphic with Glow */}
-      <div className="absolute inset-0 z-0 opacity-30">
+      <div className="absolute inset-0 z-0 opacity-25">
         <img
           src={tenant.bannerImage || "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1600&q=80"}
           alt={tenant.name}
           className="w-full h-full object-cover filter blur-sm scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/85 to-neutral-900/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/90 to-neutral-900/60" />
       </div>
 
-      {/* Floating 3D Ambient Lights */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-10 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Floating 3D Ambient Light Flares */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-10 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* Content Layout */}
-      <div className="relative z-10 p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+      <div className="relative z-20 p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
         
         {/* Left Column: Store Branding */}
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-900/80 border border-neutral-700/80 text-xs font-bold text-neutral-300 mb-4 backdrop-blur-md shadow-lg">
-            <span className="text-base">{tenant.logo || '✨'}</span>
-            <span className="text-emerald-400 font-extrabold">{tenant.category}</span>
-            <span className="text-neutral-500">&bull;</span>
-            <span className="text-neutral-400">Curated Multi-Tenant Flagship</span>
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-900/85 border border-neutral-700/80 text-xs font-bold text-neutral-300 backdrop-blur-md shadow-lg">
+              <span className="text-base">{tenant.logo || '✨'}</span>
+              <span className="text-emerald-400 font-extrabold">{tenant.category}</span>
+              <span className="text-neutral-500">&bull;</span>
+              <span className="text-neutral-400">Flagship Store #{tenant.slug}</span>
+            </div>
+
+            {/* Follow Store Button with Live Count */}
+            <button
+              onClick={handleToggleFollow}
+              disabled={followLoading}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition shadow-lg backdrop-blur-md cursor-pointer ${
+                isFollowing
+                  ? 'bg-rose-500 text-white border border-rose-400 shadow-rose-500/30'
+                  : 'bg-neutral-800/90 hover:bg-neutral-700 text-neutral-200 hover:text-white border border-neutral-700'
+              }`}
+            >
+              <Heart className={`w-3.5 h-3.5 ${isFollowing ? 'fill-white' : ''}`} />
+              <span>{isFollowing ? 'Following' : 'Follow Store'}</span>
+              <span className="text-[10px] opacity-80 font-mono ml-0.5">({followCount.toLocaleString()})</span>
+            </button>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
@@ -53,17 +108,31 @@ export default function Hero({ tenant }) {
             {tenant.description}
           </p>
 
+          {/* Store Owner & Rating Badge */}
+          <div className="mt-4 flex items-center gap-4 text-xs text-neutral-400">
+            <div className="flex items-center gap-1.5 font-semibold text-white">
+              <BadgeCheck className="w-4 h-4 text-emerald-400" />
+              <span>Curated by {tenant.owner?.name || 'Authorized Merchant'}</span>
+            </div>
+            <span className="text-neutral-600">&bull;</span>
+            <div className="flex items-center gap-1 text-amber-400 font-bold">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span>{tenant.rating || 4.9}</span>
+              <span className="text-neutral-400 font-normal">({tenant.reviewsCount || 180} reviews)</span>
+            </div>
+          </div>
+
           {/* Feature Badges */}
-          <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-neutral-800/80 text-xs text-neutral-300">
-            <div className="flex items-center gap-1.5 bg-neutral-950/50 px-2.5 py-1 rounded-lg border border-neutral-800">
+          <div className="mt-6 flex flex-wrap gap-3 pt-4 border-t border-neutral-800/80 text-xs text-neutral-300">
+            <div className="flex items-center gap-1.5 bg-neutral-950/60 px-3 py-1.5 rounded-xl border border-neutral-800 backdrop-blur-sm">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>100% Genuine & Verified</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-neutral-950/50 px-2.5 py-1 rounded-lg border border-neutral-800">
+            <div className="flex items-center gap-1.5 bg-neutral-950/60 px-3 py-1.5 rounded-xl border border-neutral-800 backdrop-blur-sm">
               <Truck className="w-4 h-4 text-emerald-400" />
               <span>Free Express Delivery over ₹999</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-neutral-950/50 px-2.5 py-1 rounded-lg border border-neutral-800">
+            <div className="flex items-center gap-1.5 bg-neutral-950/60 px-3 py-1.5 rounded-xl border border-neutral-800 backdrop-blur-sm">
               <RefreshCw className="w-4 h-4 text-emerald-400" />
               <span>7-Day Return Guarantee</span>
             </div>
@@ -78,11 +147,11 @@ export default function Hero({ tenant }) {
 
             <div className="flex items-center gap-2 text-xs font-black text-amber-400 uppercase tracking-wider mb-2">
               <Flame className="w-4 h-4 fill-amber-400" />
-              <span>Limited Festive Offer</span>
+              <span>Limited Festive Drop</span>
             </div>
 
             <div className="text-2xl font-black text-white">
-              Flat 20% Discount
+              Flat 20% Instant Off
             </div>
             <p className="text-xs text-neutral-400 mt-1">
               On all orders above ₹2,499. Apply coupon code at checkout:
@@ -98,7 +167,7 @@ export default function Hero({ tenant }) {
               </div>
               <button
                 onClick={() => handleCopyCoupon('FESTIVE20')}
-                className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition active:scale-95 flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-md"
               >
                 {copiedCoupon ? (
                   <>
@@ -111,7 +180,7 @@ export default function Hero({ tenant }) {
               </button>
             </div>
 
-            <div className="mt-3 flex items-center justify-between text-[11px] text-neutral-500">
+            <div className="mt-3 flex items-center justify-between text-[11px] text-neutral-400">
               <span>Code 'VIP15' also available (15% off)</span>
               <span className="text-emerald-400 font-semibold">Ends Soon</span>
             </div>

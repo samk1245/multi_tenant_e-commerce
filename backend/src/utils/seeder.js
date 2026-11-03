@@ -4,6 +4,7 @@ const Tenant = require("../models/Tenant");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
 const User = require("../models/User");
+const { getNewTenantsData, getProductsForNewTenants } = require("./additionalStores");
 
 const seedDatabase = async () => {
   try {
@@ -126,7 +127,38 @@ const seedDatabase = async () => {
       currency: "INR",
     });
 
-    console.log("Created 6 tenant stores with INR currency!");
+    const tenantOrganics = await Tenant.create({
+      name: "Aurora Gourmet & Organic Botanicals",
+      slug: "aurora-organics",
+      tagline: "High-Altitude Himalayan Harvests, Raw Honey & Clean Superfoods",
+      description: "Direct-from-source cold-pressed botanical oils, raw monofloral forest honey, ceremonial matcha, and Ayurvedic adaptogenic elixirs.",
+      category: "Gourmet Organic & Botanical Wellness",
+      logo: "🌿",
+      bannerImage: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80",
+      theme: {
+        primaryColor: "#059669",
+        accentColor: "#34d399",
+        heroGradient: "from-emerald-950 via-teal-950 to-neutral-950",
+      },
+      contactEmail: "harvest@auroraorganics.in",
+      currency: "INR",
+    });
+
+    const additionalTenants = await Tenant.insertMany(getNewTenantsData());
+    console.log(`Created ${7 + additionalTenants.length} tenant stores with INR currency matching all 12 requested categories!`);
+
+    const tenantMap = {
+      "sneaker-vault": tenantSneakers._id,
+      "nordic-home": tenantNordic._id,
+      "artisan-roastery": tenantCoffee._id,
+      "apex-tech": tenantTech._id,
+      "maison-luxe": tenantFashion._id,
+      "zenith-gaming": tenantGaming._id,
+      "aurora-organics": tenantOrganics._id,
+    };
+    additionalTenants.forEach((t) => {
+      tenantMap[t.slug] = t._id;
+    });
 
     // 2. Sneaker Vault Products
     const sneakerProducts = await Product.create([
@@ -1869,6 +1901,316 @@ const seedDatabase = async () => {
       }
     ]);
 
+    // 7. Aurora Gourmet & Organic Botanicals Products
+    const organicProducts = await Product.create([
+      {
+        tenantId: tenantOrganics._id,
+        title: "Wild Forest Kashmir Acacia Raw Honey (500g)",
+        description: "Cold-extracted single-origin raw honey harvested sustainably from Kashmir's robinia pseudoacacia blossoms. NMR lab-tested and 100% unpasteurized.",
+        price: 1499,
+        compareAtPrice: 1899,
+        category: "Himalayan Raw Honey & Bee Pollen",
+        brand: "Aurora Reserve",
+        thumbnail: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80"],
+        stock: 24,
+        rating: 4.9,
+        reviewsCount: 78,
+        isFeatured: true,
+        badge: "UNPASTEURIZED RAW",
+        specs: {
+          Origin: "Anantnag Valley, Kashmir",
+          Harvest: "Spring 2026",
+          Purity: "NMR Tested 100% Pure",
+          "Shelf Life": "24 Months"
+        },
+        reviews: [
+          { userName: "Dr. Ananya Sen", rating: 5, comment: "Crystal clear liquid gold. Completely different flavor depth compared to commercial store-bought honey.", createdAt: new Date("2026-10-18"), helpfulVotes: 14 },
+          { userName: "Vikram Malhotra", rating: 5, comment: "Adds a delicate floral sweetness to my morning matcha without overpowering it.", createdAt: new Date("2026-10-22"), helpfulVotes: 8 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Uji Ceremonial Grade First-Harvest Stoneground Matcha (50g)",
+        description: "Single-estate shade-grown tencha leaves slow ground on traditional granite stone mills in Uji, Kyoto. Silky sweet umami profile with vivid electric green color.",
+        price: 2450,
+        compareAtPrice: 2950,
+        category: "Ceremonial Teas & Matcha",
+        brand: "Aurora Botanicals",
+        thumbnail: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80"],
+        stock: 18,
+        rating: 5.0,
+        reviewsCount: 64,
+        isFeatured: true,
+        badge: "FIRST HARVEST",
+        specs: {
+          Origin: "Uji, Kyoto (Japan)",
+          Cultivar: "Okumidori & Saemidori",
+          Grind: "Granite Stone Mill (20 microns)",
+          Certifications: "JAS & USDA Organic"
+        },
+        reviews: [
+          { userName: "Tanvi Narang", rating: 5, comment: "Incredible electric green shade and zero bitterness. Whisks into a dense creamy froth effortlessly.", createdAt: new Date("2026-10-20"), helpfulVotes: 21 },
+          { userName: "Rajesh Iyer", rating: 5, comment: "Authentic ceremonial grade quality right here in India. Best daily energy boost.", createdAt: new Date("2026-10-24"), helpfulVotes: 12 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Pure Himalayan Shilajit Gold Resin with 24K Edible Gold (20g)",
+        description: "Harvested at 18,000+ ft elevations in the high Himalayas. Purified with traditional Ayurvedic triphala decoctions and blended with edible 24K gold bhasma. Contains 78%+ certified fulvic acid.",
+        price: 3299,
+        compareAtPrice: 3999,
+        category: "Adaptogenic Botanicals & Tonics",
+        brand: "Himalayan Alchemist",
+        thumbnail: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=800&q=80"],
+        stock: 15,
+        rating: 4.9,
+        reviewsCount: 112,
+        isFeatured: true,
+        badge: "24K GOLD INFUSED",
+        specs: {
+          Source: "18,000 ft High Altitude Himalayas",
+          "Fulvic Acid": "78.4% Certified",
+          Testing: "Zero Heavy Metals / NABL Lab Certified",
+          Serving: "Pea-sized dab in lukewarm water"
+        },
+        reviews: [
+          { userName: "Harshavardhan R", rating: 5, comment: "Noticeable boost in stamina and cognitive focus after 10 days. The gold flakes dissolve smoothly.", createdAt: new Date("2026-10-15"), helpfulVotes: 32 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Artisanal Wood-Pressed Kashmiri Walnut Oil (250ml)",
+        description: "Cold-pressed on traditional wooden kohlu (ghani) below 35°C from handpicked Kashmiri Kagzi walnuts. High in plant-based Omega-3 ALA, packaged in UV-filtering amber glass.",
+        price: 1699,
+        compareAtPrice: 2199,
+        category: "Cold-Pressed Oils & Elixirs",
+        brand: "Aurora Reserve",
+        thumbnail: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=800&q=80"],
+        stock: 30,
+        rating: 4.8,
+        reviewsCount: 45,
+        isFeatured: false,
+        badge: "WOOD-PRESSED GHANI",
+        specs: {
+          Nuts: "100% Kashmiri Kagzi Walnuts",
+          Method: "Zero Heat Wood Ghani Extraction",
+          "Omega-3": "11.2g per 100ml",
+          Bottle: "UV-Resistant Amber Glass"
+        },
+        reviews: [
+          { userName: "Meera Nair", rating: 5, comment: "Rich nutty aroma that transforms simple roasted root veggies and arugula salads.", createdAt: new Date("2026-10-12"), helpfulVotes: 9 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Monofloral Himalayan White Honey & Royal Jelly Blend (350g)",
+        description: "Naturally creamy white honey crystallized from high alpine sainfoin and wild clover, enriched with 5% fresh royal jelly for cellular vitality and radiance.",
+        price: 2199,
+        compareAtPrice: 2699,
+        category: "Himalayan Raw Honey & Bee Pollen",
+        brand: "Aurora Reserve",
+        thumbnail: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=800&q=80"],
+        stock: 12,
+        rating: 4.9,
+        reviewsCount: 39,
+        isFeatured: false,
+        badge: "RARE ALPINE HARVEST",
+        specs: {
+          Texture: "Silky Velvet Naturally Creamed",
+          "Royal Jelly": "5% Bioactive Concentration",
+          Altitude: "9,500 ft Himalayan Valleys",
+          Color: "Pearlescent Snow White"
+        },
+        reviews: [
+          { userName: "Rohit Kapoor", rating: 5, comment: "Tastes like butterscotch and sweet floral cream. Unlike any regular honey in the world.", createdAt: new Date("2026-10-17"), helpfulVotes: 15 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Darjeeling Silver Needle First Flush Imperial White Tea (100g)",
+        description: "Hand-plucked whole unopened silver velvet buds from organic biodynamic gardens in Darjeeling. Sun-dried with lowest caffeine and highest natural polyphenol antioxidants.",
+        price: 1850,
+        compareAtPrice: 2200,
+        category: "Ceremonial Teas & Matcha",
+        brand: "Aurora Botanicals",
+        thumbnail: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=800&q=80"],
+        stock: 25,
+        rating: 4.8,
+        reviewsCount: 52,
+        isFeatured: false,
+        badge: "IMPERIAL FLUSH",
+        specs: {
+          Estate: "Makaibari Biodynamic Gardens",
+          Elevation: "4,500 ft",
+          Buds: "Unopened Silver Needle Tips",
+          Notes: "Muscatel, Honeysuckle, Spring Meadow"
+        },
+        reviews: [
+          { userName: "Sunita Joshi", rating: 5, comment: "Pale champagne hue with delicate sweet peach notes. A sublime evening meditation tea.", createdAt: new Date("2026-10-19"), helpfulVotes: 7 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Single-Estate Extra Virgin Cold-Pressed Olive Oil Reserve (500ml)",
+        description: "Early-harvest unfiltered cold-pressed extra virgin olive oil boasting over 620 mg/kg polyphenols with an ultra-low acidity of < 0.22%. Robust herbaceous aroma.",
+        price: 2899,
+        compareAtPrice: 3499,
+        category: "Cold-Pressed Oils & Elixirs",
+        brand: "Aurora Reserve",
+        thumbnail: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=800&q=80"],
+        stock: 20,
+        rating: 4.9,
+        reviewsCount: 37,
+        isFeatured: true,
+        badge: "EARLY HARVEST EVOO",
+        specs: {
+          Acidity: "< 0.22% Oleic Acid",
+          Polyphenols: "620 mg/kg",
+          Harvest: "October Early Green Olives",
+          Profile: "Peppery peppery Tuscan style finish"
+        },
+        reviews: [
+          { userName: "Chef Marco D'Souza", rating: 5, comment: "Real peppery cough at the back of the throat proves the high polyphenol count. Stellar quality.", createdAt: new Date("2026-10-14"), helpfulVotes: 19 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Himalayan Stone-Ground Heirloom Red Rice (1kg)",
+        description: "Nutrient-dense ancient heritage red rice grown with glacier meltwater in Uttarakhand. Low glycemic index, unpolished with intact antioxidant bran layer.",
+        price: 799,
+        compareAtPrice: 999,
+        category: "Ancient Heritage Grains & Seeds",
+        brand: "Aurora Organics",
+        thumbnail: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80"],
+        stock: 45,
+        rating: 4.7,
+        reviewsCount: 60,
+        isFeatured: false,
+        badge: "HEIRLOOM MOUNTAIN",
+        specs: {
+          Variety: "Ancient Himalayan Oryza sativa",
+          "Glycemic Index": "Low GI (52)",
+          Nutrients: "High Anthocyanins & Zinc",
+          Cooking: "Nutty chew, pairs with curries and warm salads"
+        },
+        reviews: [
+          { userName: "Kavita Sethi", rating: 5, comment: "Great texture and nutty aroma. Keeps you full for hours with zero sugar spikes.", createdAt: new Date("2026-10-21"), helpfulVotes: 6 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Organic KSM-66 Full-Spectrum Ashwagandha Root Elixir (100ml)",
+        description: "Clinically validated KSM-66 organic root extract suspended in organic vegetable glycerin and infused with saffron threads. Supports cortisol balance and deep REM sleep.",
+        price: 1899,
+        compareAtPrice: 2350,
+        category: "Adaptogenic Botanicals & Tonics",
+        brand: "Himalayan Alchemist",
+        thumbnail: "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1615397349754-cfa2066a298e?auto=format&fit=crop&w=800&q=80"],
+        stock: 22,
+        rating: 4.9,
+        reviewsCount: 88,
+        isFeatured: false,
+        badge: "KSM-66 CERTIFIED",
+        specs: {
+          Withanolides: "> 5% High Concentration",
+          Infusion: "Kashmiri Saffron & Raw Glycerin",
+          Base: "100% Alcohol-Free Aqueous Root",
+          Certification: "Non-GMO Project & USDA Organic"
+        },
+        reviews: [
+          { userName: "Arjun B", rating: 5, comment: "Took 1 dropper before bed and experienced significantly improved sleep tracking scores on my Oura ring.", createdAt: new Date("2026-10-23"), helpfulVotes: 25 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Dark Ecuadorian Cacao & Roasted Hazelnut Stoneground Spread (300g)",
+        description: "72% heirloom Arriba Nacional cacao stoneground with slow-roasted Oregon hazelnuts and unrefined organic coconut blossom sugar. Zero palm oil, dairy or preservatives.",
+        price: 999,
+        compareAtPrice: 1250,
+        category: "Artisanal Superfood Butters & Spreads",
+        brand: "Aurora Organics",
+        thumbnail: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=800&q=80"],
+        stock: 35,
+        rating: 4.9,
+        reviewsCount: 71,
+        isFeatured: true,
+        badge: "STONEGROUND 72%",
+        specs: {
+          Cacao: "72% Single-Origin Arriba Nacional",
+          Nuts: "Slow-Roasted Hazelnuts (45%)",
+          PalmOil: "0% Never Added",
+          Vegan: "100% Plant-Based Certified"
+        },
+        reviews: [
+          { userName: "Deepa Menon", rating: 5, comment: "Far superior to mass-market hazelnut spreads. Real intense cacao flavor without the sugar bomb.", createdAt: new Date("2026-10-16"), helpfulVotes: 18 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Organic Raw Chia & Flax Seed Blend with Sprouted Quinoa (500g)",
+        description: "Triple-air cleaned certified organic super-seeds packed with dietary fiber, plant proteins, and essential ALA fatty acids for smoothies, yogurt bowls, and oatmeal.",
+        price: 649,
+        compareAtPrice: 850,
+        category: "Ancient Heritage Grains & Seeds",
+        brand: "Aurora Organics",
+        thumbnail: "https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=800&q=80"],
+        stock: 50,
+        rating: 4.8,
+        reviewsCount: 43,
+        isFeatured: false,
+        badge: "TRIPLE-CLEANED",
+        specs: {
+          Blend: "Black Chia, Golden Flax, Sprouted Quinoa",
+          Protein: "21g per 100g",
+          Fiber: "34g per 100g",
+          Packaging: "Resealable nitrogen-flushed pouch"
+        },
+        reviews: [
+          { userName: "Priya Chandran", rating: 5, comment: "Super fresh, no grit or dust. Swells nicely in almond milk overnight for chia pudding.", createdAt: new Date("2026-10-11"), helpfulVotes: 5 }
+        ]
+      },
+      {
+        tenantId: tenantOrganics._id,
+        title: "Stoneground 100% Organic Almond Butter with Pink Rock Salt (350g)",
+        description: "Made solely with dry-roasted organic California almonds and a touch of hand-mined Himalayan pink crystal salt. Naturally sweet, thick and spreadable.",
+        price: 899,
+        compareAtPrice: 1100,
+        category: "Artisanal Superfood Butters & Spreads",
+        brand: "Aurora Organics",
+        thumbnail: "https://images.unsplash.com/photo-1588767763179-259fc6c52a36?auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1588767763179-259fc6c52a36?auto=format&fit=crop&w=800&q=80"],
+        stock: 40,
+        rating: 4.8,
+        reviewsCount: 56,
+        isFeatured: false,
+        badge: "PURE ALMOND 100%",
+        specs: {
+          Ingredients: "Dry-Roasted Organic Almonds, Pink Salt",
+          Emulsifiers: "Zero Hydrogenated Oils",
+          Protein: "7g per serving",
+          Texture: "Silky stoneground texture"
+        },
+        reviews: [
+          { userName: "Siddharth Kaul", rating: 5, comment: "Only 2 ingredients! Stir the natural oil back in and it stays smooth down to the bottom of the jar.", createdAt: new Date("2026-10-13"), helpfulVotes: 11 }
+        ]
+      }
+    ]);
+
+    // 8. Expanded Catalog Products for Additional 7 Flagship Stores
+    const expandedProducts = await Product.create(getProductsForNewTenants(tenantMap));
+    console.log(`Successfully created ${expandedProducts.length} realistic products across new flagship stores!`);
+
     console.log("Created demo order records for Profile tracking!");
 
     // 8. Demo Users with Indian Addresses
@@ -1912,7 +2254,7 @@ const seedDatabase = async () => {
       },
     ]);
 
-    console.log("Seeding finished successfully with 6 stores, 85+ products, categories, reviews, and INR currency!");
+    console.log("Seeding finished successfully with 14 flagship stores, 125+ realistic products, categories, reviews, and INR currency!");
     process.exit(0);
   } catch (error) {
     console.error("Seeding failed:", error);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag, Flame, Check, Sparkles } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag, Flame, Check, Sparkles, Share2, Copy } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 
 export default function CartDrawer({
@@ -13,6 +13,7 @@ export default function CartDrawer({
   const [coupon, setCoupon] = useState('');
   const [discountPercent, setDiscountPercent] = useState(0);
   const [appliedCouponCode, setAppliedCouponCode] = useState('');
+  const [copiedSummary, setCopiedSummary] = useState(false);
 
   if (!isOpen) return null;
 
@@ -22,6 +23,14 @@ export default function CartDrawer({
   const shipping = subtotal >= shippingThreshold || subtotal === 0 ? 0 : 99;
   const tax = Math.round((subtotal - discountAmount) * 0.05); // 5% GST
   const total = Math.max(0, subtotal - discountAmount + shipping + tax);
+
+  const handleCopySummary = () => {
+    const lines = items.map((i) => `• ${i.title} x ${i.quantity} = ${formatCurrency(i.price * i.quantity)}`).join('\n');
+    const summaryText = `🛒 Multi-Tenant Cart Summary:\n${lines}\n\nSubtotal: ${formatCurrency(subtotal)}\nEstimated Total: ${formatCurrency(total)}\nShop at: ${window.location.origin}`;
+    navigator.clipboard.writeText(summaryText);
+    setCopiedSummary(true);
+    setTimeout(() => setCopiedSummary(false), 2500);
+  };
 
   const applySpecificCoupon = (code) => {
     const upper = code.trim().toUpperCase();
@@ -67,12 +76,33 @@ export default function CartDrawer({
                 {items.reduce((c, i) => c + i.quantity, 0)} items
               </span>
             </div>
-            <button
-              onClick={onClose}
-              className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              {items.length > 0 && (
+                <button
+                  onClick={handleCopySummary}
+                  className="px-2.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-emerald-400 border border-neutral-700/80 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                  title="Share or copy cart summary"
+                >
+                  {copiedSummary ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>Share</span>
+                    </>
+                  )}
+                </button>
+              )}
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Shipping Progress */}

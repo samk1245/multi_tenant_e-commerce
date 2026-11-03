@@ -55,7 +55,31 @@ const tenantSchema = new mongoose.Schema(
     },
     currency: {
       type: String,
-      default: "USD",
+      default: "INR",
+    },
+    rating: {
+      type: Number,
+      default: 4.8,
+      min: 1,
+      max: 5,
+    },
+    reviewsCount: {
+      type: Number,
+      default: 120,
+    },
+    followersCount: {
+      type: Number,
+      default: 1840,
+    },
+    owner: {
+      name: { type: String, default: "Authorized Merchant" },
+      role: { type: String, default: "Founder & Lead Curator" },
+      verified: { type: Boolean, default: true },
+      memberSince: { type: String, default: "2024" },
+    },
+    featuredOffers: {
+      type: [String],
+      default: ["20% OFF FIRST ORDER", "FREE EXPRESS SHIPPING"],
     },
     status: {
       type: String,

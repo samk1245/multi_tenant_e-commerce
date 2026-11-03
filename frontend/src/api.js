@@ -175,4 +175,38 @@ export const api = {
     });
     return await res.json();
   },
+
+  async toggleFollowTenant(tenantId, currentlyFollowing) {
+    const res = await fetch(`${BASE_URL}/tenants/${tenantId}/follow`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ following: currentlyFollowing }),
+    });
+    return await res.json();
+  },
+
+  async getAdminOverview() {
+    const res = await fetch(`${BASE_URL}/admin/overview`);
+    return await res.json();
+  },
+
+  async updateTenantStatus(tenantId, status) {
+    const res = await fetch(`${BASE_URL}/admin/tenants/${tenantId}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    return await res.json();
+  },
+
+  async getSearchSuggestions(query) {
+    if (!query || query.length < 2) return [];
+    try {
+      const res = await fetch(`${BASE_URL}/products/suggestions?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      return data.suggestions || [];
+    } catch {
+      return [];
+    }
+  },
 };

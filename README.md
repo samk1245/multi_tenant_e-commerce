@@ -58,18 +58,26 @@ flowchart TD
 
 ---
 
-## 🏪 6 Distinct Flagship Tenant Storefronts
+## 🏪 14 Distinct Flagship Tenant Storefronts
 
-OmniStore comes pre-configured with 6 specialized tenant stores (85+ verified products):
+OmniStore comes pre-configured with 14 specialized tenant stores (125+ verified products) covering all premier marketplace categories:
 
-| Store Logo | Storefront Name | Domain / Slug | Specialized Catalog |
+| Store Logo | Storefront Name | Domain / Slug | Specialized Marketplace Category |
 |:---:|:---|:---|:---|
-| 👟 | **Urban Sneaker Vault** | `sneaker-vault` | Limited Retro High-Tops, Carbon Runners, Streetwear Hoodies, Tactical Cargoes |
-| 🛋️ | **Nordic Minimalist Living** | `nordic-home` | Scandinavian Bouclé Armchairs, Handblown Lunar Lighting, Solid Oak Floating Furniture |
-| ☕ | **Artisan Roastery & Brews** | `artisan-roastery` | Single-Origin Beans, CNC Conical Burr Hand Grinders, Nitro Cold Brew Steep Pouches |
-| 🎧 | **Apex Tech & Audio** | `apex-tech` | ANC Headphones, Dual-Motor Electric Standing Desks, Audiophile 32-Bit USB-C DACs |
-| 👗 | **Maison Luxe & Thread** | `maison-luxe` | Mongolian Cashmere Coats, Italian Saffiano Leather Briefcases, Skeleton Automatic Chronographs |
-| 🎮 | **Zenith Esports & Pro Gaming** | `zenith-gaming` | 8000Hz Esports Mice, 0.1mm Rapid-Trigger Keyboards, 360Hz QD-OLED Monitors, Planar Headsets |
+| 👗 | **Maison Luxe & Thread** | `maison-luxe` | **Fashion & Clothing** (Mongolian Cashmere, Saffiano Briefcases, Sculpted Silk) |
+| 🎧 | **Apex Tech & Audio** | `apex-tech` | **Electronics & Gadgets** (ANC Headphones, 32-Bit USB-C DACs, Electric Standing Desks) |
+| 📱 | **NovaCell Flagship Mobile** | `novacell-mobile` | **Mobile Phones** (Titanium Folding 5G Phones, 1-Inch Leica Sensors, 100W GaN Stations) |
+| 🛋️ | **Nordic Minimalist Living** | `nordic-home` | **Home & Furniture** (Scandinavian Bouclé Armchairs, Handblown Lunar Lamps, Oak Desks) |
+| ✨ | **GlowAura Botanical Beauty** | `glowaura-beauty` | **Beauty & Cosmetics** (Multi-Peptide Matrix Serums, 2% Phyto-Bakuchiol Crèmes, SPF 50+) |
+| ⚡ | **Velocity Pro Athletic & Gym** | `velocity-fitness` | **Sports & Fitness** (Air & Magnetic Rowers, IWF Calibrated Bumper Plates, Compression) |
+| 📚 | **Paper & Quill Artisanal Goods** | `paper-quill` | **Books & Stationery** (14K Gold Nib Vacuum Pens, 68gsm Tomoe River Journals, Inks) |
+| 🌿 | **Aurora Gourmet & Organics** | `aurora-organics` | **Grocery & Food** (Kashmir Acacia Honey, 24K Himalayan Shilajit, First-Harvest Matcha) |
+| ⌚ | **Chronos Haute Horlogerie** | `chronos-watches` | **Watches & Accessories** (28,800 VPH Open-Heart Automatcs, 300M Divers, Horween Straps) |
+| 👟 | **Urban Sneaker Vault** | `sneaker-vault` | **Shoes & Sneakers** (Air Apex Retro High-Tops, Carbon Marathon Runners, Limited Kicks) |
+| 🚀 | **WonderLand Creative Toys & STEAM** | `wonderland-toys` | **Toys & Kids** (Modular Coding Robots, Beechwood Rainbow Sets, Refractor Telescopes) |
+| 🕯️ | **Lumina Artisan Living & Decor** | `lumina-decor` | **Home Decor & Lifestyle** (Himalayan Soy Candles, Roman Travertine Bookends, Belgian Linen) |
+| 🎮 | **Zenith Esports & Pro Gaming** | `zenith-gaming` | **Esports & Pro Gaming** (8000Hz Mice, Rapid-Trigger HE Keyboards, 360Hz QD-OLED) |
+| ☕ | **Artisan Roastery & Brews** | `artisan-roastery` | **Specialty Coffee & Micro-Lots** (Direct-Trade Chikmagalur Beans, CNC Burr Grinders) |
 
 ---
 

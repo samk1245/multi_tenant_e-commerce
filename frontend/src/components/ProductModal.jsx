@@ -16,9 +16,17 @@ import {
   MapPin,
   Clock,
   Sparkles,
+  CreditCard,
+  Zap,
+  Rotate3d,
+  Image as ImageIcon,
+  Plus,
+  Minus,
+  CheckCircle2,
 } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 import { api } from '../api';
+import Product3DViewer from './Product3DViewer';
 
 export default function ProductModal({
   product,
@@ -29,9 +37,14 @@ export default function ProductModal({
   isWishlisted,
   onToggleCompare,
   isCompared,
+  onBuyNow,
 }) {
   const [activeTab, setActiveTab] = useState('details'); // 'details' | 'reviews'
   const [currentProduct, setCurrentProduct] = useState(product);
+  const [viewMode, setViewMode] = useState('gallery'); // 'gallery' | '3d'
+  const [selectedImage, setSelectedImage] = useState(product?.thumbnail);
+  const [selectedVariant, setSelectedVariant] = useState(product?.variants?.[0] || 'Standard');
+  const [quantity, setQuantity] = useState(1);
   const [copiedLink, setCopiedLink] = useState(false);
 
   // Review form state
@@ -50,6 +63,10 @@ export default function ProductModal({
   useEffect(() => {
     setCurrentProduct(product);
     setActiveTab('details');
+    setViewMode('gallery');
+    setSelectedImage(product?.thumbnail || product?.images?.[0]);
+    setSelectedVariant(product?.variants?.[0] || 'Standard');
+    setQuantity(1);
     setReviewMessage(null);
     setSelectedStarFilter('all');
   }, [product]);
@@ -154,21 +171,81 @@ export default function ProductModal({
         <div className="overflow-y-auto flex-1 p-6 md:p-8">
           {activeTab === 'details' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-              {/* Media */}
+              {/* Media Section with Gallery & 3D Studio Toggle */}
               <div>
-                <div className="bg-neutral-950 rounded-2xl p-4 flex items-center justify-center border border-neutral-800/80 aspect-square overflow-hidden relative group">
-                  <img
-                    src={currentProduct.thumbnail || currentProduct.images?.[0]}
-                    alt={currentProduct.title}
-                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
-                  />
+                {/* 3D View vs Photo Gallery Pill Switcher */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex p-0.5 rounded-xl bg-neutral-950 border border-neutral-800 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setViewMode('gallery')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition cursor-pointer ${
+                        viewMode === 'gallery'
+                          ? 'bg-neutral-800 text-white shadow-sm'
+                          : 'text-neutral-400 hover:text-white'
+                      }`}
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>Photo Gallery</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setViewMode('3d')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition cursor-pointer ${
+                        viewMode === '3d'
+                          ? 'bg-emerald-500 text-neutral-950 shadow-md shadow-emerald-500/20'
+                          : 'text-neutral-400 hover:text-emerald-400'
+                      }`}
+                    >
+                      <Rotate3d className="w-3.5 h-3.5" />
+                      <span>3D 360° Studio</span>
+                    </button>
+                  </div>
 
-                  {currentProduct.stock <= 5 && currentProduct.stock > 0 && (
-                    <span className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-bold backdrop-blur-md">
-                      ⚡ Hurry! Only {currentProduct.stock} left in stock
-                    </span>
-                  )}
+                  <span className="text-[11px] text-neutral-400">
+                    {viewMode === '3d' ? 'Interactive 3D View' : 'HD Zoom Ready'}
+                  </span>
                 </div>
+
+                {viewMode === '3d' ? (
+                  <Product3DViewer product={currentProduct} />
+                ) : (
+                  <div>
+                    <div className="bg-neutral-950 rounded-2xl p-4 flex items-center justify-center border border-neutral-800/80 aspect-square overflow-hidden relative group">
+                      <img
+                        src={selectedImage || currentProduct.thumbnail || currentProduct.images?.[0]}
+                        alt={currentProduct.title}
+                        className="w-full h-full object-cover rounded-xl group-hover:scale-108 transition-transform duration-500"
+                      />
+
+                      {currentProduct.stock <= 5 && currentProduct.stock > 0 && (
+                        <span className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-bold backdrop-blur-md">
+                          ⚡ Hurry! Only {currentProduct.stock} left in stock
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Image Thumbnails if multiple images exist */}
+                    {currentProduct.images && currentProduct.images.length > 1 && (
+                      <div className="flex items-center gap-2 mt-3 overflow-x-auto py-1">
+                        {currentProduct.images.map((img, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedImage(img)}
+                            className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition flex-shrink-0 cursor-pointer ${
+                              selectedImage === img
+                                ? 'border-emerald-500 shadow-md'
+                                : 'border-neutral-800 hover:border-neutral-700 opacity-70 hover:opacity-100'
+                            }`}
+                          >
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Authenticity Trust Banner */}
                 <div className="grid grid-cols-3 gap-2 text-[11px] text-neutral-400 pt-4 mt-4 border-t border-neutral-800 text-center">
@@ -321,21 +398,126 @@ export default function ProductModal({
                       </div>
                     )}
                   </div>
+
+                  {/* Dispatch Urgency Countdown */}
+                  <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-amber-400 fill-amber-400 animate-pulse" />
+                      <div>
+                        <span className="font-bold text-white text-[11px]">Same-Day Priority Dispatch</span>
+                        <p className="text-[10px] text-amber-300/80">Order within next 3h 24m for dispatch today</p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">
+                      FAST DISPATCH
+                    </span>
+                  </div>
+
+                  {/* No-Cost EMI Calculator Pill */}
+                  {currentProduct.price >= 2500 && (
+                    <div className="p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800/80 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-emerald-400" />
+                        <div>
+                          <p className="font-bold text-white text-[11px]">No-Cost EMI Available</p>
+                          <p className="text-[10px] text-neutral-400">
+                            Starting at {formatCurrency(Math.round(currentProduct.price / 6))}/mo on major credit cards
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        0% Interest
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Product Variants (Size / Color / Specification) */}
+                  {currentProduct.variants && currentProduct.variants.length > 0 && (
+                    <div className="space-y-2 pt-1">
+                      <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider block">
+                        Select Edition / Variant:
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {currentProduct.variants.map((v) => (
+                          <button
+                            key={v}
+                            type="button"
+                            onClick={() => setSelectedVariant(v)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition border cursor-pointer ${
+                              selectedVariant === v
+                                ? 'bg-emerald-500 text-neutral-950 border-emerald-400 shadow-md shadow-emerald-500/20'
+                                : 'bg-neutral-900 text-neutral-300 hover:text-white border-neutral-800 hover:border-neutral-700'
+                            }`}
+                          >
+                            {v}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Product Technical / Botanical Specifications */}
+                  {currentProduct.specs && Object.keys(currentProduct.specs).length > 0 && (
+                    <div className="p-3.5 rounded-2xl bg-neutral-950/70 border border-neutral-800 space-y-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Specifications & Provenance</span>
+                      </span>
+                      <div className="grid grid-cols-2 gap-2 text-xs pt-1">
+                        {Object.entries(currentProduct.specs).map(([specKey, specVal]) => (
+                          <div key={specKey} className="p-2 rounded-xl bg-neutral-900/80 border border-neutral-800">
+                            <span className="text-[10px] text-neutral-400 block font-medium uppercase tracking-wider">
+                              {specKey}
+                            </span>
+                            <span className="text-xs font-bold text-neutral-200 block truncate" title={specVal}>
+                              {specVal}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Primary Action Buttons */}
+                {/* Quantity and Primary Action Buttons */}
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center gap-3">
+                    {/* Quantity Picker */}
+                    <div className="flex items-center border border-neutral-700 bg-neutral-950 rounded-2xl p-1">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="p-2 text-neutral-400 hover:text-white cursor-pointer"
+                        title="Decrease quantity"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span className="w-8 text-center text-xs font-bold text-white font-mono">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(Math.min(currentProduct.stock || 10, quantity + 1))}
+                        className="p-2 text-neutral-400 hover:text-white cursor-pointer"
+                        title="Increase quantity"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Add to Cart */}
                     <button
                       onClick={() => {
-                        onAddToCart(currentProduct);
+                        for (let i = 0; i < quantity; i++) {
+                          onAddToCart({ ...currentProduct, selectedVariant });
+                        }
                         onClose();
                       }}
                       disabled={currentProduct.stock <= 0}
                       className="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 disabled:from-neutral-800 disabled:to-neutral-800 disabled:text-neutral-500 text-neutral-950 font-black text-sm flex items-center justify-center gap-2 transition shadow-lg active:scale-95 cursor-pointer"
                     >
                       <ShoppingCart className="w-4 h-4" />
-                      <span>Add to Cart &bull; {formatCurrency(currentProduct.price)}</span>
+                      <span>Add to Cart &bull; {formatCurrency(currentProduct.price * quantity)}</span>
                     </button>
 
                     {/* Compare Button */}
@@ -373,6 +555,21 @@ export default function ProductModal({
                       {copiedLink ? <Check className="w-5 h-5 text-emerald-400" /> : <Share2 className="w-5 h-5" />}
                     </button>
                   </div>
+
+                  {/* Express 1-Click Instant Checkout */}
+                  {onBuyNow && (
+                    <button
+                      onClick={() => {
+                        onBuyNow({ ...currentProduct, selectedVariant, quantity });
+                        onClose();
+                      }}
+                      disabled={currentProduct.stock <= 0}
+                      className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-neutral-950 font-black text-xs uppercase tracking-wider transition shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <Zap className="w-4 h-4 fill-neutral-950" />
+                      <span>Instant 1-Click Buy Now</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

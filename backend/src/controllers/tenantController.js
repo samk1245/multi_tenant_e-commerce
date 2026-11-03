@@ -82,6 +82,34 @@ exports.updateTenant = async (req, res, next) => {
   }
 };
 
+// @desc    Toggle follow tenant store
+// @route   POST /api/tenants/:id/follow
+exports.toggleFollowTenant = async (req, res, next) => {
+  try {
+    const tenant = await Tenant.findById(req.params.id);
+    if (!tenant) {
+      return res.status(404).json({ success: false, message: "Tenant store not found" });
+    }
+
+    const { following } = req.body;
+    if (following) {
+      tenant.followersCount = Math.max(0, (tenant.followersCount || 100) - 1);
+    } else {
+      tenant.followersCount = (tenant.followersCount || 100) + 1;
+    }
+
+    await tenant.save();
+    res.json({
+      success: true,
+      following: !following,
+      followersCount: tenant.followersCount,
+      data: tenant,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Get analytics / KPI stats for merchant dashboard
 // @route   GET /api/tenants/:id/analytics
 exports.getTenantAnalytics = async (req, res, next) => {

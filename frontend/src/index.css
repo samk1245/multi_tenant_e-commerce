@@ -106,3 +106,52 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
 }
+
+/* Light Mode Overrides for Complete Theme Switcher Support */
+.light {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+.light header {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: #e2e8f0 !important;
+}
+.light .text-white {
+  color: #0f172a !important;
+}
+.light .text-neutral-100 {
+  color: #1e293b !important;
+}
+.light .text-neutral-200 {
+  color: #334155 !important;
+}
+.light .text-neutral-300 {
+  color: #475569 !important;
+}
+.light .text-neutral-400 {
+  color: #64748b !important;
+}
+.light .bg-neutral-900,
+.light .bg-neutral-950 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+.light .bg-neutral-900\/90,
+.light .bg-neutral-900\/80,
+.light .bg-neutral-900\/70,
+.light .bg-neutral-950\/70,
+.light .bg-neutral-950\/80,
+.light .bg-neutral-950\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+}
+.light .bg-neutral-800,
+.light .bg-neutral-800\/90 {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+}
+.light .border-neutral-800,
+.light .border-neutral-700 {
+  border-color: #e2e8f0 !important;
+}
