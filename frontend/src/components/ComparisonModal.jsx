@@ -13,19 +13,20 @@ export default function ComparisonModal({
   if (!isOpen || products.length === 0) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
-      <div className="relative w-full max-w-5xl max-h-[92vh] rounded-3xl bg-neutral-900 border border-neutral-800 shadow-2xl flex flex-col overflow-hidden text-neutral-100">
-        
+    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl">
+      <div className="relative w-full max-w-5xl max-h-[92vh] rounded-3xl bg-[#0a0c18] border border-white/10 shadow-2xl flex flex-col overflow-hidden text-neutral-100">
         {/* Header */}
-        <div className="p-5 px-6 border-b border-neutral-800 bg-neutral-950/80 flex items-center justify-between">
+        <div className="p-5 px-6 border-b border-white/10 bg-[#050508]/90 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black">
-              VS
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-cyan-400 p-0.5 shadow-md shadow-purple-600/30 flex items-center justify-center">
+              <div className="w-full h-full bg-[#050508] rounded-[14px] flex items-center justify-center text-cyan-300 font-black text-xs">
+                VS
+              </div>
             </div>
             <div>
-              <h3 className="text-lg font-black text-white">Product Comparison Engine</h3>
+              <h3 className="text-lg font-black text-white">Product Comparison Matrix</h3>
               <p className="text-xs text-neutral-400">
-                Comparing {products.length} product{products.length > 1 ? 's' : ''} side-by-side
+                Evaluating {products.length} product{products.length > 1 ? 's' : ''} side-by-side
               </p>
             </div>
           </div>
@@ -33,14 +34,14 @@ export default function ComparisonModal({
           <div className="flex items-center gap-2">
             <button
               onClick={onClearAll}
-              className="px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-rose-950/40 text-neutral-400 hover:text-rose-400 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-950/40 text-neutral-400 hover:text-rose-400 text-xs font-bold transition flex items-center gap-1 cursor-pointer border border-white/10"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear All</span>
             </button>
             <button
               onClick={onClose}
-              className="p-2 rounded-full bg-neutral-800 text-neutral-400 hover:text-white transition cursor-pointer"
+              className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition cursor-pointer border border-white/10"
             >
               <X className="w-5 h-5" />
             </button>
@@ -52,16 +53,16 @@ export default function ComparisonModal({
           <table className="w-full border-collapse text-left min-w-[650px]">
             <tbody>
               {/* Product Card Row */}
-              <tr className="border-b border-neutral-800">
+              <tr className="border-b border-white/10">
                 <td className="w-40 py-4 font-bold text-xs text-neutral-500 uppercase tracking-wider align-top">
                   Product
                 </td>
                 {products.map((p) => (
                   <td key={p._id} className="p-4 align-top w-64 min-w-[200px]">
-                    <div className="relative p-3 rounded-2xl bg-neutral-950 border border-neutral-800 text-center flex flex-col items-center">
+                    <div className="relative p-3.5 rounded-2xl bg-[#050508]/80 border border-white/10 text-center flex flex-col items-center">
                       <button
                         onClick={() => onRemoveProduct(p._id)}
-                        className="absolute top-2 right-2 p-1 rounded-full bg-neutral-900 text-neutral-400 hover:text-rose-400 hover:bg-neutral-800 transition"
+                        className="absolute top-2 right-2 p-1 rounded-full bg-white/5 text-neutral-400 hover:text-rose-400 hover:bg-white/10 transition"
                         title="Remove from comparison"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -70,10 +71,10 @@ export default function ComparisonModal({
                       <img
                         src={p.thumbnail || p.images?.[0]}
                         alt={p.title}
-                        className="w-28 h-28 object-cover rounded-xl mb-3 bg-neutral-900"
+                        className="w-28 h-28 object-cover rounded-xl mb-3 bg-neutral-900 border border-white/5"
                       />
 
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 px-2 py-0.5 rounded bg-cyan-500/10 mb-1 border border-cyan-500/20">
                         {p.category}
                       </span>
 
@@ -81,13 +82,13 @@ export default function ComparisonModal({
                         {p.title}
                       </h4>
 
-                      <div className="mt-2 text-base font-black text-emerald-400 font-mono">
+                      <div className="mt-2 text-base font-black text-cyan-300 font-mono">
                         {formatCurrency(p.price)}
                       </div>
 
                       <button
                         onClick={() => onAddToCart(p)}
-                        className="mt-3 w-full py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
+                        className="mt-3 w-full py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-purple-600/30 active:scale-95 cursor-pointer"
                       >
                         <ShoppingCart className="w-3.5 h-3.5" />
                         <span>Add to Cart</span>
@@ -98,7 +99,7 @@ export default function ComparisonModal({
               </tr>
 
               {/* Price & Discount */}
-              <tr className="border-b border-neutral-800/80">
+              <tr className="border-b border-white/5">
                 <td className="py-3.5 font-bold text-xs text-neutral-400">Regular / M.R.P</td>
                 {products.map((p) => (
                   <td key={p._id} className="p-3.5 text-xs text-neutral-300 font-mono">
@@ -114,7 +115,7 @@ export default function ComparisonModal({
               </tr>
 
               {/* Customer Rating */}
-              <tr className="border-b border-neutral-800/80">
+              <tr className="border-b border-white/5">
                 <td className="py-3.5 font-bold text-xs text-neutral-400">Rating & Reviews</td>
                 {products.map((p) => (
                   <td key={p._id} className="p-3.5 text-xs">
@@ -130,7 +131,7 @@ export default function ComparisonModal({
               </tr>
 
               {/* Stock Availability */}
-              <tr className="border-b border-neutral-800/80">
+              <tr className="border-b border-white/5">
                 <td className="py-3.5 font-bold text-xs text-neutral-400">Availability</td>
                 {products.map((p) => (
                   <td key={p._id} className="p-3.5 text-xs">
@@ -152,21 +153,21 @@ export default function ComparisonModal({
               </tr>
 
               {/* Brand */}
-              <tr className="border-b border-neutral-800/80">
+              <tr className="border-b border-white/5">
                 <td className="py-3.5 font-bold text-xs text-neutral-400">Brand / Manufacturer</td>
                 {products.map((p) => (
                   <td key={p._id} className="p-3.5 text-xs text-neutral-200 font-semibold">
-                    {p.brand || 'Authentic Store Exclusive'}
+                    {p.brand || 'Flagship Boutique Exclusive'}
                   </td>
                 ))}
               </tr>
 
               {/* Authenticity & Warranty */}
-              <tr className="border-b border-neutral-800/80">
+              <tr className="border-b border-white/5">
                 <td className="py-3.5 font-bold text-xs text-neutral-400">Guarantee</td>
                 {products.map((p) => (
                   <td key={p._id} className="p-3.5 text-xs text-neutral-300">
-                    <span className="flex items-center gap-1 text-emerald-400 font-medium">
+                    <span className="flex items-center gap-1 text-cyan-400 font-medium">
                       <ShieldCheck className="w-3.5 h-3.5" />
                       100% Verified Authentic
                     </span>
@@ -186,7 +187,6 @@ export default function ComparisonModal({
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   );

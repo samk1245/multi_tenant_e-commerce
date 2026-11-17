@@ -13,6 +13,8 @@ import {
   Users,
   Store,
   BadgeCheck,
+  Zap,
+  Layers,
 } from 'lucide-react';
 import ThreeHeroCanvas from './ThreeHeroCanvas';
 import { api } from '../api';
@@ -42,98 +44,109 @@ export default function Hero({ tenant, onTenantUpdated }) {
         if (onTenantUpdated) onTenantUpdated(res.data);
       }
     } catch (err) {
-      console.warn("Follow store error:", err);
+      console.warn('Follow store error:', err);
     } finally {
       setFollowLoading(false);
     }
   };
 
   return (
-    <div className="relative overflow-hidden rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-6 border border-neutral-800/80 bg-neutral-900/95 shadow-2xl perspective-1000">
-      {/* 3D Interactive Three.js Canvas Scene */}
+    <div className="relative overflow-hidden rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-6 border border-white/10 bg-[#080911]/90 shadow-2xl perspective-1000">
+      {/* 3D Interactive Three.js Spatial Canvas */}
       <ThreeHeroCanvas tenantTheme={tenant.theme} />
 
-      {/* 3D Ambient Background Graphic with Glow */}
-      <div className="absolute inset-0 z-0 opacity-25">
+      {/* Ambient Gradient Meshes */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
         <img
-          src={tenant.bannerImage || "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1600&q=80"}
+          src={
+            tenant.bannerImage ||
+            'https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1600&q=80'
+          }
           alt={tenant.name}
-          className="w-full h-full object-cover filter blur-sm scale-105"
+          className="w-full h-full object-cover filter blur-md scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/90 to-neutral-900/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050508] via-[#050508]/90 to-[#080911]/70" />
       </div>
 
-      {/* Floating 3D Ambient Light Flares */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-10 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Floating Ambient Glowing Flares */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-600/15 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 right-10 w-80 h-80 bg-cyan-500/15 rounded-full blur-[90px] pointer-events-none" />
 
       {/* Content Layout */}
       <div className="relative z-20 p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-        
-        {/* Left Column: Store Branding */}
+        {/* Left Column: Flagship Store Identity */}
         <div className="max-w-2xl">
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-900/85 border border-neutral-700/80 text-xs font-bold text-neutral-300 backdrop-blur-md shadow-lg">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-bold text-neutral-300 backdrop-blur-md shadow-lg">
               <span className="text-base">{tenant.logo || '✨'}</span>
-              <span className="text-emerald-400 font-extrabold">{tenant.category}</span>
-              <span className="text-neutral-500">&bull;</span>
-              <span className="text-neutral-400">Flagship Store #{tenant.slug}</span>
+              <span className="text-cyan-400 font-black">{tenant.category}</span>
+              <span className="text-neutral-600">&bull;</span>
+              <span className="text-neutral-400">Flagship #{tenant.slug}</span>
             </div>
 
-            {/* Follow Store Button with Live Count */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-[10px] font-black text-purple-300 tracking-wider uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+              <span>3D Spatial Scene Active</span>
+            </div>
+
+            {/* Follow Store Button with Dynamic Counter */}
             <button
               onClick={handleToggleFollow}
               disabled={followLoading}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition shadow-lg backdrop-blur-md cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 shadow-lg backdrop-blur-md cursor-pointer ${
                 isFollowing
                   ? 'bg-rose-500 text-white border border-rose-400 shadow-rose-500/30'
-                  : 'bg-neutral-800/90 hover:bg-neutral-700 text-neutral-200 hover:text-white border border-neutral-700'
+                  : 'bg-white/5 hover:bg-white/10 text-neutral-200 hover:text-white border border-white/10'
               }`}
             >
-              <Heart className={`w-3.5 h-3.5 ${isFollowing ? 'fill-white' : ''}`} />
+              <Heart className={`w-3.5 h-3.5 ${isFollowing ? 'fill-white text-white' : 'text-rose-400'}`} />
               <span>{isFollowing ? 'Following' : 'Follow Store'}</span>
-              <span className="text-[10px] opacity-80 font-mono ml-0.5">({followCount.toLocaleString()})</span>
+              <span className="text-[10px] opacity-80 font-mono ml-0.5">
+                ({followCount.toLocaleString()})
+              </span>
             </button>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
             {tenant.name}
           </h1>
 
-          <p className="mt-2 text-base sm:text-lg text-emerald-400/90 font-bold">
+          <p className="mt-2.5 text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-indigo-200 to-cyan-300 font-extrabold">
             {tenant.tagline}
           </p>
 
-          <p className="mt-3 text-sm text-neutral-300 leading-relaxed max-w-xl">
+          <p className="mt-3 text-sm text-neutral-300/90 leading-relaxed max-w-xl">
             {tenant.description}
           </p>
 
-          {/* Store Owner & Rating Badge */}
-          <div className="mt-4 flex items-center gap-4 text-xs text-neutral-400">
+          {/* Store Owner & Star Rating */}
+          <div className="mt-5 flex flex-wrap items-center gap-4 text-xs text-neutral-400">
             <div className="flex items-center gap-1.5 font-semibold text-white">
-              <BadgeCheck className="w-4 h-4 text-emerald-400" />
-              <span>Curated by {tenant.owner?.name || 'Authorized Merchant'}</span>
+              <BadgeCheck className="w-4 h-4 text-cyan-400" />
+              <span>Curated by {tenant.owner?.name || 'Verified Merchant'}</span>
             </div>
-            <span className="text-neutral-600">&bull;</span>
+            <span className="text-neutral-700">&bull;</span>
             <div className="flex items-center gap-1 text-amber-400 font-bold">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               <span>{tenant.rating || 4.9}</span>
-              <span className="text-neutral-400 font-normal">({tenant.reviewsCount || 180} reviews)</span>
+              <span className="text-neutral-400 font-normal">
+                ({tenant.reviewsCount || 240} reviews)
+              </span>
             </div>
           </div>
 
-          {/* Feature Badges */}
-          <div className="mt-6 flex flex-wrap gap-3 pt-4 border-t border-neutral-800/80 text-xs text-neutral-300">
-            <div className="flex items-center gap-1.5 bg-neutral-950/60 px-3 py-1.5 rounded-xl border border-neutral-800 backdrop-blur-sm">
+          {/* Enterprise Commerce Trust Badges */}
+          <div className="mt-6 flex flex-wrap gap-3 pt-4 border-t border-white/10 text-xs text-neutral-300">
+            <div className="flex items-center gap-1.5 bg-neutral-950/70 px-3 py-1.5 rounded-xl border border-white/10 backdrop-blur-sm">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>100% Genuine & Verified</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-neutral-950/60 px-3 py-1.5 rounded-xl border border-neutral-800 backdrop-blur-sm">
-              <Truck className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center gap-1.5 bg-neutral-950/70 px-3 py-1.5 rounded-xl border border-white/10 backdrop-blur-sm">
+              <Truck className="w-4 h-4 text-cyan-400" />
               <span>Free Express Delivery over ₹999</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-neutral-950/60 px-3 py-1.5 rounded-xl border border-neutral-800 backdrop-blur-sm">
-              <RefreshCw className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center gap-1.5 bg-neutral-950/70 px-3 py-1.5 rounded-xl border border-white/10 backdrop-blur-sm">
+              <RefreshCw className="w-4 h-4 text-purple-400" />
               <span>7-Day Return Guarantee</span>
             </div>
           </div>
@@ -141,33 +154,31 @@ export default function Hero({ tenant, onTenantUpdated }) {
 
         {/* Right Column: 3D Floating Discount Offer Banner */}
         <div className="w-full lg:w-auto lg:min-w-[340px] preserve-3d animate-float-slow">
-          <div className="relative p-6 rounded-2xl bg-gradient-to-br from-neutral-900/95 via-neutral-900/90 to-neutral-950/95 border border-emerald-500/30 shadow-2xl backdrop-blur-xl">
-            {/* Shimmer bar on top */}
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 rounded-t-2xl" />
+          <div className="relative p-6 rounded-2xl bg-gradient-to-br from-neutral-900/90 via-neutral-900/80 to-neutral-950/95 border border-purple-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+            {/* Shimmer line on top */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 via-cyan-400 to-indigo-500 rounded-t-2xl" />
 
             <div className="flex items-center gap-2 text-xs font-black text-amber-400 uppercase tracking-wider mb-2">
               <Flame className="w-4 h-4 fill-amber-400" />
               <span>Limited Festive Drop</span>
             </div>
 
-            <div className="text-2xl font-black text-white">
-              Flat 20% Instant Off
-            </div>
+            <div className="text-2xl font-black text-white">Flat 20% Instant Off</div>
             <p className="text-xs text-neutral-400 mt-1">
               On all orders above ₹2,499. Apply coupon code at checkout:
             </p>
 
             {/* Coupon Code Pill */}
-            <div className="mt-4 flex items-center justify-between p-2.5 rounded-xl bg-neutral-950 border border-neutral-800 shadow-inner">
+            <div className="mt-4 flex items-center justify-between p-2.5 rounded-xl bg-neutral-950/90 border border-white/10 shadow-inner">
               <div className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-emerald-400" />
-                <span className="font-mono font-black text-sm text-emerald-400 tracking-wider">
+                <Tag className="w-4 h-4 text-purple-400" />
+                <span className="font-mono font-black text-sm text-cyan-400 tracking-wider">
                   FESTIVE20
                 </span>
               </div>
               <button
                 onClick={() => handleCopyCoupon('FESTIVE20')}
-                className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-md"
+                className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-md shadow-purple-600/30"
               >
                 {copiedCoupon ? (
                   <>
@@ -186,7 +197,6 @@ export default function Hero({ tenant, onTenantUpdated }) {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

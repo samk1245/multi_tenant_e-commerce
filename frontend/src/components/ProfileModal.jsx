@@ -18,6 +18,9 @@ import {
   Edit2,
   Trash2,
   Phone,
+  Coins,
+  Sparkles,
+  Award,
 } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 import { api } from '../api';
@@ -30,8 +33,8 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
     name: 'Rahul Verma',
     email: 'customer@example.com',
     phone: '+91 91234 56789',
-    memberTier: 'Gold VIP Member',
-    rewardPoints: 1450,
+    memberTier: 'Platinum VIP Member',
+    rewardPoints: 2450,
   });
 
   const [orders, setOrders] = useState([]);
@@ -59,9 +62,24 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
   const [invoiceOrder, setInvoiceOrder] = useState(null);
 
   const coupons = [
-    { code: 'FESTIVE20', discount: '20% OFF', description: 'Flat 20% off on orders above ₹2,499', expires: 'Ends in 3 days' },
-    { code: 'VIP15', discount: '15% OFF', description: 'Exclusive 15% VIP discount for registered members', expires: 'Valid all month' },
-    { code: 'DROP10', discount: '10% OFF', description: 'Special 10% instant discount on latest fashion drops', expires: 'No min spend' },
+    {
+      code: 'FESTIVE20',
+      discount: '20% OFF',
+      description: 'Flat 20% off on orders above ₹2,499 across all 14 stores',
+      expires: 'Ends in 3 days',
+    },
+    {
+      code: 'VIP15',
+      discount: '15% OFF',
+      description: 'Exclusive 15% VIP discount for verified registered patrons',
+      expires: 'Valid all month',
+    },
+    {
+      code: 'DROP10',
+      discount: '10% OFF',
+      description: 'Special 10% instant discount on newly minted catalog drops',
+      expires: 'No min spend',
+    },
   ];
 
   useEffect(() => {
@@ -80,7 +98,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
         }
         setAddresses(addressList);
       } catch (err) {
-        console.error("Failed to load user profile data:", err);
+        console.error('Failed to load user profile data:', err);
       } finally {
         setLoadingOrders(false);
       }
@@ -140,7 +158,11 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
 
     let updated;
     if (editingAddressData.id) {
-      updated = await addressManager.updateAddress(currentUser.email, editingAddressData.id, editingAddressData);
+      updated = await addressManager.updateAddress(
+        currentUser.email,
+        editingAddressData.id,
+        editingAddressData
+      );
     } else {
       updated = await addressManager.addAddress(currentUser.email, editingAddressData);
     }
@@ -165,26 +187,25 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
 
   return (
     <>
-      <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-        <div className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl bg-neutral-900 border border-neutral-800 shadow-2xl flex flex-col overflow-hidden">
-          
+      <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
+        <div className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl bg-[#0a0c18] border border-white/10 shadow-2xl flex flex-col overflow-hidden">
           {/* Top Header / Profile Banner */}
-          <div className="relative bg-gradient-to-r from-neutral-950 via-emerald-950/40 to-neutral-950 p-6 md:p-8 border-b border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="relative bg-gradient-to-r from-[#050508] via-purple-950/30 to-[#0a0c18] p-6 md:p-8 border-b border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700 transition"
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white border border-white/10 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-2xl font-black text-neutral-950 shadow-xl shadow-emerald-500/20">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-2xl font-black text-white shadow-xl shadow-purple-600/30">
                 {currentUser.name.charAt(0)}
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-black text-white">{currentUser.name}</h3>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/40">
                     {currentUser.memberTier}
                   </span>
                 </div>
@@ -192,19 +213,20 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                   {currentUser.email} &bull; {currentUser.phone}
                 </p>
                 <div className="flex items-center gap-3 mt-2 text-xs">
-                  <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Verified Account
+                  <span className="text-cyan-400 font-bold flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" /> 2FA Verified Account
                   </span>
-                  <span className="text-neutral-500">&bull;</span>
-                  <span className="text-amber-300 font-bold">
-                    {currentUser.rewardPoints} OmniCoins Earned
+                  <span className="text-neutral-600">&bull;</span>
+                  <span className="text-amber-300 font-bold flex items-center gap-1">
+                    <Coins className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{currentUser.rewardPoints} OmniCoins Earned</span>
                   </span>
                 </div>
               </div>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex items-center gap-1 bg-neutral-950/80 p-1.5 rounded-2xl border border-neutral-800/80">
+            <div className="flex items-center gap-1 bg-[#050508] p-1.5 rounded-2xl border border-white/10">
               <button
                 onClick={() => {
                   setActiveTab('orders');
@@ -212,7 +234,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                 }}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'orders'
-                    ? 'bg-emerald-500 text-neutral-950 shadow-md font-extrabold'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
                     : 'text-neutral-400 hover:text-white'
                 }`}
               >
@@ -227,7 +249,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                 }}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'addresses'
-                    ? 'bg-emerald-500 text-neutral-950 shadow-md font-extrabold'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
                     : 'text-neutral-400 hover:text-white'
                 }`}
               >
@@ -242,7 +264,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                 }}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'rewards'
-                    ? 'bg-emerald-500 text-neutral-950 shadow-md font-extrabold'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
                     : 'text-neutral-400 hover:text-white'
                 }`}
               >
@@ -254,20 +276,20 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
 
           {/* Modal Tab Content */}
           <div className="p-6 md:p-8 overflow-y-auto flex-1">
-            
             {/* TAB 1: ORDERS & LIVE TRACKING */}
             {activeTab === 'orders' && (
               <div>
                 {loadingOrders ? (
-                  <div className="text-center py-12 text-sm text-neutral-400">
-                    Loading your purchase history...
+                  <div className="text-center py-16 text-sm text-neutral-400">
+                    <Clock className="w-8 h-8 animate-spin mx-auto text-cyan-400 mb-2" />
+                    <p className="font-bold">Syncing order telemetry from database...</p>
                   </div>
                 ) : orders.length === 0 ? (
-                  <div className="text-center py-12 space-y-3">
+                  <div className="text-center py-16 space-y-3">
                     <Package className="w-12 h-12 text-neutral-600 mx-auto" />
                     <h4 className="text-base font-bold text-white">No Orders Found</h4>
                     <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-                      You haven't placed any orders yet. Browse our curated store collections and discover exclusive drops!
+                      You haven't placed any orders yet. Browse our 14 curated store collections and discover exclusive drops!
                     </p>
                   </div>
                 ) : (
@@ -283,22 +305,22 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           onClick={() => setSelectedOrder(o)}
                           className={`p-4 rounded-2xl border transition cursor-pointer ${
                             selectedOrder?._id === o._id
-                              ? 'bg-emerald-500/10 border-emerald-500/50 shadow-lg shadow-emerald-500/10'
-                              : 'bg-neutral-950/60 border-neutral-800 hover:border-neutral-700'
+                              ? 'bg-purple-600/15 border-purple-500/50 shadow-lg shadow-purple-500/15'
+                              : 'bg-[#050508]/80 border-white/5 hover:border-white/20'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-1.5">
-                            <span className="font-mono text-xs font-bold text-emerald-400">
+                            <span className="font-mono text-xs font-bold text-cyan-400">
                               #{o.orderNumber}
                             </span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-neutral-800 text-neutral-300">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-white/5 text-neutral-300">
                               {o.orderStatus}
                             </span>
                           </div>
-                          <div className="text-sm font-bold text-white">
+                          <div className="text-sm font-black text-white font-mono">
                             {formatCurrency(o.totalAmount)}
                           </div>
-                          <div className="text-[11px] text-neutral-400 flex items-center justify-between mt-2 pt-2 border-t border-neutral-800/80">
+                          <div className="text-[11px] text-neutral-400 flex items-center justify-between mt-2 pt-2 border-t border-white/5">
                             <span>{new Date(o.createdAt).toLocaleDateString()}</span>
                             <span>{o.items?.length || 1} Item(s)</span>
                           </div>
@@ -308,12 +330,12 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
 
                     {/* Right: Selected Order Detail & Live Timeline */}
                     {selectedOrder && (
-                      <div className="lg:col-span-2 p-5 rounded-2xl bg-neutral-950/70 border border-neutral-800 space-y-5">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-neutral-800">
+                      <div className="lg:col-span-2 p-6 rounded-2xl bg-[#050508]/90 border border-white/10 space-y-5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
                           <div>
                             <div className="flex items-center gap-2">
                               <h4 className="text-base font-black text-white">Order Details</h4>
-                              <span className="font-mono text-xs text-emerald-400 font-bold">
+                              <span className="font-mono text-xs text-cyan-400 font-bold">
                                 #{selectedOrder.orderNumber}
                               </span>
                             </div>
@@ -325,15 +347,17 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => setInvoiceOrder(selectedOrder)}
-                              className="px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer"
-                              title="Print official tax invoice"
+                              className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer border border-white/10"
+                              title="Print official GST tax invoice"
                             >
-                              <Printer className="w-3.5 h-3.5 text-emerald-400" />
+                              <Printer className="w-3.5 h-3.5 text-cyan-400" />
                               <span>View Invoice</span>
                             </button>
 
                             <div className="text-right">
-                              <span className="text-[10px] text-neutral-400 block uppercase">Total Invoiced</span>
+                              <span className="text-[10px] text-neutral-400 block uppercase">
+                                Total Invoiced
+                              </span>
                               <span className="text-lg font-black text-white font-mono">
                                 {formatCurrency(selectedOrder.totalAmount)}
                               </span>
@@ -344,27 +368,27 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                         {/* Shipment Tracking Timeline */}
                         <div>
                           <h5 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3 flex items-center gap-1.5">
-                            <Truck className="w-3.5 h-3.5 text-emerald-400" />
+                            <Truck className="w-3.5 h-3.5 text-cyan-400" />
                             <span>Delivery Timeline & Tracking</span>
                           </h5>
 
                           <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                            <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                              <CheckCircle2 className="w-4 h-4 mx-auto mb-1" />
+                            <div className="p-2.5 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-300">
+                              <CheckCircle2 className="w-4 h-4 mx-auto mb-1 text-cyan-400" />
                               <span className="font-bold text-[11px] block">Order Placed</span>
                               <span className="text-[10px] text-neutral-400">Verified</span>
                             </div>
-                            <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                              <Package className="w-4 h-4 mx-auto mb-1" />
+                            <div className="p-2.5 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-300">
+                              <Package className="w-4 h-4 mx-auto mb-1 text-cyan-400" />
                               <span className="font-bold text-[11px] block">Packed</span>
                               <span className="text-[10px] text-neutral-400">Warehouse</span>
                             </div>
-                            <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-300">
-                              <Truck className="w-4 h-4 mx-auto mb-1 text-emerald-400" />
+                            <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-neutral-300">
+                              <Truck className="w-4 h-4 mx-auto mb-1 text-cyan-400" />
                               <span className="font-bold text-[11px] block">Dispatched</span>
                               <span className="text-[10px] text-neutral-500">In Transit</span>
                             </div>
-                            <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-500">
+                            <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-neutral-500">
                               <Clock className="w-4 h-4 mx-auto mb-1" />
                               <span className="font-bold text-[11px] block">Delivery</span>
                               <span className="text-[10px] text-neutral-500">Est. 2-3 Days</span>
@@ -372,9 +396,9 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           </div>
 
                           {selectedOrder.shippingDetails?.trackingNumber && (
-                            <div className="mt-3 p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-xs flex items-center justify-between">
+                            <div className="mt-3 p-3 rounded-xl bg-white/5 border border-white/10 text-xs flex items-center justify-between">
                               <span className="text-neutral-400">AWB Tracking Number:</span>
-                              <span className="font-mono font-bold text-white">
+                              <span className="font-mono font-bold text-cyan-300">
                                 {selectedOrder.shippingDetails.trackingNumber}
                               </span>
                             </div>
@@ -390,17 +414,22 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                             {selectedOrder.items?.map((item, idx) => (
                               <div
                                 key={idx}
-                                className="flex items-center justify-between p-2.5 rounded-xl bg-neutral-900 border border-neutral-800/80 text-xs"
+                                className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5 text-xs"
                               >
                                 <div className="flex items-center gap-3">
                                   <img
-                                    src={item.thumbnail || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=200&q=80'}
+                                    src={
+                                      item.thumbnail ||
+                                      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=200&q=80'
+                                    }
                                     alt={item.title}
                                     className="w-10 h-10 object-cover rounded-lg bg-neutral-950"
                                   />
                                   <div>
                                     <div className="font-bold text-white">{item.title}</div>
-                                    <div className="text-[11px] text-neutral-400">Qty: {item.quantity}</div>
+                                    <div className="text-[11px] text-neutral-400">
+                                      Qty: {item.quantity}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="font-bold text-white font-mono">
@@ -412,16 +441,26 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                         </div>
 
                         {/* Payment & Shipping Summary */}
-                        <div className="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-neutral-800 text-neutral-400">
+                        <div className="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-white/10 text-neutral-400">
                           <div>
                             <span className="font-bold text-white block">Payment Method:</span>
-                            <span className="uppercase text-emerald-400 font-semibold">
-                              {selectedOrder.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Online Payment (Verified)'}
+                            <span className="uppercase text-cyan-400 font-semibold">
+                              {selectedOrder.paymentMethod === 'cod'
+                                ? 'Cash on Delivery (COD)'
+                                : 'Online Payment (Verified)'}
                             </span>
                           </div>
                           <div>
                             <span className="font-bold text-white block">Deliver to:</span>
-                            <span>{selectedOrder.customer?.address?.city || selectedOrder.customer?.city || 'Mumbai'}, {selectedOrder.customer?.address?.state || selectedOrder.customer?.state || 'Maharashtra'}</span>
+                            <span>
+                              {selectedOrder.customer?.address?.city ||
+                                selectedOrder.customer?.city ||
+                                'Mumbai'}
+                              ,{' '}
+                              {selectedOrder.customer?.address?.state ||
+                                selectedOrder.customer?.state ||
+                                'Maharashtra'}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -445,7 +484,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                   {!isEditingAddress && (
                     <button
                       onClick={handleStartAddAddress}
-                      className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-md shadow-purple-600/30 cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add New Address</span>
@@ -455,8 +494,11 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
 
                 {isEditingAddress ? (
                   /* Address Add / Edit Form */
-                  <form onSubmit={handleSaveAddress} className="p-5 rounded-2xl bg-neutral-950 border border-emerald-500/40 space-y-4 max-w-2xl mx-auto">
-                    <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+                  <form
+                    onSubmit={handleSaveAddress}
+                    className="p-6 rounded-2xl bg-[#050508] border border-purple-500/40 space-y-4 max-w-2xl mx-auto shadow-2xl"
+                  >
+                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
                       <h5 className="text-sm font-bold text-white">
                         {editingAddressData.id ? 'Edit Delivery Address' : 'Add New Address'}
                       </h5>
@@ -479,7 +521,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           onChange={(e) =>
                             setEditingAddressData({ ...editingAddressData, label: e.target.value })
                           }
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                         >
                           <option value="Home">Home</option>
                           <option value="Office">Office / Workplace</option>
@@ -499,7 +541,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           onChange={(e) =>
                             setEditingAddressData({ ...editingAddressData, name: e.target.value })
                           }
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                         />
                       </div>
                     </div>
@@ -516,7 +558,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           onChange={(e) =>
                             setEditingAddressData({ ...editingAddressData, phone: e.target.value })
                           }
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                         />
                       </div>
 
@@ -532,7 +574,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                             setEditingAddressData({ ...editingAddressData, zip: e.target.value })
                           }
                           placeholder="e.g. 400050"
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                         />
                       </div>
                     </div>
@@ -549,7 +591,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           setEditingAddressData({ ...editingAddressData, street: e.target.value })
                         }
                         placeholder="House No, Apartment, Street name"
-                        className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                       />
                     </div>
 
@@ -562,10 +604,13 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           type="text"
                           value={editingAddressData.landmark}
                           onChange={(e) =>
-                            setEditingAddressData({ ...editingAddressData, landmark: e.target.value })
+                            setEditingAddressData({
+                              ...editingAddressData,
+                              landmark: e.target.value,
+                            })
                           }
                           placeholder="Near Metro..."
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                         />
                       </div>
 
@@ -580,7 +625,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           onChange={(e) =>
                             setEditingAddressData({ ...editingAddressData, city: e.target.value })
                           }
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                         />
                       </div>
 
@@ -595,7 +640,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           onChange={(e) =>
                             setEditingAddressData({ ...editingAddressData, state: e.target.value })
                           }
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-purple-500"
                         />
                       </div>
                     </div>
@@ -611,14 +656,14 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                               isDefault: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400"
+                          className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500"
                         />
                         <span>Set as default shipping address</span>
                       </label>
 
                       <button
                         type="submit"
-                        className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition shadow-md"
+                        className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition shadow-md shadow-purple-600/30"
                       >
                         Save Address
                       </button>
@@ -629,16 +674,16 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                     {addresses.map((addr) => (
                       <div
                         key={addr.id || addr._id}
-                        className="p-5 rounded-2xl bg-neutral-950/60 border border-neutral-800 hover:border-neutral-700 transition space-y-3 relative flex flex-col justify-between"
+                        className="p-5 rounded-2xl bg-[#050508]/80 border border-white/10 hover:border-purple-500/30 transition space-y-3 relative flex flex-col justify-between"
                       >
                         <div>
                           <div className="flex items-center justify-between">
                             <span className="font-bold text-sm text-white flex items-center gap-1.5">
-                              <MapPin className="w-4 h-4 text-emerald-400" />
+                              <MapPin className="w-4 h-4 text-cyan-400" />
                               {addr.label}
                             </span>
                             {addr.isDefault && (
-                              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                                 Default
                               </span>
                             )}
@@ -649,16 +694,21 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           </div>
 
                           <p className="text-xs text-neutral-400 leading-relaxed mt-1">
-                            {addr.street}{addr.landmark ? `, Near ${addr.landmark}` : ''}<br />
-                            {addr.city}, {addr.state} - <span className="font-mono text-neutral-300">{addr.zip}</span>
+                            {addr.street}
+                            {addr.landmark ? `, Near ${addr.landmark}` : ''}
+                            <br />
+                            {addr.city}, {addr.state} -{' '}
+                            <span className="font-mono text-neutral-300">{addr.zip}</span>
                           </p>
                         </div>
 
-                        <div className="pt-3 border-t border-neutral-800 flex items-center justify-between text-xs">
+                        <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
                           <button
                             onClick={() => handleSetDefaultAddress(addr.id || addr._id)}
                             className={`text-xs font-semibold cursor-pointer ${
-                              addr.isDefault ? 'text-emerald-400' : 'text-neutral-400 hover:text-white'
+                              addr.isDefault
+                                ? 'text-cyan-400'
+                                : 'text-neutral-400 hover:text-white'
                             }`}
                           >
                             {addr.isDefault ? '✓ Default Address' : 'Set as Default'}
@@ -667,7 +717,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleStartEditAddress(addr)}
-                              className="p-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white transition flex items-center gap-1 cursor-pointer"
+                              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white transition flex items-center gap-1 cursor-pointer"
                               title="Edit address"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
@@ -676,7 +726,7 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
 
                             <button
                               onClick={() => handleDeleteAddress(addr.id || addr._id)}
-                              className="p-1.5 rounded-lg bg-neutral-900 hover:bg-rose-950/40 text-neutral-400 hover:text-rose-400 transition cursor-pointer"
+                              className="p-1.5 rounded-lg bg-white/5 hover:bg-rose-950/40 text-neutral-400 hover:text-rose-400 transition cursor-pointer"
                               title="Delete address"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -695,14 +745,16 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
               <div className="space-y-6">
                 <div>
                   <h4 className="text-base font-bold text-white">Active Discount Codes & Offers</h4>
-                  <p className="text-xs text-neutral-400">Click any coupon below to copy and apply directly to your cart checkout.</p>
+                  <p className="text-xs text-neutral-400">
+                    Click any coupon below to copy and apply directly to your cart checkout.
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {coupons.map((c) => (
                     <div
                       key={c.code}
-                      className="p-5 rounded-2xl bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 border border-emerald-500/30 shadow-xl flex flex-col justify-between"
+                      className="p-5 rounded-2xl bg-gradient-to-br from-[#050508] via-[#090b16] to-[#050508] border border-purple-500/30 shadow-xl flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-center justify-between mb-2">
@@ -716,11 +768,11 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                         </p>
                       </div>
 
-                      <div className="pt-3 border-t border-neutral-800 flex items-center justify-between">
-                        <span className="font-mono font-black text-sm text-emerald-400">{c.code}</span>
+                      <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+                        <span className="font-mono font-black text-sm text-cyan-400">{c.code}</span>
                         <button
                           onClick={() => handleCopy(c.code)}
-                          className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition flex items-center gap-1 active:scale-95 cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center gap-1 active:scale-95 cursor-pointer shadow-md shadow-purple-600/30"
                         >
                           {copiedCoupon === c.code ? (
                             <>
@@ -740,7 +792,6 @@ export default function ProfileModal({ isOpen, onClose, onApplyCoupon, tenant })
                 </div>
               </div>
             )}
-
           </div>
         </div>
       </div>

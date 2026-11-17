@@ -1,5 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, SlidersHorizontal, ArrowUpDown, Star, RotateCcw, Filter, Tag, Check, IndianRupee, Clock, Heart } from 'lucide-react';
+import {
+  Search,
+  SlidersHorizontal,
+  ArrowUpDown,
+  Star,
+  RotateCcw,
+  Filter,
+  Tag,
+  Check,
+  IndianRupee,
+  Clock,
+  Heart,
+  Sparkles,
+} from 'lucide-react';
 import { api } from './api';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -19,6 +32,7 @@ import FlashDeals from './components/FlashDeals';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
+import CinematicLoader from './components/CinematicLoader';
 import { formatCurrency } from './utils/formatters';
 
 const PRICE_PRESETS = [
@@ -41,6 +55,7 @@ export default function App() {
   const [activeTenant, setActiveTenant] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showCinematicIntro, setShowCinematicIntro] = useState(true);
 
   // Filters & Search
   const [search, setSearch] = useState('');
@@ -89,7 +104,7 @@ export default function App() {
           setActiveTenant(tenantList[0]);
         }
       } catch (err) {
-        console.error("Failed to load tenants:", err);
+        console.error('Failed to load tenants:', err);
       }
     }
     loadTenants();
@@ -103,7 +118,6 @@ export default function App() {
       try {
         const productList = await api.getProducts(activeTenant.slug);
         setProducts(productList);
-        // Reset category and search on store change
         setSelectedCategory('All');
         setSelectedPricePreset('all');
         setMinPriceInput('');
@@ -111,7 +125,7 @@ export default function App() {
         setSelectedRating('all');
         setSearch('');
       } catch (err) {
-        console.error("Failed to load products:", err);
+        console.error('Failed to load products:', err);
       } finally {
         setLoading(false);
       }
@@ -124,7 +138,7 @@ export default function App() {
     return ['All', ...new Set(products.map((p) => p.category))];
   }, [products]);
 
-  // Active filters count
+  // Active filters check
   const isFiltered = useMemo(() => {
     return (
       selectedCategory !== 'All' ||
@@ -150,12 +164,10 @@ export default function App() {
   const filteredProducts = useMemo(() => {
     return products
       .filter((p) => {
-        // Category filter
         if (selectedCategory !== 'All' && p.category !== selectedCategory) {
           return false;
         }
 
-        // Search filter
         if (search.trim()) {
           const q = search.toLowerCase();
           const matchTitle = p.title.toLowerCase().includes(q);
@@ -165,7 +177,6 @@ export default function App() {
           if (!matchTitle && !matchDesc && !matchCat && !matchBrand) return false;
         }
 
-        // Price range filter
         let minP = 0;
         let maxP = Infinity;
 
@@ -188,7 +199,6 @@ export default function App() {
           return false;
         }
 
-        // Rating filter
         if (selectedRating !== 'all') {
           const minRating = Number(selectedRating);
           if ((p.rating || 0) < minRating) return false;
@@ -200,11 +210,23 @@ export default function App() {
         if (sortBy === 'price-low') return a.price - b.price;
         if (sortBy === 'price-high') return b.price - a.price;
         if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-        if (sortBy === 'reviews') return (b.reviewsCount || b.reviews?.length || 0) - (a.reviewsCount || a.reviews?.length || 0);
+        if (sortBy === 'reviews')
+          return (
+            (b.reviewsCount || b.reviews?.length || 0) - (a.reviewsCount || a.reviews?.length || 0)
+          );
         if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
-        return 0; // default featured
+        return 0;
       });
-  }, [products, selectedCategory, search, selectedPricePreset, minPriceInput, maxPriceInput, selectedRating, sortBy]);
+  }, [
+    products,
+    selectedCategory,
+    search,
+    selectedPricePreset,
+    minPriceInput,
+    maxPriceInput,
+    selectedRating,
+    sortBy,
+  ]);
 
   // Cart operations
   const handleAddToCart = (product) => {
@@ -250,7 +272,9 @@ export default function App() {
     setCart((prev) => {
       const existing = prev.find((item) => item._id === product._id);
       if (existing) {
-        return prev.map((item) => (item._id === product._id ? { ...item, quantity: item.quantity + qty } : item));
+        return prev.map((item) =>
+          item._id === product._id ? { ...item, quantity: item.quantity + qty } : item
+        );
       }
       return [...prev, { ...product, quantity: qty }];
     });
@@ -271,7 +295,10 @@ export default function App() {
 
     try {
       const totalDiscount = (checkoutData.discount || 0) + (customerData.appliedOmniCoins || 0);
-      const computedTotal = Math.max(0, (checkoutData.total || 0) - (customerData.appliedOmniCoins || 0));
+      const computedTotal = Math.max(
+        0,
+        (checkoutData.total || 0) - (customerData.appliedOmniCoins || 0)
+      );
 
       const orderPayload = {
         tenantId: activeTenant._id,
@@ -308,12 +335,12 @@ export default function App() {
       const res = await api.createOrder(activeTenant._id, orderPayload);
       if (res.success) {
         setOrderSuccess(res.data);
-        setCart([]); // Clear cart
+        setCart([]);
       } else {
-        alert(res.message || "Failed to place order");
+        alert(res.message || 'Failed to place order');
       }
     } catch (err) {
-      alert("Error placing order: " + err.message);
+      alert('Error placing order: ' + err.message);
     }
   };
 
@@ -349,7 +376,7 @@ export default function App() {
         return prev.filter((p) => p._id !== product._id);
       }
       if (prev.length >= 4) {
-        alert("You can compare up to 4 products simultaneously.");
+        alert('You can compare up to 4 products simultaneously.');
         return prev;
       }
       return [...prev, product];
@@ -364,7 +391,7 @@ export default function App() {
     setComparedProducts([]);
   };
 
-  // Quick View + Recently Viewed tracking
+  // Quick View + Recently Viewed
   const handleQuickView = (product) => {
     setViewProduct(product);
     setRecentlyViewed((prev) => {
@@ -374,7 +401,18 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${themeMode === 'light' ? 'bg-neutral-100 text-neutral-900 light' : 'bg-neutral-950 text-neutral-100 dark'}`}>
+    <div
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${
+        themeMode === 'light'
+          ? 'bg-[#f8fafc] text-neutral-900 light'
+          : 'bg-[#050508] text-neutral-100 dark'
+      }`}
+    >
+      {/* Cinematic Logo Loader Animation on First Entry */}
+      {showCinematicIntro && (
+        <CinematicLoader onComplete={() => setShowCinematicIntro(false)} />
+      )}
+
       {/* Top Navbar with Multi-Tenant Switcher, Autocomplete & Telemetry */}
       <Navbar
         tenants={tenants}
@@ -400,7 +438,7 @@ export default function App() {
       <main className="flex-1 pb-16">
         {activeTab === 'store' ? (
           <div>
-            {/* Store Hero Banner with 3D Three.js Scene */}
+            {/* Store Hero Banner with 3D Three.js Spatial Scene */}
             <Hero tenant={activeTenant} onTenantUpdated={setActiveTenant} />
 
             {/* Lightning Flash Deals with Ticking Countdown Timer */}
@@ -418,10 +456,9 @@ export default function App() {
             />
 
             {/* Filter & Catalog Controls */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-              
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">
               {/* Search, Categories & Quick Sort Bar */}
-              <div className="flex flex-col gap-4 pb-6 border-b border-neutral-800">
+              <div className="flex flex-col gap-4 pb-6 border-b border-white/10">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   {/* Search */}
                   <div className="relative flex-1 max-w-md">
@@ -431,7 +468,7 @@ export default function App() {
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder={`Search ${activeTenant?.name || 'catalog'} by title, brand, tag...`}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 transition shadow-inner"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#090b16] border border-white/10 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 transition shadow-inner"
                     />
                     {search && (
                       <button
@@ -449,8 +486,8 @@ export default function App() {
                       onClick={() => setShowFiltersMobile(!showFiltersMobile)}
                       className={`md:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
                         isFiltered
-                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                          : 'bg-neutral-900 text-neutral-300 border-neutral-800'
+                          ? 'bg-purple-600/20 text-purple-300 border-purple-500/40'
+                          : 'bg-[#090b16] text-neutral-300 border-white/10'
                       }`}
                     >
                       <Filter className="w-3.5 h-3.5" />
@@ -458,19 +495,19 @@ export default function App() {
                     </button>
 
                     {/* Sort selector */}
-                    <div className="flex items-center gap-2 border border-neutral-800 bg-neutral-900 rounded-xl px-3 py-2 text-xs">
-                      <ArrowUpDown className="w-3.5 h-3.5 text-neutral-400" />
+                    <div className="flex items-center gap-2 border border-white/10 bg-[#090b16] rounded-xl px-3 py-2 text-xs">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-cyan-400" />
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                         className="bg-transparent text-neutral-300 font-semibold focus:outline-none cursor-pointer"
                       >
-                        <option value="featured" className="bg-neutral-900">Featured Collections</option>
-                        <option value="price-low" className="bg-neutral-900">Price: Low to High</option>
-                        <option value="price-high" className="bg-neutral-900">Price: High to Low</option>
-                        <option value="rating" className="bg-neutral-900">Customer Rating (Highest)</option>
-                        <option value="reviews" className="bg-neutral-900">Most Customer Reviews</option>
-                        <option value="newest" className="bg-neutral-900">Newest Arrivals</option>
+                        <option value="featured" className="bg-[#090b16]">Featured Collections</option>
+                        <option value="price-low" className="bg-[#090b16]">Price: Low to High</option>
+                        <option value="price-high" className="bg-[#090b16]">Price: High to Low</option>
+                        <option value="rating" className="bg-[#090b16]">Customer Rating (Highest)</option>
+                        <option value="reviews" className="bg-[#090b16]">Most Customer Reviews</option>
+                        <option value="newest" className="bg-[#090b16]">Newest Arrivals</option>
                       </select>
                     </div>
                   </div>
@@ -479,23 +516,27 @@ export default function App() {
                 {/* Category Pills Slider */}
                 <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 flex items-center gap-1 mr-1">
-                    <Tag className="w-3 h-3" /> Categories:
+                    <Tag className="w-3 h-3 text-cyan-400" /> Categories:
                   </span>
                   {categories.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                         selectedCategory === cat
-                          ? 'bg-emerald-500 text-neutral-950 shadow-md font-extrabold'
-                          : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30 font-black'
+                          : 'bg-[#090b16] text-neutral-400 hover:text-white border border-white/10'
                       }`}
                     >
                       {cat}
                       {cat !== 'All' && (
-                        <span className={`text-[10px] px-1 rounded ${
-                          selectedCategory === cat ? 'bg-neutral-950/30 text-neutral-950' : 'bg-neutral-800 text-neutral-500'
-                        }`}>
+                        <span
+                          className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                            selectedCategory === cat
+                              ? 'bg-black/30 text-white'
+                              : 'bg-white/5 text-neutral-400'
+                          }`}
+                        >
                           {products.filter((p) => p.category === cat).length}
                         </span>
                       )}
@@ -503,13 +544,16 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Comprehensive Secondary Filter Bar (Price Ranges & Rating Filters) */}
-                <div className={`pt-3 border-t border-neutral-800/80 flex flex-wrap items-center justify-between gap-4 ${showFiltersMobile ? 'block' : 'hidden md:flex'}`}>
-                  
-                  {/* Left: Price Range Preset Chips */}
+                {/* Secondary Filters Bar */}
+                <div
+                  className={`pt-3 border-t border-white/5 flex flex-wrap items-center justify-between gap-4 ${
+                    showFiltersMobile ? 'block' : 'hidden md:flex'
+                  }`}
+                >
+                  {/* Price Range Preset Chips */}
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mr-1 flex items-center gap-1">
-                      <IndianRupee className="w-3 h-3" /> Price:
+                      <IndianRupee className="w-3 h-3 text-purple-400" /> Price:
                     </span>
                     {PRICE_PRESETS.map((preset) => (
                       <button
@@ -519,10 +563,12 @@ export default function App() {
                           setMinPriceInput('');
                           setMaxPriceInput('');
                         }}
-                        className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
-                          selectedPricePreset === preset.id && minPriceInput === '' && maxPriceInput === ''
-                            ? 'bg-neutral-100 text-neutral-950 font-bold'
-                            : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                        className={`px-2.5 py-1 rounded-lg text-xs transition cursor-pointer ${
+                          selectedPricePreset === preset.id &&
+                          minPriceInput === '' &&
+                          maxPriceInput === ''
+                            ? 'bg-white text-neutral-950 font-black shadow-sm'
+                            : 'bg-[#090b16] text-neutral-400 hover:text-white border border-white/10'
                         }`}
                       >
                         {preset.label}
@@ -539,7 +585,7 @@ export default function App() {
                           setMinPriceInput(e.target.value);
                           setSelectedPricePreset('custom');
                         }}
-                        className="w-18 px-2 py-1 rounded bg-neutral-900 border border-neutral-800 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                        className="w-20 px-2 py-1 rounded-lg bg-[#090b16] border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500"
                       />
                       <span className="text-neutral-500 text-xs">-</span>
                       <input
@@ -550,12 +596,12 @@ export default function App() {
                           setMaxPriceInput(e.target.value);
                           setSelectedPricePreset('custom');
                         }}
-                        className="w-18 px-2 py-1 rounded bg-neutral-900 border border-neutral-800 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                        className="w-20 px-2 py-1 rounded-lg bg-[#090b16] border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500"
                       />
                     </div>
                   </div>
 
-                  {/* Right: Minimum Rating Filter */}
+                  {/* Rating Filters & Reset */}
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mr-1 flex items-center gap-1">
                       <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> Rating:
@@ -564,21 +610,20 @@ export default function App() {
                       <button
                         key={rp.id}
                         onClick={() => setSelectedRating(rp.id)}
-                        className={`px-2.5 py-1 rounded-md text-xs transition flex items-center gap-1 cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs transition flex items-center gap-1 cursor-pointer ${
                           selectedRating === rp.id
                             ? 'bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40'
-                            : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                            : 'bg-[#090b16] text-neutral-400 hover:text-white border border-white/10'
                         }`}
                       >
                         {rp.label}
                       </button>
                     ))}
 
-                    {/* Reset Filters Button */}
                     {isFiltered && (
                       <button
                         onClick={handleResetFilters}
-                        className="ml-2 flex items-center gap-1 px-2.5 py-1 rounded-md bg-neutral-800 hover:bg-neutral-700 text-rose-400 text-xs font-semibold transition cursor-pointer"
+                        className="ml-2 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-rose-400 text-xs font-semibold transition cursor-pointer border border-white/10"
                         title="Clear all active filters"
                       >
                         <RotateCcw className="w-3 h-3" />
@@ -586,22 +631,20 @@ export default function App() {
                       </button>
                     )}
                   </div>
-
                 </div>
 
                 {/* Filter Summary */}
                 <div className="flex items-center justify-between text-xs text-neutral-400 pt-1">
                   <div>
                     Showing <span className="font-bold text-white">{filteredProducts.length}</span> of {products.length} products
-                    {selectedCategory !== 'All' && <span> in <span className="text-emerald-400 font-semibold">{selectedCategory}</span></span>}
+                    {selectedCategory !== 'All' && (
+                      <span> in <span className="text-cyan-400 font-semibold">{selectedCategory}</span></span>
+                    )}
                   </div>
                   {isFiltered && (
-                    <span className="text-emerald-400 text-[11px] font-semibold">
-                      Filters applied
-                    </span>
+                    <span className="text-cyan-400 text-[11px] font-bold">Filters Active</span>
                   )}
                 </div>
-
               </div>
 
               {/* Products Grid */}
@@ -609,11 +652,14 @@ export default function App() {
                 {loading ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                      <div key={n} className="h-96 rounded-2xl bg-neutral-900/50 animate-pulse border border-neutral-800" />
+                      <div
+                        key={n}
+                        className="h-96 rounded-2xl bg-[#090b16]/70 animate-pulse border border-white/5"
+                      />
                     ))}
                   </div>
                 ) : filteredProducts.length === 0 ? (
-                  <div className="text-center py-20 bg-neutral-900/40 rounded-3xl border border-neutral-800/80">
+                  <div className="text-center py-20 bg-[#090b16]/60 rounded-3xl border border-white/10 backdrop-blur-xl">
                     <p className="text-5xl mb-3">🔍</p>
                     <h3 className="text-lg font-bold text-white">No products found matching filters</h3>
                     <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
@@ -621,7 +667,7 @@ export default function App() {
                     </p>
                     <button
                       onClick={handleResetFilters}
-                      className="mt-5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition cursor-pointer"
+                      className="mt-5 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition cursor-pointer shadow-md shadow-purple-600/30"
                     >
                       Clear All Filters
                     </button>
@@ -644,12 +690,12 @@ export default function App() {
                 )}
               </div>
 
-              {/* Recently Viewed Shelf (if any) */}
+              {/* Recently Viewed Shelf */}
               {recentlyViewed.length > 0 && (
-                <div className="mt-16 pt-8 border-t border-neutral-800/80">
+                <div className="mt-16 pt-8 border-t border-white/10">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-emerald-400" />
+                      <Clock className="w-4 h-4 text-cyan-400" />
                       <h3 className="text-base font-bold text-white">Recently Viewed Products</h3>
                     </div>
                     <span className="text-xs text-neutral-500">{recentlyViewed.length} items</span>
@@ -660,9 +706,9 @@ export default function App() {
                       <div
                         key={item._id}
                         onClick={() => handleQuickView(item)}
-                        className="p-3 rounded-2xl bg-neutral-900/70 border border-neutral-800/80 hover:border-emerald-500/40 transition cursor-pointer flex flex-col justify-between"
+                        className="p-3 rounded-2xl bg-[#090b16]/70 border border-white/10 hover:border-purple-500/40 transition cursor-pointer flex flex-col justify-between"
                       >
-                        <div className="aspect-square rounded-xl overflow-hidden bg-neutral-950 mb-2">
+                        <div className="aspect-square rounded-xl overflow-hidden bg-[#050508] mb-2">
                           <img
                             src={item.thumbnail || item.images?.[0]}
                             alt={item.title}
@@ -671,7 +717,7 @@ export default function App() {
                         </div>
                         <div>
                           <h4 className="text-xs font-bold text-white truncate">{item.title}</h4>
-                          <span className="text-xs text-emerald-400 font-extrabold mt-0.5 block">
+                          <span className="text-xs text-cyan-400 font-black mt-0.5 block font-mono">
                             {formatCurrency(item.price)}
                           </span>
                         </div>
@@ -681,19 +727,15 @@ export default function App() {
                 </div>
               )}
 
-              {/* Verified Customer Community Testimonials */}
+              {/* Verified Customer Testimonials */}
               <Testimonials />
-
             </div>
           </div>
         ) : activeTab === 'admin' ? (
-          /* Merchant Seller Dashboard View */
-          <MerchantDashboard
-            tenant={activeTenant}
-            onTenantUpdated={setActiveTenant}
-          />
+          /* Vendor Merchant Studio View */
+          <MerchantDashboard tenant={activeTenant} onTenantUpdated={setActiveTenant} />
         ) : (
-          /* Super-Admin Platform Governance Dashboard */
+          /* Super-Admin Platform Hub View */
           <AdminDashboard
             onSelectStore={(store) => {
               setActiveTenant(store);
@@ -733,7 +775,7 @@ export default function App() {
         tenant={activeTenant}
       />
 
-      {/* Quick View Product Modal with Reviews, Wishlist & Share */}
+      {/* Quick View Product Modal with 3D Studio, Reviews & Wishlist */}
       <ProductModal
         product={viewProduct}
         isOpen={!!viewProduct}
@@ -748,7 +790,7 @@ export default function App() {
 
       {/* Floating Bottom Comparison Dock */}
       {comparedProducts.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-neutral-900/95 backdrop-blur-xl border border-purple-500/40 shadow-2xl rounded-2xl p-3 px-5 flex items-center gap-4 animate-in slide-in-from-bottom duration-300">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#0a0c18]/95 backdrop-blur-2xl border border-purple-500/40 shadow-2xl rounded-2xl p-3 px-5 flex items-center gap-4 animate-in slide-in-from-bottom duration-300">
           <div className="flex items-center gap-2">
             <span className="text-xs font-black uppercase text-purple-300 flex items-center gap-1.5">
               <span>Compare:</span>
@@ -759,7 +801,7 @@ export default function App() {
                   key={p._id}
                   src={p.thumbnail || p.images?.[0]}
                   alt={p.title}
-                  className="w-8 h-8 rounded-full border-2 border-neutral-900 object-cover bg-neutral-950 shadow-md"
+                  className="w-8 h-8 rounded-full border-2 border-[#0a0c18] object-cover bg-[#050508] shadow-md"
                   title={p.title}
                 />
               ))}
@@ -772,13 +814,13 @@ export default function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsCompareOpen(true)}
-              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition shadow-lg shadow-purple-600/30 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition shadow-lg shadow-purple-600/30 cursor-pointer"
             >
               Compare Now
             </button>
             <button
               onClick={handleClearCompare}
-              className="px-2.5 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white text-xs font-semibold transition cursor-pointer"
+              className="px-2.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white text-xs font-semibold transition cursor-pointer"
               title="Clear comparison list"
             >
               ✕
@@ -787,7 +829,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Product Comparison Modal Matrix */}
+      {/* Product Comparison Modal */}
       <ComparisonModal
         isOpen={isCompareOpen}
         onClose={() => setIsCompareOpen(false)}
@@ -826,7 +868,7 @@ export default function App() {
         onOpenOrders={() => setIsProfileOpen(true)}
       />
 
-      {/* Comprehensive Multi-Tenant Marketplace Footer */}
+      {/* Platform Footer */}
       <Footer tenants={tenants} onSelectTenant={setActiveTenant} />
     </div>
   );

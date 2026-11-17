@@ -22,7 +22,7 @@ import {
   Info,
   Clock,
   Truck,
-  Package,
+  Lock,
 } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
 import { addressManager } from '../utils/addressManager';
@@ -87,7 +87,7 @@ export default function CheckoutModal({
   // Card Form State
   const [cardData, setCardData] = useState({
     number: '',
-    holder: 'Rahul Verma',
+    holder: 'RAHUL VERMA',
     expiry: '',
     cvv: '',
     saveCard: true,
@@ -171,7 +171,7 @@ export default function CheckoutModal({
     if (/^(5[1-5]|2[2-7])/.test(cleaned)) return 'Mastercard';
     if (/^(60|65|81|82)/.test(cleaned)) return 'RuPay';
     if (/^3[47]/.test(cleaned)) return 'Amex';
-    return 'Card';
+    return 'ShopSphere Card';
   };
 
   // Address CRUD
@@ -317,21 +317,26 @@ export default function CheckoutModal({
   return (
     <>
       <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
-        <div className="relative w-full max-w-2xl max-h-[92vh] rounded-3xl bg-neutral-900 border border-neutral-800 shadow-2xl flex flex-col overflow-hidden text-neutral-100">
+        <div className="relative w-full max-w-2xl max-h-[92vh] rounded-3xl bg-[#0a0a0f] border border-[#1e1e2d] shadow-2xl flex flex-col overflow-hidden text-neutral-100">
           
           {/* Header */}
-          <div className="relative bg-gradient-to-r from-neutral-950 via-neutral-900 to-neutral-950 p-5 px-6 border-b border-neutral-800 flex items-center justify-between">
+          <div className="relative bg-gradient-to-r from-[#0d0d15] via-[#12121e] to-[#0d0d15] p-5 px-6 border-b border-[#1e1e2d] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <ShieldCheck className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-500/20 to-cyan-500/20 border border-purple-500/30 flex items-center justify-center text-cyan-400 shadow-md">
+                <Lock className="w-5 h-5 text-cyan-400" />
               </div>
               <div>
-                <h3 className="text-lg font-black text-white tracking-tight">
-                  {orderSuccess ? 'Order Confirmed!' : 'Secure 256-Bit Checkout'}
+                <h3 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
+                  <span>{orderSuccess ? 'Order Confirmed!' : 'Secure 256-Bit Checkout'}</span>
+                  {!orderSuccess && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                      SSL Encrypted
+                    </span>
+                  )}
                 </h3>
                 <p className="text-xs text-neutral-400">
                   {orderSuccess
-                    ? 'Receipt & tracking reference issued'
+                    ? 'Receipt & tracking reference issued to customer vault'
                     : 'Choose your delivery destination & payment option'}
                 </p>
               </div>
@@ -350,22 +355,22 @@ export default function CheckoutModal({
             {orderSuccess ? (
               /* ORDER SUCCESS VIEW */
               <div className="text-center py-4 space-y-5">
-                <div className="w-20 h-20 rounded-3xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 mx-auto flex items-center justify-center shadow-2xl shadow-emerald-500/20 animate-bounce">
-                  <CheckCircle className="w-10 h-10" />
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-purple-500/20 via-cyan-500/20 to-emerald-500/20 border border-cyan-500/40 text-cyan-400 mx-auto flex items-center justify-center shadow-2xl shadow-cyan-500/20 animate-bounce">
+                  <CheckCircle className="w-10 h-10 text-cyan-400" />
                 </div>
 
                 <div>
                   <h3 className="text-2xl font-black text-white">Payment & Order Placed!</h3>
                   <p className="text-xs text-neutral-400 mt-1 max-w-md mx-auto">
-                    Your order has been recorded into the store database. A confirmation SMS & email have been dispatched with live dispatch tracking.
+                    Your order has been recorded into the ShopSphere tenant node. A confirmation SMS & email have been dispatched with live courier telemetry.
                   </p>
                 </div>
 
                 {/* Order Summary Pill */}
-                <div className="p-4 rounded-2xl bg-neutral-950/80 border border-neutral-800 text-left space-y-2.5 text-xs max-w-lg mx-auto">
-                  <div className="flex justify-between items-center pb-2 border-b border-neutral-800">
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-[#1e1e2d] text-left space-y-2.5 text-xs max-w-lg mx-auto">
+                  <div className="flex justify-between items-center pb-2 border-b border-[#1e1e2d]">
                     <span className="text-neutral-400">Order Reference ID:</span>
-                    <span className="font-mono font-bold text-emerald-400 text-sm">
+                    <span className="font-mono font-bold text-cyan-400 text-sm">
                       {orderSuccess.orderNumber}
                     </span>
                   </div>
@@ -379,7 +384,7 @@ export default function CheckoutModal({
 
                   <div className="flex justify-between items-center">
                     <span className="text-neutral-400">Payment Status:</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold uppercase text-[10px] border border-emerald-500/30">
+                    <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 font-bold uppercase text-[10px] border border-cyan-500/25">
                       {orderSuccess.paymentMethod === 'cod' ? 'COD (Pay on Delivery)' : 'Paid Online (Verified)'}
                     </span>
                   </div>
@@ -400,22 +405,22 @@ export default function CheckoutModal({
                 </div>
 
                 {/* Delivery Timeline Preview */}
-                <div className="p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800/80 text-left max-w-lg mx-auto">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block mb-2 flex items-center gap-1.5">
-                    <Truck className="w-3.5 h-3.5 text-emerald-400" />
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-[#1e1e2d] text-left max-w-lg mx-auto">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-2 flex items-center gap-1.5">
+                    <Truck className="w-3.5 h-3.5 text-cyan-400" />
                     <span>Live Tracking Timeline</span>
                   </span>
                   <div className="grid grid-cols-4 gap-2 text-center text-[10px]">
-                    <div className="p-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold">
+                    <div className="p-2 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-300 font-bold">
                       ✓ Confirmed
                     </div>
-                    <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                    <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300">
                       Packed
                     </div>
-                    <div className="p-2 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-500">
+                    <div className="p-2 rounded-xl bg-[#050508] border border-neutral-800 text-neutral-500">
                       In Transit
                     </div>
-                    <div className="p-2 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-500">
+                    <div className="p-2 rounded-xl bg-[#050508] border border-neutral-800 text-neutral-500">
                       Delivered
                     </div>
                   </div>
@@ -427,13 +432,13 @@ export default function CheckoutModal({
                     onClick={() => setShowInvoiceModal(true)}
                     className="w-full sm:w-1/2 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
                   >
-                    <Printer className="w-4 h-4 text-emerald-400" />
+                    <Printer className="w-4 h-4 text-cyan-400" />
                     <span>Print Tax Invoice</span>
                   </button>
 
                   <button
                     onClick={onClose}
-                    className="w-full sm:w-1/2 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20 cursor-pointer"
+                    className="w-full sm:w-1/2 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-bold text-xs transition shadow-lg shadow-purple-500/20 cursor-pointer"
                   >
                     Continue Shopping
                   </button>
@@ -447,7 +452,7 @@ export default function CheckoutModal({
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-emerald-500 text-neutral-950 text-xs font-black flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-black flex items-center justify-center">
                         1
                       </span>
                       <h4 className="text-sm font-black text-white">Delivery Address</h4>
@@ -457,7 +462,7 @@ export default function CheckoutModal({
                       <button
                         type="button"
                         onClick={handleStartAddAddress}
-                        className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition"
+                        className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add New Address</span>
@@ -467,8 +472,8 @@ export default function CheckoutModal({
 
                   {isEditingAddress ? (
                     /* Inline Address Editor Form */
-                    <div className="p-4 rounded-2xl bg-neutral-950 border border-emerald-500/40 space-y-3">
-                      <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
+                    <div className="p-4 rounded-2xl bg-black/40 border border-purple-500/40 space-y-3">
+                      <div className="flex items-center justify-between pb-2 border-b border-[#1e1e2d]">
                         <span className="text-xs font-bold text-white">
                           {editingAddressData.id ? 'Edit Delivery Address' : 'Add New Address'}
                         </span>
@@ -491,7 +496,7 @@ export default function CheckoutModal({
                             onChange={(e) =>
                               setEditingAddressData({ ...editingAddressData, label: e.target.value })
                             }
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           >
                             <option value="Home">Home</option>
                             <option value="Office">Office / Workplace</option>
@@ -511,7 +516,7 @@ export default function CheckoutModal({
                             onChange={(e) =>
                               setEditingAddressData({ ...editingAddressData, name: e.target.value })
                             }
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           />
                         </div>
                       </div>
@@ -528,7 +533,7 @@ export default function CheckoutModal({
                             onChange={(e) =>
                               setEditingAddressData({ ...editingAddressData, phone: e.target.value })
                             }
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           />
                         </div>
 
@@ -544,7 +549,7 @@ export default function CheckoutModal({
                               setEditingAddressData({ ...editingAddressData, zip: e.target.value })
                             }
                             placeholder="e.g. 400050"
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           />
                         </div>
                       </div>
@@ -561,7 +566,7 @@ export default function CheckoutModal({
                             setEditingAddressData({ ...editingAddressData, street: e.target.value })
                           }
                           placeholder="House No, Apartment, Street name"
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                         />
                       </div>
 
@@ -577,7 +582,7 @@ export default function CheckoutModal({
                               setEditingAddressData({ ...editingAddressData, landmark: e.target.value })
                             }
                             placeholder="Near Metro..."
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           />
                         </div>
 
@@ -592,7 +597,7 @@ export default function CheckoutModal({
                             onChange={(e) =>
                               setEditingAddressData({ ...editingAddressData, city: e.target.value })
                             }
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           />
                         </div>
 
@@ -607,7 +612,7 @@ export default function CheckoutModal({
                             onChange={(e) =>
                               setEditingAddressData({ ...editingAddressData, state: e.target.value })
                             }
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           />
                         </div>
                       </div>
@@ -623,7 +628,7 @@ export default function CheckoutModal({
                                 isDefault: e.target.checked,
                               })
                             }
-                            className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400"
+                            className="w-4 h-4 rounded text-purple-500 focus:ring-purple-400"
                           />
                           <span>Set as default delivery address</span>
                         </label>
@@ -631,7 +636,7 @@ export default function CheckoutModal({
                         <button
                           type="button"
                           onClick={handleSaveAddress}
-                          className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs transition"
+                          className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-bold text-xs transition cursor-pointer"
                         >
                           Save Address
                         </button>
@@ -648,17 +653,17 @@ export default function CheckoutModal({
                             onClick={() => setSelectedAddressId(addr.id || addr._id)}
                             className={`p-3.5 rounded-2xl border transition cursor-pointer relative flex flex-col justify-between ${
                               isSelected
-                                ? 'bg-emerald-500/10 border-emerald-500 text-white shadow-lg shadow-emerald-500/10'
-                                : 'bg-neutral-950/60 border-neutral-800 text-neutral-400 hover:border-neutral-700'
+                                ? 'bg-purple-500/10 border-cyan-500 text-white shadow-lg shadow-purple-500/10'
+                                : 'bg-white/[0.02] border-[#1e1e2d] text-neutral-400 hover:border-neutral-700'
                             }`}
                           >
                             <div>
                               <div className="flex items-center justify-between mb-1.5">
                                 <span className="font-bold text-xs text-white flex items-center gap-1.5">
-                                  <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                                  <MapPin className="w-3.5 h-3.5 text-cyan-400" />
                                   <span>{addr.label}</span>
                                   {addr.isDefault && (
-                                    <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                                    <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
                                       Default
                                     </span>
                                   )}
@@ -697,8 +702,8 @@ export default function CheckoutModal({
                               </p>
                             </div>
 
-                            <div className="mt-3 pt-2 border-t border-neutral-800/60 flex items-center justify-between text-[11px]">
-                              <span className={isSelected ? 'text-emerald-400 font-bold' : 'text-neutral-500'}>
+                            <div className="mt-3 pt-2 border-t border-[#1e1e2d]/60 flex items-center justify-between text-[11px]">
+                              <span className={isSelected ? 'text-cyan-400 font-bold' : 'text-neutral-500'}>
                                 {isSelected ? '● Selected Destination' : '○ Click to Select'}
                               </span>
                             </div>
@@ -713,15 +718,15 @@ export default function CheckoutModal({
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-emerald-500 text-neutral-950 text-xs font-black flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-black flex items-center justify-center">
                         2
                       </span>
                       <h4 className="text-sm font-black text-white">Payment Method</h4>
                     </div>
 
                     <span className="text-[11px] text-neutral-400 flex items-center gap-1">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Encrypted SSL</span>
+                      <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Encrypted SSL Gateway</span>
                     </span>
                   </div>
 
@@ -732,13 +737,13 @@ export default function CheckoutModal({
                       onClick={() => setPaymentMethod('upi')}
                       className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition cursor-pointer ${
                         paymentMethod === 'upi'
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm'
-                          : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300 shadow-sm'
+                          : 'border-[#1e1e2d] bg-white/[0.02] text-neutral-400 hover:text-white'
                       }`}
                     >
                       <Smartphone className="w-4 h-4" />
                       <span className="text-[11px] font-bold">UPI / QR</span>
-                      <span className="text-[9px] text-emerald-400">Instant Free</span>
+                      <span className="text-[9px] text-cyan-400">Instant Free</span>
                     </button>
 
                     <button
@@ -746,8 +751,8 @@ export default function CheckoutModal({
                       onClick={() => setPaymentMethod('card')}
                       className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition cursor-pointer ${
                         paymentMethod === 'card'
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm'
-                          : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                          ? 'border-purple-500 bg-purple-500/10 text-purple-300 shadow-sm'
+                          : 'border-[#1e1e2d] bg-white/[0.02] text-neutral-400 hover:text-white'
                       }`}
                     >
                       <CreditCard className="w-4 h-4" />
@@ -760,8 +765,8 @@ export default function CheckoutModal({
                       onClick={() => setPaymentMethod('netbanking')}
                       className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition cursor-pointer ${
                         paymentMethod === 'netbanking'
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm'
-                          : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                          ? 'border-purple-500 bg-purple-500/10 text-purple-300 shadow-sm'
+                          : 'border-[#1e1e2d] bg-white/[0.02] text-neutral-400 hover:text-white'
                       }`}
                     >
                       <Building2 className="w-4 h-4" />
@@ -774,8 +779,8 @@ export default function CheckoutModal({
                       onClick={() => setPaymentMethod('emi')}
                       className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition cursor-pointer ${
                         paymentMethod === 'emi'
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm'
-                          : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                          ? 'border-purple-500 bg-purple-500/10 text-purple-300 shadow-sm'
+                          : 'border-[#1e1e2d] bg-white/[0.02] text-neutral-400 hover:text-white'
                       }`}
                     >
                       <CalendarClock className="w-4 h-4" />
@@ -788,8 +793,8 @@ export default function CheckoutModal({
                       onClick={() => setPaymentMethod('cod')}
                       className={`col-span-2 sm:col-span-1 p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition cursor-pointer ${
                         paymentMethod === 'cod'
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm'
-                          : 'border-neutral-800 bg-neutral-950/60 text-neutral-400 hover:text-white'
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300 shadow-sm'
+                          : 'border-[#1e1e2d] bg-white/[0.02] text-neutral-400 hover:text-white'
                       }`}
                     >
                       <Banknote className="w-4 h-4" />
@@ -799,7 +804,7 @@ export default function CheckoutModal({
                   </div>
 
                   {/* ACTIVE PAYMENT METHOD CONTENT */}
-                  <div className="mt-4 p-4 rounded-2xl bg-neutral-950 border border-neutral-800">
+                  <div className="mt-4 p-4 rounded-2xl bg-white/[0.02] border border-[#1e1e2d]">
                     
                     {/* TAB 1: UPI & DYNAMIC QR */}
                     {paymentMethod === 'upi' && (
@@ -808,7 +813,7 @@ export default function CheckoutModal({
                           {/* QR Preview Box */}
                           <div className="p-3 bg-white rounded-2xl shadow-xl flex flex-col items-center shrink-0">
                             <img
-                              src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=0&data=upi://pay?pa=omnistore@okhdfcbank%26pn=OmniStore%26am=${finalPayable}%26cu=INR`}
+                              src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=0&data=upi://pay?pa=shopsphere@okhdfcbank%26pn=ShopSphere%26am=${finalPayable}%26cu=INR`}
                               alt="Instant UPI QR Code"
                               className="w-28 h-28 object-contain"
                             />
@@ -820,7 +825,7 @@ export default function CheckoutModal({
                           <div className="flex-1 text-left space-y-2">
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold text-white">Instant UPI Dynamic QR</span>
-                              <span className="text-[11px] font-mono font-bold text-amber-400 flex items-center gap-1 bg-amber-400/10 px-2 py-0.5 rounded">
+                              <span className="text-[11px] font-mono font-bold text-cyan-400 flex items-center gap-1 bg-cyan-400/10 px-2 py-0.5 rounded border border-cyan-400/20">
                                 <Clock className="w-3 h-3" />
                                 <span>{formatTimer(upiTimer)}</span>
                               </span>
@@ -832,19 +837,19 @@ export default function CheckoutModal({
                             </p>
 
                             <div className="flex items-center gap-2 pt-1">
-                              <div className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 font-mono text-xs text-emerald-400">
-                                omnistore@okhdfcbank
+                              <div className="px-2.5 py-1 rounded bg-[#0d0d15] border border-[#1e1e2d] font-mono text-xs text-cyan-400">
+                                shopsphere@okhdfcbank
                               </div>
                               <button
                                 type="button"
                                 onClick={() => {
-                                  navigator.clipboard.writeText('omnistore@okhdfcbank');
+                                  navigator.clipboard.writeText('shopsphere@okhdfcbank');
                                   setCopiedUpi(true);
                                   setTimeout(() => setCopiedUpi(false), 2000);
                                 }}
-                                className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-xs text-white font-bold transition flex items-center gap-1"
+                                className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-xs text-white font-bold transition flex items-center gap-1 cursor-pointer"
                               >
-                                {copiedUpi ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                                {copiedUpi ? <Check className="w-3 h-3 text-cyan-400" /> : <Copy className="w-3 h-3" />}
                                 <span>{copiedUpi ? 'Copied' : 'Copy ID'}</span>
                               </button>
                             </div>
@@ -852,7 +857,7 @@ export default function CheckoutModal({
                         </div>
 
                         {/* Or Enter UPI ID Manually */}
-                        <div className="pt-3 border-t border-neutral-800/80">
+                        <div className="pt-3 border-t border-[#1e1e2d]">
                           <label className="block text-[11px] font-semibold text-neutral-400 mb-1">
                             Or Enter Your UPI ID (VPA)
                           </label>
@@ -865,7 +870,7 @@ export default function CheckoutModal({
                                 setUpiVerified(false);
                               }}
                               placeholder="e.g. rahul@okaxis or 9876543210@paytm"
-                              className="flex-1 px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                              className="flex-1 px-3 py-2 rounded-xl bg-[#0d0d15] border border-neutral-700 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-cyan-500"
                             />
                             <button
                               type="button"
@@ -876,13 +881,13 @@ export default function CheckoutModal({
                                   alert('Please enter a valid UPI ID (e.g. name@bank)');
                                 }
                               }}
-                              className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-bold text-emerald-400 transition"
+                              className="px-4 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-xs font-bold text-cyan-300 border border-purple-500/40 transition cursor-pointer"
                             >
                               {upiVerified ? '✓ Verified' : 'Verify'}
                             </button>
                           </div>
                           {upiVerified && (
-                            <span className="text-[10px] text-emerald-400 mt-1 block">
+                            <span className="text-[10px] text-cyan-400 mt-1 block">
                               ✓ Verified VPA account: Rahul Verma (HDFC Bank Direct)
                             </span>
                           )}
@@ -894,27 +899,29 @@ export default function CheckoutModal({
                     {paymentMethod === 'card' && (
                       <div className="space-y-4">
                         {/* 3D Realistic Credit Card Visualizer */}
-                        <div className="relative w-full max-w-sm mx-auto h-40 rounded-2xl p-4 bg-gradient-to-br from-neutral-800 via-neutral-900 to-emerald-950 border border-neutral-700 shadow-2xl flex flex-col justify-between overflow-hidden">
-                          <div className="flex items-center justify-between">
-                            <div className="w-9 h-7 rounded bg-amber-400/80 border border-amber-300 shadow-inner flex items-center justify-center">
-                              <span className="w-6 h-4 border border-amber-600/60 rounded-xs"></span>
+                        <div className="relative w-full max-w-sm mx-auto h-44 rounded-2xl p-5 bg-gradient-to-br from-purple-900/40 via-[#12121e] to-cyan-950/40 border border-purple-500/30 shadow-2xl flex flex-col justify-between overflow-hidden">
+                          <div className="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
+                          
+                          <div className="flex items-center justify-between relative z-10">
+                            <div className="w-10 h-7 rounded bg-gradient-to-tr from-amber-400 to-amber-200 border border-amber-300 shadow-inner flex items-center justify-center">
+                              <span className="w-7 h-4 border border-amber-600/60 rounded-xs"></span>
                             </div>
-                            <span className="text-xs font-black tracking-widest text-emerald-400 uppercase">
+                            <span className="text-xs font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 uppercase">
                               {getCardBrand(cardData.number)}
                             </span>
                           </div>
 
-                          <div className="font-mono text-base tracking-widest text-white drop-shadow">
+                          <div className="font-mono text-base tracking-widest text-white drop-shadow relative z-10">
                             {cardData.number || '•••• •••• •••• ••••'}
                           </div>
 
-                          <div className="flex items-center justify-between text-[10px] text-neutral-300 uppercase">
+                          <div className="flex items-center justify-between text-[10px] text-neutral-300 uppercase relative z-10">
                             <div>
-                              <span className="block text-[8px] text-neutral-500">Cardholder</span>
-                              <span className="font-bold">{cardData.holder || 'YOUR NAME'}</span>
+                              <span className="block text-[8px] text-neutral-400">Cardholder</span>
+                              <span className="font-bold">{cardData.holder || 'RAHUL VERMA'}</span>
                             </div>
                             <div>
-                              <span className="block text-[8px] text-neutral-500">Expires</span>
+                              <span className="block text-[8px] text-neutral-400">Expires</span>
                               <span className="font-mono font-bold">{cardData.expiry || 'MM/YY'}</span>
                             </div>
                           </div>
@@ -931,7 +938,7 @@ export default function CheckoutModal({
                               value={cardData.number}
                               onChange={handleCardNumberChange}
                               placeholder="4000 1234 5678 9010"
-                              className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-emerald-500"
+                              className="w-full px-3 py-2 rounded-xl bg-[#0d0d15] border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-cyan-500"
                             />
                           </div>
 
@@ -945,7 +952,7 @@ export default function CheckoutModal({
                                 value={cardData.expiry}
                                 onChange={handleExpiryChange}
                                 placeholder="12/28"
-                                className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-emerald-500"
+                                className="w-full px-3 py-2 rounded-xl bg-[#0d0d15] border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-cyan-500"
                               />
                             </div>
                             <div>
@@ -960,7 +967,7 @@ export default function CheckoutModal({
                                   setCardData({ ...cardData, cvv: e.target.value.slice(0, 4) })
                                 }
                                 placeholder="•••"
-                                className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-emerald-500"
+                                className="w-full px-3 py-2 rounded-xl bg-[#0d0d15] border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-cyan-500"
                               />
                             </div>
                           </div>
@@ -972,7 +979,7 @@ export default function CheckoutModal({
                               onChange={(e) =>
                                 setCardData({ ...cardData, saveCard: e.target.checked })
                               }
-                              className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400"
+                              className="w-4 h-4 rounded text-purple-500 focus:ring-purple-400"
                             />
                             <span>Secure tokenized card storage as per RBI guidelines</span>
                           </label>
@@ -994,8 +1001,8 @@ export default function CheckoutModal({
                               onClick={() => setSelectedBank(b.id)}
                               className={`p-2.5 rounded-xl border text-center transition cursor-pointer ${
                                 selectedBank === b.id
-                                  ? 'border-emerald-500 bg-emerald-500/15 text-white font-bold'
-                                  : 'border-neutral-800 bg-neutral-900/60 text-neutral-400 hover:text-white'
+                                  ? 'border-cyan-500 bg-cyan-500/15 text-white font-bold shadow-sm'
+                                  : 'border-[#1e1e2d] bg-[#0d0d15] text-neutral-400 hover:text-white'
                               }`}
                             >
                               <div className="text-xs">{b.name}</div>
@@ -1011,7 +1018,7 @@ export default function CheckoutModal({
                           <select
                             value={selectedBank}
                             onChange={(e) => setSelectedBank(e.target.value)}
-                            className="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white focus:outline-none focus:border-emerald-500"
+                            className="w-full px-3 py-2 rounded-xl bg-[#0d0d15] border border-neutral-700 text-xs text-white focus:outline-none focus:border-cyan-500"
                           >
                             {OTHER_BANKS.map((bankName) => (
                               <option key={bankName} value={bankName.toLowerCase()}>
@@ -1028,7 +1035,7 @@ export default function CheckoutModal({
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-white">Select EMI Plan</span>
-                          <span className="text-[10px] font-bold text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-bold text-cyan-400 uppercase bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
                             0% Interest Available
                           </span>
                         </div>
@@ -1038,38 +1045,38 @@ export default function CheckoutModal({
                             onClick={() => setSelectedEmiTenure(3)}
                             className={`p-3 rounded-xl border cursor-pointer text-center transition ${
                               selectedEmiTenure === 3
-                                ? 'border-emerald-500 bg-emerald-500/10 text-white'
-                                : 'border-neutral-800 bg-neutral-900 text-neutral-400'
+                                ? 'border-cyan-500 bg-cyan-500/10 text-white shadow-sm'
+                                : 'border-[#1e1e2d] bg-[#0d0d15] text-neutral-400'
                             }`}
                           >
-                            <div className="text-sm font-black text-emerald-400">
+                            <div className="text-sm font-black text-cyan-400">
                               {formatCurrency(Math.round(finalPayable / 3))}/mo
                             </div>
                             <div className="text-[11px] font-bold text-white mt-0.5">3 Months</div>
-                            <div className="text-[9px] text-emerald-400">0% No Cost EMI</div>
+                            <div className="text-[9px] text-cyan-400">0% No Cost EMI</div>
                           </div>
 
                           <div
                             onClick={() => setSelectedEmiTenure(6)}
                             className={`p-3 rounded-xl border cursor-pointer text-center transition ${
                               selectedEmiTenure === 6
-                                ? 'border-emerald-500 bg-emerald-500/10 text-white'
-                                : 'border-neutral-800 bg-neutral-900 text-neutral-400'
+                                ? 'border-cyan-500 bg-cyan-500/10 text-white shadow-sm'
+                                : 'border-[#1e1e2d] bg-[#0d0d15] text-neutral-400'
                             }`}
                           >
-                            <div className="text-sm font-black text-emerald-400">
+                            <div className="text-sm font-black text-cyan-400">
                               {formatCurrency(Math.round(finalPayable / 6))}/mo
                             </div>
                             <div className="text-[11px] font-bold text-white mt-0.5">6 Months</div>
-                            <div className="text-[9px] text-emerald-400">0% No Cost EMI</div>
+                            <div className="text-[9px] text-cyan-400">0% No Cost EMI</div>
                           </div>
 
                           <div
                             onClick={() => setSelectedEmiTenure(12)}
                             className={`p-3 rounded-xl border cursor-pointer text-center transition ${
                               selectedEmiTenure === 12
-                                ? 'border-emerald-500 bg-emerald-500/10 text-white'
-                                : 'border-neutral-800 bg-neutral-900 text-neutral-400'
+                                ? 'border-purple-500 bg-purple-500/10 text-white shadow-sm'
+                                : 'border-[#1e1e2d] bg-[#0d0d15] text-neutral-400'
                             }`}
                           >
                             <div className="text-sm font-black text-white">
@@ -1081,7 +1088,7 @@ export default function CheckoutModal({
                         </div>
 
                         <p className="text-[10px] text-neutral-400 mt-2">
-                          Supported by HDFC FlexiPay, ZestMoney, Simpl, and SBI Cards. No paper verification required.
+                          Supported by HDFC FlexiPay, ZestMoney, Simpl, and SBI Cards. No physical paperwork required.
                         </p>
                       </div>
                     )}
@@ -1092,7 +1099,7 @@ export default function CheckoutModal({
                         <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs">
                           <Info className="w-4 h-4 shrink-0" />
                           <span>
-                            Pay using Cash or doorstep QR upon delivery. Please keep exact change ready.
+                            Pay using Cash or doorstep UPI QR upon delivery. Please keep exact change ready.
                           </span>
                         </div>
 
@@ -1101,13 +1108,13 @@ export default function CheckoutModal({
                             Anti-Spam Security Verification
                           </label>
                           <div className="flex items-center gap-3">
-                            <div className="px-4 py-2 rounded-xl bg-neutral-900 border border-neutral-700 font-mono text-base font-black text-emerald-400 tracking-widest select-none">
+                            <div className="px-4 py-2 rounded-xl bg-[#0d0d15] border border-neutral-700 font-mono text-base font-black text-cyan-400 tracking-widest select-none">
                               {captchaCode}
                             </div>
                             <button
                               type="button"
                               onClick={generateNewCaptcha}
-                              className="p-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white transition"
+                              className="p-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white transition cursor-pointer"
                               title="Generate new code"
                             >
                               <RefreshCw className="w-4 h-4" />
@@ -1118,7 +1125,7 @@ export default function CheckoutModal({
                               value={captchaInput}
                               onChange={(e) => setCaptchaInput(e.target.value)}
                               placeholder="Enter 4 digits"
-                              className="w-32 px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-emerald-500"
+                              className="w-32 px-3 py-2 rounded-xl bg-[#0d0d15] border border-neutral-700 text-xs text-white placeholder-neutral-500 font-mono focus:outline-none focus:border-cyan-500"
                             />
                           </div>
                         </div>
@@ -1129,20 +1136,20 @@ export default function CheckoutModal({
                 </div>
 
                 {/* SECTION 3: OMNICOINS LOYALTY REWARDS REDEMPTION */}
-                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-neutral-950 to-emerald-500/10 border border-amber-500/20 flex items-center justify-between">
+                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-[#0d0d15] to-purple-500/10 border border-amber-500/20 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300">
                       <Coins className="w-4 h-4" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-white flex items-center gap-1.5">
-                        <span>Redeem 500 OmniCoins</span>
-                        <span className="text-[10px] text-amber-400 font-bold px-1.5 py-0.2 rounded bg-amber-400/10">
+                        <span>Redeem 500 ShopSphere Points</span>
+                        <span className="text-[10px] text-amber-400 font-bold px-1.5 py-0.2 rounded bg-amber-400/10 border border-amber-400/20">
                           Save ₹500
                         </span>
                       </div>
                       <p className="text-[10px] text-neutral-400">
-                        Available balance: 1,450 OmniCoins in your customer account
+                        Available balance: 1,450 points in your VIP account
                       </p>
                     </div>
                   </div>
@@ -1150,9 +1157,9 @@ export default function CheckoutModal({
                   <button
                     type="button"
                     onClick={() => setRedeemOmniCoins(!redeemOmniCoins)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                       redeemOmniCoins
-                        ? 'bg-emerald-500 text-neutral-950 shadow-md font-black'
+                        ? 'bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-md font-black'
                         : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
                     }`}
                   >
@@ -1161,7 +1168,7 @@ export default function CheckoutModal({
                 </div>
 
                 {/* SECTION 4: BILLING BREAKDOWN & PLACE ORDER BUTTON */}
-                <div className="pt-4 border-t border-neutral-800 space-y-3">
+                <div className="pt-4 border-t border-[#1e1e2d] space-y-3">
                   <div className="space-y-1.5 text-xs text-neutral-400">
                     <div className="flex justify-between">
                       <span>Items Subtotal:</span>
@@ -1169,8 +1176,8 @@ export default function CheckoutModal({
                     </div>
 
                     {effectiveDiscount > 0 && (
-                      <div className="flex justify-between text-emerald-400 font-semibold">
-                        <span>Discounts (Promo + OmniCoins):</span>
+                      <div className="flex justify-between text-cyan-400 font-semibold">
+                        <span>Discounts (Promo + Points):</span>
                         <span className="font-mono">-{formatCurrency(effectiveDiscount)}</span>
                       </div>
                     )}
@@ -1188,10 +1195,10 @@ export default function CheckoutModal({
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-neutral-800 flex items-center justify-between">
+                  <div className="pt-3 border-t border-[#1e1e2d] flex items-center justify-between">
                     <div>
                       <span className="text-xs text-neutral-400 block">Total Payable Now:</span>
-                      <div className="text-2xl font-black text-emerald-400 font-mono">
+                      <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 font-mono">
                         {formatCurrency(finalPayable)}
                       </div>
                     </div>
@@ -1199,7 +1206,7 @@ export default function CheckoutModal({
                     <button
                       type="submit"
                       disabled={loading || !activeAddress}
-                      className="px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-neutral-950 font-black text-sm transition shadow-xl shadow-emerald-500/25 flex items-center gap-2 cursor-pointer active:scale-95"
+                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 disabled:opacity-50 text-white font-black text-sm transition shadow-xl shadow-purple-500/25 flex items-center gap-2 cursor-pointer active:scale-95"
                     >
                       {loading ? (
                         <span>Processing Order...</span>
